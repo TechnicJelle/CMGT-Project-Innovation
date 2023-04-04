@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Shared.Scripts.UI
 {
 	[RequireComponent(typeof(Button))]
 	public class ButtonPanelNavigation : MonoBehaviour
@@ -21,15 +21,15 @@ namespace UI
 
 		private void OnEnable()
 		{
-			_thisButton.onClick.AddListener(EnablePanel);
+			_thisButton.onClick.AddListener(SwitchPanel);
 		}
 
 		private void OnDisable()
 		{
-			_thisButton.onClick.RemoveListener(EnablePanel);
+			_thisButton.onClick.RemoveListener(SwitchPanel);
 		}
 
-		private void EnablePanel()
+		public void SwitchPanel()
 		{
 			_parentPanel.gameObject.SetActive(false);
 			enablePanel.gameObject.SetActive(true);

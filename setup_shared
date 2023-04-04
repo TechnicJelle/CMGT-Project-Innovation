@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# This shouldn't be necessary to use, because git should handle the symlinks automatically...
+
+cd BattleShips_Host/Assets
+ln -s ../../Shared
+cd ../..
+
+cd BattleShips_Client/Assets
+ln -s ../../Shared
+cd ../..
