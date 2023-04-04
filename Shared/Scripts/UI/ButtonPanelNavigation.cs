@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Shared.Scripts.UI
 {
 	[RequireComponent(typeof(Button))]
 	public class ButtonPanelNavigation : MonoBehaviour
