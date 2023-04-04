@@ -35,7 +35,7 @@ public class WebsocketServer : MonoBehaviour
 	{
 		Debug.Log("Starting websocket server...");
 		IDs = new List<string>();
-		_server.Start();
+		_server.Start(); //TODO: Move this to the button that goes to the LobbyScreen, with a try-catch (Example: Address already in use)
 	}
 
 	private void Update()
