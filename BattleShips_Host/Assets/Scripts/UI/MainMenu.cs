@@ -10,7 +10,7 @@ namespace UI
 		private void Awake()
 		{
 			if(_instance != null)
-				Debug.LogError("There is more than one MainMenu in the scene");
+				Debug.LogError($"There is more than one {this} in the scene");
 			else
 				_instance = this;
 
