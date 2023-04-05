@@ -23,13 +23,14 @@ namespace UI
 
 		private void OnEnable()
 		{
-			_text.text = _startText;
+			if (WebsocketServer.Instance.IDs?.Count == 0)
+				_text.text = _startText;
+			else
+				RebuildClientList(WebsocketServer.Instance.IDs);
 		}
 
 		private void RebuildClientList(List<string> ids)
 		{
-			Debug.Log("Rebuilding Client List...");
-
 			StringBuilder stringBuilder = new();
 			foreach (string id in ids)
 			{
