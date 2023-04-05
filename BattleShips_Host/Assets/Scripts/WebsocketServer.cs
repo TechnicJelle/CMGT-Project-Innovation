@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using TMPro;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -11,10 +9,12 @@ public class WebsocketServer : MonoBehaviour
 	public static WebsocketServer Instance { get; private set; }
 	private const string PATH = "/game";
 
-	[SerializeField] private TMP_Text text;
-
-	[NonSerialized] public bool ShouldUpdateText;
+	[NonSerialized] public bool ShouldUpdateUI;
+	// ReSharper disable once InconsistentNaming
 	[NonSerialized] public List<string> IDs;
+
+	public delegate void RefreshUI(List<string> ids);
+	public RefreshUI OnRefreshUI;
 
 	private WebSocketServer _server;
 	private WebSocketServiceHost _gameHost;
@@ -25,44 +25,29 @@ public class WebsocketServer : MonoBehaviour
 			Debug.LogError($"There is more than one {this} in the scene");
 		else
 			Instance = this;
-
-		_server = new WebSocketServer(55555);
-		_server.AddWebSocketService<Chat>(PATH);
-		_gameHost = _server.WebSocketServices[PATH];
 	}
 
-	private void OnEnable()
+	public bool StartWebserver()
 	{
-		Debug.Log("Starting websocket server...");
-		IDs = new List<string>();
-		_server.Start(); //TODO: Move this to the button that goes to the LobbyScreen, with a try-catch (Example: Address already in use)
-	}
-
-	private void Update()
-	{
-		if (ShouldUpdateText)
+		try
 		{
-			ShouldUpdateText = false;
-			RebuildUI();
+			_server = new WebSocketServer(55555);
+			_server.AddWebSocketService<Chat>(PATH);
+			_gameHost = _server.WebSocketServices[PATH];
+			IDs = new List<string>();
+
+			_server.Start(); //TODO: Move this to the button that goes to the LobbyScreen, with a try-catch (Example: Address already in use)
+			Debug.Log("Started websocket server...");
+			return true;
+		} catch (Exception e)
+		{
+			Debug.LogWarning($"Connection failed: {e.Message}");
+			return false;
 		}
 	}
 
-	private void RebuildUI()
+	public void StopWebserver()
 	{
-		Debug.Log("Rebuilding UI...");
-
-		StringBuilder stringBuilder = new();
-		foreach (string id in IDs)
-		{
-			stringBuilder.AppendLine(id);
-		}
-
-		text.text = stringBuilder.ToString();
-	}
-
-	private void OnDisable()
-	{
-		//TODO: The panel will probably be disabled when the game starts, so the websocket server will shut down when it shouldn't
 		Debug.Log("Stopping websocket server...");
 
 		//disconnect every client
@@ -70,10 +55,19 @@ public class WebsocketServer : MonoBehaviour
 		{
 			string id = IDs[i];
 			Debug.Log($"Disconnecting {id}...");
-			_gameHost.Sessions.CloseSession(id);
+			_gameHost.Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
 		}
 
 		_server.Stop();
+	}
+
+	private void Update()
+	{
+		if (ShouldUpdateUI)
+		{
+			ShouldUpdateUI = false;
+			OnRefreshUI.Invoke(IDs);
+		}
 	}
 }
 
@@ -106,6 +100,6 @@ public class Chat : WebSocketBehavior
 
 	private static void RefreshUI()
 	{
-		Server.ShouldUpdateText = true;
+		Server.ShouldUpdateUI = true;
 	}
 }

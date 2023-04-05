@@ -23,6 +23,7 @@ public class WebsocketClient : MonoBehaviour
 
 	public bool Connect(string link)
 	{
+		Debug.Log($"Connecting to {link}...");
 		_webSocket?.Close();
 		try
 		{
@@ -37,6 +38,12 @@ public class WebsocketClient : MonoBehaviour
 			Debug.LogWarning($"WS Connection failed: {e.Message}");
 			return false;
 		}
+	}
+
+	public void Disconnect()
+	{
+		Debug.Log("Disconnecting...");
+		_webSocket?.Close();
 	}
 
 	private void FixedUpdate()
