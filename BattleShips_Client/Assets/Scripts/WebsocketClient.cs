@@ -14,8 +14,6 @@ public class WebsocketClient : MonoBehaviour
 			Debug.LogError($"There is more than one {this} in the scene");
 		else
 			Instance = this;
-
-		// Debug.Log("Connection: " + Connect("127.0.0.1", 55555));
 	}
 
 	public bool Connect(string ip, int port) =>
@@ -29,7 +27,8 @@ public class WebsocketClient : MonoBehaviour
 		{
 			_webSocket = new WebSocket(link);
 			_webSocket.OnOpen += (_, _) => { Debug.Log("WS Connected"); };
-			_webSocket.OnMessage += (object _, MessageEventArgs e) => { Debug.Log($"WS Received message: {e.Data}"); };
+			_webSocket.OnMessage += (object _, MessageEventArgs e) => { Debug.Log($"WS Received message: {e.Data}"); }; //TODO: Handle message
+			_webSocket.OnClose += (object _, CloseEventArgs e) => { Debug.Log($"WS Disconnected: {e.Reason}"); }; //TODO: Kick back to main menu
 			_webSocket.Connect();
 			return _webSocket.IsAlive;
 		}

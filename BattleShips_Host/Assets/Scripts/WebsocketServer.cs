@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -7,6 +9,7 @@ using WebSocketSharp.Server;
 public class WebsocketServer : MonoBehaviour
 {
 	public static WebsocketServer Instance { get; private set; }
+	private const int PORT = 55555;
 	private const string PATH = "/game";
 
 	[NonSerialized] public bool ShouldUpdateUI;
@@ -31,12 +34,12 @@ public class WebsocketServer : MonoBehaviour
 	{
 		try
 		{
-			_server = new WebSocketServer(55555);
+			_server = new WebSocketServer(PORT);
 			_server.AddWebSocketService<Chat>(PATH);
 			_gameHost = _server.WebSocketServices[PATH];
 			IDs = new List<string>();
 
-			_server.Start(); //TODO: Move this to the button that goes to the LobbyScreen, with a try-catch (Example: Address already in use)
+			_server.Start();
 			Debug.Log("Started websocket server...");
 			return true;
 		} catch (Exception e)
@@ -46,9 +49,12 @@ public class WebsocketServer : MonoBehaviour
 		}
 	}
 
+	private void OnApplicationQuit() => StopWebserver();
+
 	public void StopWebserver()
 	{
 		Debug.Log("Stopping websocket server...");
+		if(_server == null) return; //server was never started
 
 		//disconnect every client
 		for (int i = IDs.Count - 1; i >= 0; i--)
@@ -68,6 +74,22 @@ public class WebsocketServer : MonoBehaviour
 			ShouldUpdateUI = false;
 			OnRefreshUI.Invoke(IDs);
 		}
+	}
+
+	public static string GetLink()
+	{
+		return $"ws://{GetIPAddress()}:{PORT}{PATH}";
+	}
+
+	private static string GetIPAddress()
+	{
+		// https://stackoverflow.com/a/27376368/8109619
+		using Socket socket = new(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+		socket.Connect("", 65530);
+		if (socket.LocalEndPoint is not IPEndPoint endPoint)
+			throw new Exception("Could not get local IP address");
+
+		return endPoint.Address.ToString();
 	}
 }
 
