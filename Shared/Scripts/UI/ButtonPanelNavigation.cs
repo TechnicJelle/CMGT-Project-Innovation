@@ -6,17 +6,17 @@ namespace Shared.Scripts.UI
 	[RequireComponent(typeof(Button))]
 	public class ButtonPanelNavigation : MonoBehaviour
 	{
-		[SerializeField] private RectTransform enablePanel;
+		[SerializeField] private View enableView;
 
 		private Button _thisButton;
-		private RectTransform _parentPanel;
+		private View _parentView;
 
 		private void Awake()
 		{
-			if(enablePanel == null)
-				Debug.LogError("Enable Panel is null");
+			if(enableView == null)
+				Debug.LogError("Enable View is null");
 			_thisButton = GetComponent<Button>();
-			_parentPanel = transform.parent.GetComponent<RectTransform>();
+			_parentView = transform.parent.GetComponentInParent<View>();
 		}
 
 		private void OnEnable()
@@ -31,8 +31,8 @@ namespace Shared.Scripts.UI
 
 		public void SwitchPanel()
 		{
-			_parentPanel.gameObject.SetActive(false);
-			enablePanel.gameObject.SetActive(true);
+			_parentView.Hide();
+			enableView.Show();
 		}
 	}
 }
