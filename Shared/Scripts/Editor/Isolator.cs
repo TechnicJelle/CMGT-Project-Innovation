@@ -24,7 +24,7 @@ namespace Shared.Scripts.Editor
         private void OnEnable()
         {
             if (!enabled || Application.isPlaying || _last == target) return;
-            Debug.Log("EditorScript Isolator: you selected " + target);
+            // Debug.Log("EditorScript Isolator: you selected " + target);
             Transform current = (target as T).transform;
             foreach (Transform sibling in current.parent) sibling.gameObject.SetActive(false);
             current.gameObject.SetActive(true);
