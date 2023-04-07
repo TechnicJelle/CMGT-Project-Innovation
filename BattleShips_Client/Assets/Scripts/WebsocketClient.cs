@@ -9,9 +9,9 @@ public class WebsocketClient : MonoBehaviour
 
 	[SerializeField] private View mainMenu;
 
-	private bool _shouldDisconnect;
-
 	private WebSocket _webSocket;
+
+	private bool _shouldDisconnect;
 
 	private void Awake()
 	{
@@ -48,6 +48,11 @@ public class WebsocketClient : MonoBehaviour
 		}
 	}
 
+	public void Send(byte[] bytes)
+	{
+		_webSocket.SendAsync(bytes, null);
+	}
+
 	public void DisconnectClient()
 	{
 		Debug.Log("Disconnecting...");
@@ -62,16 +67,9 @@ public class WebsocketClient : MonoBehaviour
 			_shouldDisconnect = false;
 			foreach (View view in FindObjectsOfType<View>(true))
 			{
-				if (view == mainMenu) view.Show(); //TODO: Show popup for reason
+				if (view == mainMenu) view.Show(); //TODO: And show popup for reason
 				else view.Hide();
 			}
 		}
-	}
-
-	private void FixedUpdate()
-	{
-		//every second
-		if (Time.timeSinceLevelLoad % 1 < Time.fixedDeltaTime && (_webSocket?.IsAlive ?? false))
-			_webSocket?.Send($"Hello {Time.timeSinceLevelLoad}"); //TODO: Remove this and send more sensible data
 	}
 }

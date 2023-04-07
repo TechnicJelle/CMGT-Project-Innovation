@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Shared.Scripts;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -36,7 +37,7 @@ public class WebsocketServer : MonoBehaviour
 		try
 		{
 			_server = new WebSocketServer(PORT);
-			_server.AddWebSocketService<Chat>(PATH);
+			_server.AddWebSocketService<Game>(PATH);
 			IDs = new List<string>();
 
 			_server.Start();
@@ -95,7 +96,7 @@ public class WebsocketServer : MonoBehaviour
 	}
 }
 
-public class Chat : WebSocketBehavior
+public class Game : WebSocketBehavior
 {
 	private static WebsocketServer Server => WebsocketServer.Instance;
 
@@ -108,11 +109,16 @@ public class Chat : WebSocketBehavior
 
 	protected override void OnMessage(MessageEventArgs e)
 	{
-		string input = e.Data.Trim();
-		string output = $"{ID}: {input}";
-		Debug.Log(output);
-		Sessions.Broadcast(output);
-		Send($"this only gets sent to client {ID}");
+		switch (MessageFactory.CheckMessageType(e.RawData))
+		{
+			case MessageFactory.MessageType.BoatDirectionUpdate:
+				if(!MatchManager.IsMatchRunning) return;
+				float direction = MessageFactory.DecodeBoatDirectionUpdate(e.RawData);
+				MatchManager.Instance.UpdateBoatDirection(ID, direction);
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
+		}
 	}
 
 	protected override void OnClose(CloseEventArgs e)
