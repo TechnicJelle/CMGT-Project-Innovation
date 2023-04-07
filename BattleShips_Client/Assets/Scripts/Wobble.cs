@@ -14,6 +14,10 @@ public class Wobble : MonoBehaviour
 	[SerializeField] private GameObject slider;
 	[SerializeField] private SliderHandler sliderHandler;
 
+	[SerializeField] private float networkPositionUpdateFrequency = 1;
+	private float _dt;
+	private float _accumulator;
+	
 	private float _boatDirection = 1;
 
 	private void Start()
@@ -46,6 +50,7 @@ public class Wobble : MonoBehaviour
 			default:
 				throw new ArgumentOutOfRangeException();
 		}
+		_dt = 1 / networkPositionUpdateFrequency;
 	}
 
 	private void Update()
@@ -67,9 +72,18 @@ public class Wobble : MonoBehaviour
 				throw new ArgumentOutOfRangeException();
 		}
 
+		_accumulator += Time.deltaTime;
+		//To supposedly prevent a spiral of death
+		// if (_accumulator > 0.2f)
+		// 	_accumulator = 0.2f;
+		
 		//Send to server
-		if(Random.Range(0, 20) == 5) //TODO: Replace with Actual timing procedure
+		while (_accumulator > _dt)
+		{
+			Debug.Log("Accumulator limit reached:+"+_accumulator);
 			WebsocketClient.Instance.Send(MessageFactory.CreateBoatDirectionUpdate(_boatDirection));
+			_accumulator -= _dt;
+		}
 	}
 
 	private void HandleGyro()

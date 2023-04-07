@@ -838,7 +838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &442834124
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2671,12 +2671,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa7a29262cb340528707dce58a76498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controls: 0
-  turnSpeed: 0.1
+  controls: 3
   errorText: {fileID: 869958394}
   buttons: {fileID: 1539419875}
   slider: {fileID: 1345219266}
   sliderHandler: {fileID: 1909918585}
+  networkPositionUpdateFrequency: 2
 --- !u!4 &1491045309 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 591407eb755f651c180fdbf61a5f69c1,
@@ -3336,7 +3336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1999748041
 RectTransform:
   m_ObjectHideFlags: 0
