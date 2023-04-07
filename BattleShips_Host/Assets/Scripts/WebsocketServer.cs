@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using TMPro;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -9,12 +9,15 @@ using WebSocketSharp.Server;
 public class WebsocketServer : MonoBehaviour
 {
 	public static WebsocketServer Instance { get; private set; }
+	private const int PORT = 55555;
 	private const string PATH = "/game";
 
-	[SerializeField] private TMP_Text text;
-
-	[NonSerialized] public bool ShouldUpdateText;
+	[NonSerialized] public bool ShouldUpdateUI;
+	// ReSharper disable once InconsistentNaming
 	[NonSerialized] public List<string> IDs;
+
+	public delegate void RefreshUI(List<string> ids);
+	public RefreshUI OnRefreshUI;
 
 	private WebSocketServer _server;
 	private WebSocketServiceHost _gameHost;
@@ -25,55 +28,68 @@ public class WebsocketServer : MonoBehaviour
 			Debug.LogError($"There is more than one {this} in the scene");
 		else
 			Instance = this;
-
-		_server = new WebSocketServer(55555);
-		_server.AddWebSocketService<Chat>(PATH);
-		_gameHost = _server.WebSocketServices[PATH];
 	}
 
-	private void OnEnable()
+	public bool StartWebserver()
 	{
-		Debug.Log("Starting websocket server...");
-		IDs = new List<string>();
-		_server.Start(); //TODO: Move this to the button that goes to the LobbyScreen, with a try-catch (Example: Address already in use)
-	}
-
-	private void Update()
-	{
-		if (ShouldUpdateText)
+		try
 		{
-			ShouldUpdateText = false;
-			RebuildUI();
+			_server = new WebSocketServer(PORT);
+			_server.AddWebSocketService<Chat>(PATH);
+			_gameHost = _server.WebSocketServices[PATH];
+			IDs = new List<string>();
+
+			_server.Start();
+			Debug.Log("Started websocket server...");
+			return true;
+		} catch (Exception e)
+		{
+			Debug.LogWarning($"Connection failed: {e.Message}");
+			return false;
 		}
 	}
 
-	private void RebuildUI()
+	private void OnApplicationQuit() => StopWebserver();
+
+	public void StopWebserver()
 	{
-		Debug.Log("Rebuilding UI...");
-
-		StringBuilder stringBuilder = new();
-		foreach (string id in IDs)
-		{
-			stringBuilder.AppendLine(id);
-		}
-
-		text.text = stringBuilder.ToString();
-	}
-
-	private void OnDisable()
-	{
-		//TODO: The panel will probably be disabled when the game starts, so the websocket server will shut down when it shouldn't
 		Debug.Log("Stopping websocket server...");
+		if(_server == null) return; //server was never started
 
 		//disconnect every client
 		for (int i = IDs.Count - 1; i >= 0; i--)
 		{
 			string id = IDs[i];
 			Debug.Log($"Disconnecting {id}...");
-			_gameHost.Sessions.CloseSession(id);
+			_gameHost.Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
 		}
 
 		_server.Stop();
+	}
+
+	private void Update()
+	{
+		if (ShouldUpdateUI)
+		{
+			ShouldUpdateUI = false;
+			OnRefreshUI.Invoke(IDs);
+		}
+	}
+
+	public static string GetLink()
+	{
+		return $"ws://{GetIPAddress()}:{PORT}{PATH}";
+	}
+
+	private static string GetIPAddress()
+	{
+		// https://stackoverflow.com/a/27376368/8109619
+		using Socket socket = new(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+		socket.Connect("", 65530);
+		if (socket.LocalEndPoint is not IPEndPoint endPoint)
+			throw new Exception("Could not get local IP address");
+
+		return endPoint.Address.ToString();
 	}
 }
 
@@ -106,6 +122,6 @@ public class Chat : WebSocketBehavior
 
 	private static void RefreshUI()
 	{
-		Server.ShouldUpdateText = true;
+		Server.ShouldUpdateUI = true;
 	}
 }
