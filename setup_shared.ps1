@@ -1,0 +1,2 @@
+﻿New-Item -ItemType SymbolicLink -Path '.\BattleShips_Client\Assets' -Name 'Shared' -Value '.\Shared' -Force
+New-Item -ItemType SymbolicLink -Path '.\BattleShips_Host\Assets' -Name 'Shared' -Value '.\Shared' -Force
