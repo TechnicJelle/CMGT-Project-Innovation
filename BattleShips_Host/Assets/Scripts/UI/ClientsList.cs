@@ -23,6 +23,7 @@ namespace UI
 
 		private void OnEnable()
 		{
+			if (WebsocketServer.Instance == null) Debug.LogWarning("Make sure to start the game from the Main Menu, not from the Lobby! ;D");
 			if (WebsocketServer.Instance.IDs?.Count == 0)
 				_text.text = _startText;
 			else
