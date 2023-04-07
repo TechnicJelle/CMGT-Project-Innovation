@@ -13,7 +13,7 @@ namespace Shared.Scripts.UI
 
 		protected void Awake()
 		{
-			if(gotoView == null)
+			if (gotoView == null)
 				Debug.LogError("Enable View is null");
 			ThisButton = GetComponent<Button>();
 			_parentView = transform.parent.GetComponentInParent<View>();

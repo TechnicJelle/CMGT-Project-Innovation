@@ -13,14 +13,15 @@ public class WebsocketServer : MonoBehaviour
 	private const string PATH = "/game";
 
 	[NonSerialized] public bool ShouldUpdateUI;
+
 	// ReSharper disable once InconsistentNaming
 	[NonSerialized] public List<string> IDs;
 
 	public delegate void RefreshUI(List<string> ids);
+
 	public RefreshUI OnRefreshUI;
 
 	private WebSocketServer _server;
-	private WebSocketServiceHost _gameHost;
 
 	private void Awake()
 	{
@@ -36,13 +37,13 @@ public class WebsocketServer : MonoBehaviour
 		{
 			_server = new WebSocketServer(PORT);
 			_server.AddWebSocketService<Chat>(PATH);
-			_gameHost = _server.WebSocketServices[PATH];
 			IDs = new List<string>();
 
 			_server.Start();
 			Debug.Log("Started websocket server...");
 			return true;
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			Debug.LogWarning($"Connection failed: {e.Message}");
 			return false;
@@ -53,15 +54,16 @@ public class WebsocketServer : MonoBehaviour
 
 	public void StopWebserver()
 	{
-		Debug.Log("Stopping websocket server...");
 		if(_server == null) return; //server was never started
+		Debug.Log("Stopping websocket server...");
 
 		//disconnect every client
+		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
 		for (int i = IDs.Count - 1; i >= 0; i--)
 		{
 			string id = IDs[i];
 			Debug.Log($"Disconnecting {id}...");
-			_gameHost.Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
+			gameHost.Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
 		}
 
 		_server.Stop();

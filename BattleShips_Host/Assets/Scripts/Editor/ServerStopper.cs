@@ -15,7 +15,7 @@ namespace Editor
 
 		private static void PlayModeStateChanged(PlayModeStateChange state)
 		{
-			Debug.Log($"State changed to: {state}");
+			// Debug.Log($"State changed to: {state}");
 			if (state == PlayModeStateChange.ExitingEditMode)
 				WebsocketServer.Instance.StopWebserver();
 		}
