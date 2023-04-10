@@ -9,6 +9,7 @@ namespace Shared.Scripts
 			BoatDirectionUpdate = 0,
 			StartGameSignal = 1,
 			GoBackToLobbySignal = 2,
+			BlowingUpdate = 3,
 		}
 
 		public static MessageType CheckMessageType(byte[] message)
@@ -54,6 +55,30 @@ namespace Shared.Scripts
 			message[0] = (byte) MessageType.GoBackToLobbySignal;
 
 			return message;
+		}
+
+		public static byte[] CreateBlowingUpdate(bool blowing)
+		{
+			byte[] message = new byte[1 + sizeof(bool)];
+			message[0] = (byte) MessageType.BlowingUpdate;
+
+			byte[] blowingBytes = BitConverter.GetBytes(blowing);
+			if (!BitConverter.IsLittleEndian) Array.Reverse(blowingBytes);
+			Array.Copy(blowingBytes, 0, message, 1, sizeof(bool));
+
+			return message;
+		}
+
+		public static bool DecodeBlowingUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.BlowingUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.BlowingUpdate} message");
+
+			byte[] blowingBytes = new byte[sizeof(bool)]; //TODO: Use Span<byte> with stackalloc instead
+			Array.Copy(message, 1, blowingBytes, 0, sizeof(bool));
+			if (!BitConverter.IsLittleEndian) Array.Reverse(blowingBytes);
+
+			return BitConverter.ToBoolean(blowingBytes, 0);
 		}
 	}
 }

@@ -55,4 +55,9 @@ public class MatchManager : MonoBehaviour
 	{
 		_players?[id].SetTargetDirection(direction);
 	}
+
+	public void SetBoatBlowing(string id, bool blowing)
+	{
+		_players?[id].SetBlowing(blowing);
+	}
 }
