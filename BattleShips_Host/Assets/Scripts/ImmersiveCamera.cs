@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -28,9 +29,8 @@ public class ImmersiveCamera : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            Debug.Log($"There is more then one {this} in this scene!");
         }
-
     }
 
     private void LateUpdate()

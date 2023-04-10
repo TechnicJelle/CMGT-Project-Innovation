@@ -13,6 +13,12 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private Camera gameCamera;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
+	
+	private enum Cameras
+	{
+		Main,
+		Game
+	}
 
 	private void Awake()
 	{
@@ -26,7 +32,7 @@ public class MatchManager : MonoBehaviour
 
 		if (playerPrefab.GetComponent<Boat>() == null)
 			Debug.LogError("Player prefab does not have a Boat component");
-		ChangeCamera(true);
+		ChangeCamera(Cameras.Main);
 	}
 
 	public void StartMatch()
@@ -40,7 +46,7 @@ public class MatchManager : MonoBehaviour
 			_players.Add(id, new PlayerData(boat));
 			ImmersiveCamera.instance.AddPlayer(boat.transform);
 		}
-		ChangeCamera(false);
+		ChangeCamera(Cameras.Game);
 	}
 
 	public void EndMatch()
@@ -53,7 +59,7 @@ public class MatchManager : MonoBehaviour
 
 		_players = null;
 		ImmersiveCamera.instance.ClearPlayers();
-		ChangeCamera(true);
+		ChangeCamera(Cameras.Main);
 	}
 
 	public void UpdateBoatDirection(string id, float direction)
@@ -61,10 +67,10 @@ public class MatchManager : MonoBehaviour
 		_players?[id].Boat.SetTargetDirection(direction);	
 	}
 
-	private void ChangeCamera(bool mainOn)
+	private void ChangeCamera(Cameras mode)
 	{
-		mainCamera.enabled = mainOn;
-		gameCamera.enabled = !mainOn;
+		mainCamera.enabled = mode == Cameras.Main;
+		gameCamera.enabled = mode == Cameras.Game;
 	}
 
 	public void AddPoint(Boat boat)
