@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Shared.Scripts;
 using UnityEngine;
 
 public class MatchManager : MonoBehaviour
@@ -28,6 +29,7 @@ public class MatchManager : MonoBehaviour
 	public void StartMatch()
 	{
 		_players = new Dictionary<string, Boat>();
+		WebsocketServer.Instance.Broadcast(MessageFactory.CreateStartGameSignal());
 		foreach (string id in WebsocketServer.Instance.IDs)
 		{
 			GameObject instance = Instantiate(playerPrefab, transform);
@@ -40,6 +42,7 @@ public class MatchManager : MonoBehaviour
 	public void EndMatch()
 	{
 		if (_players == null) return; //match was never started
+		WebsocketServer.Instance.Broadcast(MessageFactory.CreateGoBackToLobbySignal());
 		foreach (Boat player in _players.Values)
 		{
 			Destroy(player.gameObject);

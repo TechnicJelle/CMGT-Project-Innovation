@@ -24,7 +24,7 @@ namespace UI
 		private void Awake()
 		{
 			if (gotoView == null)
-				Debug.LogError("Enable View is null");
+				Debug.LogError("Goto View is null");
 			_parentView = transform.parent.GetComponentInParent<View>();
 
 			_webcamTexture = new WebCamTexture(Screen.width, Screen.width);

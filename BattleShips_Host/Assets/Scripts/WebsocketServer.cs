@@ -94,6 +94,15 @@ public class WebsocketServer : MonoBehaviour
 
 		return endPoint.Address.ToString();
 	}
+
+	/// <summary>
+	/// Sends a message to all connected clients
+	/// </summary>
+	public void Broadcast(byte[] bytes)
+	{
+		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
+		gameHost.Sessions.BroadcastAsync(bytes, null);
+	}
 }
 
 public class Game : WebSocketBehavior
@@ -115,6 +124,9 @@ public class Game : WebSocketBehavior
 				if(!MatchManager.IsMatchRunning) return;
 				float direction = MessageFactory.DecodeBoatDirectionUpdate(e.RawData);
 				MatchManager.Instance.UpdateBoatDirection(ID, direction);
+				break;
+			case MessageFactory.MessageType.StartGameSignal:
+				Debug.LogWarning("Received start game signal from client, which is not allowed! Ignoring...");
 				break;
 			default:
 				throw new ArgumentOutOfRangeException();

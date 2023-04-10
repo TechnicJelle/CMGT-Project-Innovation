@@ -7,6 +7,8 @@ namespace Shared.Scripts
 		public enum MessageType : byte
 		{
 			BoatDirectionUpdate = 0,
+			StartGameSignal = 1,
+			GoBackToLobbySignal = 2,
 		}
 
 		public static MessageType CheckMessageType(byte[] message)
@@ -36,6 +38,22 @@ namespace Shared.Scripts
 			if (!BitConverter.IsLittleEndian) Array.Reverse(directionBytes);
 
 			return BitConverter.ToSingle(directionBytes, 0);
+		}
+
+		public static byte[] CreateStartGameSignal()
+		{
+			byte[] message = new byte[1];
+			message[0] = (byte) MessageType.StartGameSignal;
+
+			return message;
+		}
+
+		public static byte[] CreateGoBackToLobbySignal()
+		{
+			byte[] message = new byte[1];
+			message[0] = (byte) MessageType.GoBackToLobbySignal;
+
+			return message;
 		}
 	}
 }
