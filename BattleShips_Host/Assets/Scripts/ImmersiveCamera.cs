@@ -29,7 +29,7 @@ public class ImmersiveCamera : MonoBehaviour
         }
         else
         {
-            Debug.Log($"There is more then one {this} in this scene!");
+            Debug.LogError($"There is more then one {this} in this scene!");
         }
     }
 
