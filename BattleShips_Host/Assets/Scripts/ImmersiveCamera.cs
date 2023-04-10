@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,61 +7,55 @@ public class ImmersiveCamera : MonoBehaviour
     [SerializeField] private List<Transform> targets;
 
     [SerializeField] private Vector3 offset;
-    [SerializeField] private float smoothTime = 0.5f;
-    [SerializeField] private float minZoom = 40f;
-    [SerializeField] private float maxZoom = 10f;
-    [SerializeField] private float zoomLimiter = 50f;
+    [SerializeField] private float smoothTime = 0.8f;
+    [SerializeField] private float minZoom = 100f;
+    [SerializeField] private float maxZoom = 15f;
+    [SerializeField] private float zoomLimiter = 70f;
 
-    private Vector3 vel;
-    private Camera cam;
+    private Vector3 _velocity;
+    private Camera _camera;
+    private Bounds _bounds;
 
     private void Awake()
     {
-        cam = GetComponent<Camera>();
+        _camera = GetComponent<Camera>();
     }
 
     private void LateUpdate()
     {
         if (targets.Count == 0)
             return;
+        
+        _bounds = new Bounds(targets[0].position, Vector3.zero);
+        foreach (var t in targets)
+        {
+            _bounds.Encapsulate(t.position);
+        }
+        
         Move();
         Zoom();
     }
 
-    public void Move()
+    private void Move()
     {
-        Vector3 centerPoint = GetCenterPoint();
-        Vector3 newPos = centerPoint + offset;
-        transform.position = Vector3.SmoothDamp(transform.position, newPos, ref vel, smoothTime);
+        var centerPoint = GetCenterPoint();
+        var newPos = centerPoint + offset;
+        transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _velocity, smoothTime);
     }
 
-    public void Zoom()
+    private void Zoom()
     {
         float newZoom = Mathf.Lerp(maxZoom, minZoom, GetGreatestDistance()/zoomLimiter);
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newZoom, Time.deltaTime);
+        _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, newZoom, Time.deltaTime);
     }
 
     private Vector3 GetCenterPoint()
-    { 
-        if (targets.Count == 1)
-        {
-            return targets[0].position;
-        }
-
-        var bounds = new Bounds(targets[0].position, Vector3.zero);
-        for (int i = 0; i < targets.Count; i++) {
-            bounds.Encapsulate(targets[i].position);
-        }
-        return bounds.center;
+    {
+        return targets.Count == 1 ? targets[0].position : _bounds.center;
     }
 
     private float GetGreatestDistance()
     {
-        var bounds = new Bounds(targets[0].position, Vector3.zero);
-        for (int i = 0; i < targets.Count; i++) {
-            bounds.Encapsulate(targets[i].position);
-        }
-
-        return new Vector2(bounds.size.x, bounds.size.z).magnitude;
+        return new Vector2(_bounds.size.x, _bounds.size.z).magnitude;
     }
 }
