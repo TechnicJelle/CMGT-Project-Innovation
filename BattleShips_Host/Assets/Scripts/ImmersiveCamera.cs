@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class ImmersiveCamera : MonoBehaviour
 {
+    public static ImmersiveCamera instance;
+    
     [SerializeField] private List<Transform> targets;
 
     [SerializeField] private Vector3 offset;
@@ -18,7 +21,16 @@ public class ImmersiveCamera : MonoBehaviour
 
     private void Awake()
     {
-        _camera = GetComponent<Camera>();
+        if (instance == null)
+        {
+            _camera = GetComponent<Camera>();
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
     }
 
     private void LateUpdate()
@@ -57,5 +69,15 @@ public class ImmersiveCamera : MonoBehaviour
     private float GetGreatestDistance()
     {
         return new Vector2(_bounds.size.x, _bounds.size.z).magnitude;
+    }
+
+    public void AddPlayer(Transform playerBoat)
+    {
+        targets.Add(playerBoat);
+    }
+
+    public void ClearPlayers()
+    {
+        targets.Clear();
     }
 }

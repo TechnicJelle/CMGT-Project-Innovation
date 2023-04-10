@@ -38,4 +38,13 @@ public class Boat : MonoBehaviour
 	{
 		_targetRotation = direction;
 	}
+	
+	
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.CompareTag($"Island"))
+		{
+			MatchManager.Instance.AddPoint(this);
+		}
+	}
 }
