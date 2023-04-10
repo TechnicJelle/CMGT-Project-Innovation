@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Shared.Scripts;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -36,7 +37,7 @@ public class WebsocketServer : MonoBehaviour
 		try
 		{
 			_server = new WebSocketServer(PORT);
-			_server.AddWebSocketService<Chat>(PATH);
+			_server.AddWebSocketService<Game>(PATH);
 			IDs = new List<string>();
 
 			_server.Start();
@@ -93,9 +94,18 @@ public class WebsocketServer : MonoBehaviour
 
 		return endPoint.Address.ToString();
 	}
+
+	/// <summary>
+	/// Sends a message to all connected clients
+	/// </summary>
+	public void Broadcast(byte[] bytes)
+	{
+		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
+		gameHost.Sessions.BroadcastAsync(bytes, null);
+	}
 }
 
-public class Chat : WebSocketBehavior
+public class Game : WebSocketBehavior
 {
 	private static WebsocketServer Server => WebsocketServer.Instance;
 
@@ -108,11 +118,19 @@ public class Chat : WebSocketBehavior
 
 	protected override void OnMessage(MessageEventArgs e)
 	{
-		string input = e.Data.Trim();
-		string output = $"{ID}: {input}";
-		Debug.Log(output);
-		Sessions.Broadcast(output);
-		Send($"this only gets sent to client {ID}");
+		switch (MessageFactory.CheckMessageType(e.RawData))
+		{
+			case MessageFactory.MessageType.BoatDirectionUpdate:
+				if(!MatchManager.IsMatchRunning) return;
+				float direction = MessageFactory.DecodeBoatDirectionUpdate(e.RawData);
+				MatchManager.Instance.UpdateBoatDirection(ID, direction);
+				break;
+			case MessageFactory.MessageType.StartGameSignal:
+				Debug.LogWarning("Received start game signal from client, which is not allowed! Ignoring...");
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
+		}
 	}
 
 	protected override void OnClose(CloseEventArgs e)

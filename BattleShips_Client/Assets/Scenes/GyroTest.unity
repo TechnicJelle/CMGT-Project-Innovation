@@ -437,13 +437,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa7a29262cb340528707dce58a76498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controls: 3
   turnSpeed: 0.1
   errorText: {fileID: 614632474}
-  logText: {fileID: 1133378869}
   buttons: {fileID: 1973664155}
   slider: {fileID: 578704992}
   sliderHandler: {fileID: 2134622400}
-  controls: 1
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

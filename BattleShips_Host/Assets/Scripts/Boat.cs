@@ -3,31 +3,39 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Boat : MonoBehaviour
 {
-    private Rigidbody _rb;
-    private Vector3 _direction;
-    [SerializeField][Range(0, 360)]private float rotation;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] [Range(0, 0.1f)]private float rotSpeed;
-    [SerializeField] private bool go = false;
+	[SerializeField] [Range(0.0f, 360.0f)] private float startRotation;
+	[SerializeField] private float moveSpeed;
+	[SerializeField] [Range(0, 0.1f)] private float rotSpeed;
+	[SerializeField] private bool go;
 
-    private void Awake () {
-        _rb = GetComponent<Rigidbody>();
-        Debug.Log(_rb);
-        _direction = Vector3.forward;
-    }
+	private Rigidbody _rb;
+	private float _targetRotation;
+	private Vector3 _direction;
 
-    private void FixedUpdate()
-    {
-        Move();
-    }
+	private void Awake()
+	{
+		_rb = GetComponent<Rigidbody>();
+		_targetRotation = startRotation;
+		_direction = Vector3.forward;
+	}
 
-    private void Move()
-    {
-        _direction = Quaternion.Euler(new Vector3(0, rotation, 0)) * Vector3.forward;
-        var forward = transform.forward;
-        forward = Vector3.Lerp(forward, _direction, rotSpeed);
-        transform.forward = forward;
-        if (go)
-            _rb.AddForce(forward * (moveSpeed * Time.fixedDeltaTime * 100));
-    }
+	private void FixedUpdate()
+	{
+		Move();
+	}
+
+	private void Move()
+	{
+		_direction = Quaternion.Euler(new Vector3(0, _targetRotation, 0)) * Vector3.forward;
+		Vector3 forward = transform.forward;
+		forward = Vector3.Lerp(forward, _direction, rotSpeed);
+		transform.forward = forward;
+		if (go)
+			_rb.AddForce(forward * (moveSpeed * Time.fixedDeltaTime * 100));
+	}
+
+	public void SetTargetDirection(float direction)
+	{
+		_targetRotation = direction;
+	}
 }

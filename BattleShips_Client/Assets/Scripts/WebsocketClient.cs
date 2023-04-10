@@ -1,4 +1,5 @@
 using System;
+using Shared.Scripts;
 using Shared.Scripts.UI;
 using UnityEngine;
 using WebSocketSharp;
@@ -7,11 +8,16 @@ public class WebsocketClient : MonoBehaviour
 {
 	public static WebsocketClient Instance { get; private set; }
 
+	public Action OnConnected;
+	public Action OnGoBackToLobby;
+
 	[SerializeField] private View mainMenu;
 
-	private bool _shouldDisconnect;
-
 	private WebSocket _webSocket;
+
+	private bool _shouldDisconnect;
+	private bool _shouldStartGame;
+	private bool _shouldGoBackToLobby;
 
 	private void Awake()
 	{
@@ -32,7 +38,25 @@ public class WebsocketClient : MonoBehaviour
 		{
 			_webSocket = new WebSocket(link);
 			_webSocket.OnOpen += (_, _) => { Debug.Log("WS Connected"); };
-			_webSocket.OnMessage += (object _, MessageEventArgs e) => { Debug.Log($"WS Received message: {e.Data}"); }; //TODO: Handle message
+			_webSocket.OnMessage += (object _, MessageEventArgs e) =>
+			{
+				switch (MessageFactory.CheckMessageType(e.RawData))
+				{
+					case MessageFactory.MessageType.BoatDirectionUpdate:
+						Debug.LogWarning("Received boat direction update from server, which is not allowed! Ignoring...");
+						break;
+					case MessageFactory.MessageType.StartGameSignal:
+						Debug.Log("Start game signal received from server!");
+						_shouldStartGame = true;
+						break;
+					case MessageFactory.MessageType.GoBackToLobbySignal:
+						Debug.Log("Go back to lobby signal received from server!");
+						_shouldGoBackToLobby = true;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			};
 			_webSocket.OnClose += (object _, CloseEventArgs e) =>
 			{
 				Debug.Log($"WS Disconnected from server-side: {e.Reason}");
@@ -48,6 +72,20 @@ public class WebsocketClient : MonoBehaviour
 		}
 	}
 
+	public void Send(byte[] bytes)
+	{
+#if UNITY_EDITOR
+		if (_webSocket == null)
+		{
+			Debug.LogWarning("Make sure to start the game from the Main Menu! ;D");
+			return;
+		}
+#endif
+		_webSocket.SendAsync(bytes, null);
+	}
+
+	private void OnApplicationQuit() => DisconnectClient();
+
 	public void DisconnectClient()
 	{
 		Debug.Log("Disconnecting...");
@@ -62,16 +100,21 @@ public class WebsocketClient : MonoBehaviour
 			_shouldDisconnect = false;
 			foreach (View view in FindObjectsOfType<View>(true))
 			{
-				if (view == mainMenu) view.Show(); //TODO: Show popup for reason
+				if (view == mainMenu) view.Show(); //TODO: And show popup for reason
 				else view.Hide();
 			}
 		}
-	}
 
-	private void FixedUpdate()
-	{
-		//every second
-		if (Time.timeSinceLevelLoad % 1 < Time.fixedDeltaTime && (_webSocket?.IsAlive ?? false))
-			_webSocket?.Send($"Hello {Time.timeSinceLevelLoad}"); //TODO: Remove this and send more sensible data
+		if (_shouldStartGame)
+		{
+			_shouldStartGame = false;
+			OnConnected.Invoke();
+		}
+
+		if (_shouldGoBackToLobby)
+		{
+			_shouldGoBackToLobby = false;
+			OnGoBackToLobby.Invoke();
+		}
 	}
 }
