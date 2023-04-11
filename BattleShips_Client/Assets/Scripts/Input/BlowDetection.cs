@@ -1,16 +1,20 @@
+using System.Linq;
 using Shared.Scripts;
+using TMPro;
 using UnityEngine;
 
 namespace Input
 {
 	public class BlowDetection : MonoBehaviour
 	{
-		[SerializeField] private float threshold = 0.1f;
 		[SerializeField] private int sampleWindow = 64;
+
+		[SerializeField] private TMP_Text logText;
 
 		[SerializeField] private int micUpdatesPerSecond = 1;
 
 		private AudioClip _microphoneClip;
+		private string _microphoneName;
 
 		private float _accumulatedTime;
 		private float _dt;
@@ -18,7 +22,6 @@ namespace Input
 		private void Start()
 		{
 			_dt = 1f / micUpdatesPerSecond;
-			MicrophoneToAudioClip();
 		}
 
 		private void Update()
@@ -27,22 +30,36 @@ namespace Input
 
 			float loudness = GetLoudnessFromMicrophone();
 
+			string allMics = Microphone.devices.Aggregate("", (current, device) => current + device + "\n");
+			logText.text = $"{allMics}---\nLoudness: {loudness}\nBlowing: {loudness > SettingsManager.Instance.microphoneThreshold}";
+
 			if (_accumulatedTime < _dt) return;
 			_accumulatedTime = 0;
 
-			WebsocketClient.Instance.Send(MessageFactory.CreateBlowingUpdate(loudness > threshold));
+			WebsocketClient.Instance.Send(MessageFactory.CreateBlowingUpdate(loudness > SettingsManager.Instance.microphoneThreshold));
+		}
+
+		private void OnEnable()
+		{
+			MicrophoneToAudioClip();
+		}
+
+		private void OnDisable()
+		{
+			Microphone.End(_microphoneName);
 		}
 
 		private void MicrophoneToAudioClip()
 		{
-			string microphoneName = Microphone.devices[0];
-			Debug.Log($"Microphone name: {microphoneName}");
-			_microphoneClip = Microphone.Start(microphoneName, true, 20, AudioSettings.outputSampleRate);
+			_microphoneName = Microphone.devices[0];
+			// Debug.Log($"Microphone name: {_microphoneName}");
+			_microphoneClip = Microphone.Start(_microphoneName, true, 20, AudioSettings.outputSampleRate);
 		}
 
 		private float GetLoudnessFromMicrophone()
 		{
-			return GetLoudnessFromAudioClip(Microphone.GetPosition(Microphone.devices[0]), _microphoneClip);
+			if (_microphoneName == null) MicrophoneToAudioClip(); //setup mic if it's not already
+			return GetLoudnessFromAudioClip(Microphone.GetPosition(_microphoneName), _microphoneClip);
 		}
 
 		private float GetLoudnessFromAudioClip(int clipPosition, AudioClip clip)

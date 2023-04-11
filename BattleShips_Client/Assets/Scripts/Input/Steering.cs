@@ -7,8 +7,7 @@ namespace Input
 {
 	public class Steering : MonoBehaviour
 	{
-		private enum ControlType { Gyro, Accel, Buttons, Slider, }
-		[SerializeField] private ControlType controls;
+		public enum ControlType { Gyro, Accel, Buttons, Slider, }
 
 		[SerializeField] private TMP_Text errorText;
 		[SerializeField] private GameObject buttons;
@@ -16,6 +15,8 @@ namespace Input
 		[SerializeField] private SliderHandler sliderHandler;
 
 		[SerializeField] private float networkPositionUpdateFrequency = 1;
+		private ControlType _controls;
+
 		private float _dt;
 		private float _accumulator;
 
@@ -26,7 +27,8 @@ namespace Input
 			errorText.gameObject.SetActive(false);
 			buttons.gameObject.SetActive(false);
 			slider.gameObject.SetActive(false);
-			switch (controls)
+			_controls = SettingsManager.Instance.controls;
+			switch (_controls)
 			{
 				case ControlType.Gyro:
 					if (SystemInfo.supportsGyroscope)
@@ -35,7 +37,7 @@ namespace Input
 						UnityEngine.Input.gyro.enabled = true;
 					} else {
 						Debug.Log("Gyroscope not supported, switching to alternative controls.");
-						controls = ControlType.Slider;
+						_controls = ControlType.Slider;
 						errorText.gameObject.SetActive(true);
 					}
 					break;
@@ -65,7 +67,7 @@ namespace Input
 
 		private void Update()
 		{
-			switch (controls)
+			switch (_controls)
 			{
 				case ControlType.Gyro:
 					HandleGyro();
