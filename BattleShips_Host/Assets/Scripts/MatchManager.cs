@@ -1,7 +1,9 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Shared.Scripts;
+using Shared.Scripts.UI;
+using TMPro;
 using UnityEngine;
 
 public class MatchManager : MonoBehaviour
@@ -11,14 +13,19 @@ public class MatchManager : MonoBehaviour
 
 	[SerializeField] private GameObject playerPrefab;
 	[SerializeField] private Camera mainCamera;
-	[SerializeField] private Camera gameCamera;
+	[SerializeField] private Camera matchCamera;
+	[SerializeField] private View gameView;
+	[SerializeField] private View endMatchView;
+	[SerializeField] private TMP_Text winnerText;
+
+	[SerializeField] private int maxTreasure = 1;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
 	
 	private enum Cameras
 	{
 		Main,
-		Game
+		Match
 	}
 
 	private void Awake()
@@ -48,21 +55,25 @@ public class MatchManager : MonoBehaviour
 			_players.Add(id, new PlayerData(boat));
 			ImmersiveCamera.instance.AddPlayer(boat.transform);
 		}
-		ChangeCamera(Cameras.Game);
+		ChangeCamera(Cameras.Match);
 	}
 
-	public void EndMatch()
+	private void EndMatch(PlayerData winner)
 	{
 		if (_players == null) return; //match was never started
 		WebsocketServer.Instance.Broadcast(MessageFactory.CreateGoBackToLobbySignal());
 		foreach (PlayerData player in _players.Values)
 		{
+			player.Points = 0;
 			Destroy(player.Boat.gameObject);
 		}
 
 		_players = null;
 		ImmersiveCamera.instance.ClearPlayers();
 		ChangeCamera(Cameras.Main);
+		winnerText.text = $"Winner:\n{winner.Name}";
+		gameView.Hide();
+		endMatchView.Show();
 	}
 
 	public void UpdateBoatDirection(string id, float direction)
@@ -73,33 +84,42 @@ public class MatchManager : MonoBehaviour
 	private void ChangeCamera(Cameras mode)
 	{
 		mainCamera.enabled = mode == Cameras.Main;
-		gameCamera.enabled = mode == Cameras.Game;
+		matchCamera.enabled = mode == Cameras.Match;
 	}
 
 	public void AddPoint(Boat boat)
 	{
 		if (_players == null) return;
+		PlayerData player = GetPlayerData(boat);
+		player.Points++;
+		if (player.Points > maxTreasure)
+			EndMatch(player); 
+		Debug.Log($"Player {player} got to an island and now has {player.Points}");
+	}
+
+	private PlayerData GetPlayerData(Boat boat)
+	{
+		if (_players == null) return null;
 		foreach (PlayerData player in _players.Values)
 		{
 			if (player.Boat == boat)
-			{
-				player.Points++;
-				if (player.Points > 3)
-					EndMatch(); //TODO: Return to another screen when the game is over
-				Debug.Log($"Player {player} got to an island and now has {player.Points}");
-				return;
-			}
+				return player;
 		}
+
+		Debug.LogError("Could not find boat in list");
+		return null;
 	}
 }
 
-class PlayerData
+internal class PlayerData
 {
 	public readonly Boat Boat;
 	public int Points;
-	public PlayerData (Boat pBoat)
+	public string Name;
+	public PlayerData (Boat pBoat, string pName = "Joe")
 	{
 		Boat = pBoat;
 		Points = 0;
+		Name = pName;
 	}
 }
