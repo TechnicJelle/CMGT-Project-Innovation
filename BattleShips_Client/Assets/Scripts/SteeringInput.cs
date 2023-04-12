@@ -58,7 +58,8 @@ public class SteeringInput : MonoBehaviour
 		_boatDirection = 0;
 
 		//reset slider position
-		slider.transform.localRotation = Quaternion.identity;
+		slider.transform.rotation = Quaternion.identity;
+		sliderHandler.Reset();
 	}
 
 	private void Update()

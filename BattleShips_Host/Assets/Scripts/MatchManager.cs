@@ -21,7 +21,7 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private int maxTreasure = 1;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
-	
+
 	private enum Cameras
 	{
 		Main,
@@ -53,12 +53,13 @@ public class MatchManager : MonoBehaviour
 			instance.name = id;
 			Boat boat = instance.GetComponent<Boat>();
 			_players.Add(id, new PlayerData(boat));
-			ImmersiveCamera.instance.AddPlayer(boat.transform);
+			ImmersiveCamera.Instance.AddPlayer(boat.transform);
 		}
+		ImmersiveCamera.Instance.FitAllPlayers();
 		ChangeCamera(Cameras.Match);
 	}
 
-	private void EndMatch(PlayerData winner)
+	public void Cleanup()
 	{
 		if (_players == null) return; //match was never started
 		WebsocketServer.Instance.Broadcast(MessageFactory.CreateGoBackToLobbySignal());
@@ -68,9 +69,14 @@ public class MatchManager : MonoBehaviour
 			Destroy(player.Boat.gameObject);
 		}
 
+		ImmersiveCamera.Instance.ClearPlayers();
 		_players = null;
-		ImmersiveCamera.instance.ClearPlayers();
 		ChangeCamera(Cameras.Main);
+	}
+
+	private void EndMatch(PlayerData winner)
+	{
+		Cleanup();
 		winnerText.text = $"Winner:\n{winner.Name}";
 		gameView.Hide();
 		endMatchView.Show();
@@ -111,7 +117,7 @@ public class MatchManager : MonoBehaviour
 	}
 }
 
-internal class PlayerData
+public class PlayerData
 {
 	public readonly Boat Boat;
 	public int Points;
