@@ -1,58 +1,24 @@
 using System;
 using Shared.Scripts;
-using TMPro;
 using UnityEngine;
 
 namespace Input
 {
 	public class Steering : MonoBehaviour
 	{
-		public enum ControlType { Gyro, Accel, Buttons, Slider, }
-
-		[SerializeField] private TMP_Text errorText;
 		[SerializeField] private GameObject buttons;
 		[SerializeField] private GameObject slider;
 		[SerializeField] private SliderHandler sliderHandler;
 
 		[SerializeField] private float networkPositionUpdateFrequency = 1;
-		private ControlType _controls;
 
 		private float _dt;
 		private float _accumulator;
 
 		private float _boatDirection = 0;
 
-		private void Start()
+		private void Awake()
 		{
-			errorText.gameObject.SetActive(false);
-			buttons.gameObject.SetActive(false);
-			slider.gameObject.SetActive(false);
-			_controls = SettingsManager.Instance.controls;
-			switch (_controls)
-			{
-				case ControlType.Gyro:
-					if (SystemInfo.supportsGyroscope)
-					{
-						Debug.Log("Gyroscope is supported");
-						UnityEngine.Input.gyro.enabled = true;
-					} else {
-						Debug.Log("Gyroscope not supported, switching to alternative controls.");
-						_controls = ControlType.Slider;
-						errorText.gameObject.SetActive(true);
-					}
-					break;
-				case ControlType.Accel:
-					Debug.Log("Accelerometer controls enabled");
-					break;
-				case ControlType.Slider:
-					slider.gameObject.SetActive(true);
-					Debug.Log("Slider controls enabled");
-					break;
-				case ControlType.Buttons:
-					throw new NotImplementedException(); //TODO
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
 			_dt = 1 / networkPositionUpdateFrequency;
 		}
 
@@ -63,23 +29,43 @@ namespace Input
 
 			//reset slider position
 			slider.transform.localRotation = Quaternion.identity;
+
+			Debug.Log($"Controls: {SettingsManager.Instance.Controls.ToString()}");
+
+			//controls
+			buttons.gameObject.SetActive(false);
+			slider.gameObject.SetActive(false);
+			switch (SettingsManager.Instance.Controls)
+			{
+				case SettingsManager.ControlType.Gyro:
+					Debug.Log("Gyroscope is supported");
+					UnityEngine.Input.gyro.enabled = true;
+					break;
+				case SettingsManager.ControlType.Accel:
+					Debug.Log("Accelerometer controls enabled");
+					break;
+				case SettingsManager.ControlType.Slider:
+					slider.gameObject.SetActive(true);
+					Debug.Log("Slider controls enabled");
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 
 		private void Update()
 		{
-			switch (_controls)
+			switch (SettingsManager.Instance.Controls)
 			{
-				case ControlType.Gyro:
+				case SettingsManager.ControlType.Gyro:
 					HandleGyro();
 					break;
-				case ControlType.Accel:
+				case SettingsManager.ControlType.Accel:
 					HandleAccel();
 					break;
-				case ControlType.Slider:
+				case SettingsManager.ControlType.Slider:
 					HandleSlider();
 					break;
-				case ControlType.Buttons:
-					throw new NotImplementedException(); //TODO
 				default:
 					throw new ArgumentOutOfRangeException();
 			}

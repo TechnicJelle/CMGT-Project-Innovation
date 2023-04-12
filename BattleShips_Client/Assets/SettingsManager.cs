@@ -1,17 +1,28 @@
 using System;
-using System.Collections.Generic;
-using Input;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
 	public static SettingsManager Instance;
 
-	[SerializeField] private TMP_Dropdown dropdown;
+	public enum ControlType
+	{
+		Slider,
+		// Buttons, //TODO: implement
+		Accel,
+		Gyro,
+	}
+	[NonSerialized] public ControlType Controls = ControlType.Slider;
 
-	public Steering.ControlType controls = Steering.ControlType.Slider;
 	public float microphoneThreshold = 0.1f;
+
+	[SerializeField] private Button btnSlider;
+	[SerializeField] private Button btnButtons;
+	[SerializeField] private Button btnAccel;
+	[SerializeField] private Button btnGyro;
+
 
 	private void Awake()
 	{
@@ -19,15 +30,27 @@ public class SettingsManager : MonoBehaviour
 			Debug.LogError($"There is more than one {this} in the scene");
 		else
 			Instance = this;
+
+		//set buttons
+		btnSlider.onClick.AddListener(() => SwitchControls(ControlType.Slider, btnSlider));
+		btnButtons.interactable = false;
+		btnAccel.onClick.AddListener(() => SwitchControls(ControlType.Accel, btnAccel));
+		btnGyro.onClick.AddListener(() => SwitchControls(ControlType.Gyro, btnGyro));
+
+		//set panel
+		if (!SystemInfo.supportsAccelerometer) btnAccel.interactable = false;
+		if (!SystemInfo.supportsGyroscope) btnGyro.interactable = false;
+
+		//set default (for the formatting)
+		SwitchControls(ControlType.Slider, btnSlider);
 	}
 
-	private void Start()
+	private void SwitchControls(ControlType newControls, Button thisButton)
 	{
-		dropdown.value = (int) controls;
-		dropdown.options = new List<TMP_Dropdown.OptionData>();
-		foreach (Steering.ControlType controlType in Enum.GetValues(typeof(Steering.ControlType)))
+		Controls = newControls;
+		foreach (Button button in new[] {btnSlider, btnButtons, btnAccel, btnGyro,})
 		{
-			dropdown.options.Add(new TMP_Dropdown.OptionData(controlType.ToString()));
+			button.GetComponentInChildren<TMP_Text>().fontStyle = button == thisButton ? FontStyles.Bold : FontStyles.Normal;
 		}
 	}
 }
