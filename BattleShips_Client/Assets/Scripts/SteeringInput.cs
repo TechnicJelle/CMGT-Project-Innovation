@@ -2,9 +2,8 @@ using System;
 using Shared.Scripts;
 using TMPro;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class Wobble : MonoBehaviour
+public class SteeringInput : MonoBehaviour
 {
 	private enum ControlType { Gyro, Accel, Buttons, Slider, }
 	[SerializeField] private ControlType controls;
@@ -17,8 +16,8 @@ public class Wobble : MonoBehaviour
 	[SerializeField] private float networkPositionUpdateFrequency = 1;
 	private float _dt;
 	private float _accumulator;
-	
-	private float _boatDirection = 1;
+
+	private float _boatDirection = 0;
 
 	private void Start()
 	{
@@ -53,6 +52,15 @@ public class Wobble : MonoBehaviour
 		_dt = 1 / networkPositionUpdateFrequency;
 	}
 
+	private void OnEnable()
+	{
+		//reset rotation
+		_boatDirection = 0;
+
+		//reset slider position
+		slider.transform.localRotation = Quaternion.identity;
+	}
+
 	private void Update()
 	{
 		switch (controls)
@@ -76,11 +84,10 @@ public class Wobble : MonoBehaviour
 		//To supposedly prevent a spiral of death
 		// if (_accumulator > 0.2f)
 		// 	_accumulator = 0.2f;
-		
+
 		//Send to server
 		while (_accumulator > _dt)
 		{
-			Debug.Log("Accumulator limit reached:+"+_accumulator);
 			WebsocketClient.Instance.Send(MessageFactory.CreateBoatDirectionUpdate(_boatDirection));
 			_accumulator -= _dt;
 		}
