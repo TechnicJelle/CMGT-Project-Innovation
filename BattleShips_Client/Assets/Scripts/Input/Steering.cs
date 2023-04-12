@@ -10,7 +10,7 @@ namespace Input
 		[SerializeField] private GameObject slider;
 		[SerializeField] private SliderHandler sliderHandler;
 
-		[SerializeField] private float networkPositionUpdateFrequency = 1;
+		[SerializeField] private float positionNetworkUpdateFrequency = 1;
 
 		private float _dt;
 		private float _accumulator;
@@ -19,7 +19,7 @@ namespace Input
 
 		private void Awake()
 		{
-			_dt = 1 / networkPositionUpdateFrequency;
+			_dt = 1 / positionNetworkUpdateFrequency;
 		}
 
 		private void OnEnable()
@@ -97,13 +97,12 @@ namespace Input
 
 		private void HandleSlider()
 		{
-			if (sliderHandler.Pressed)
-			{
-				Vector3 dir = UnityEngine.Input.mousePosition - slider.transform.position;
-				_boatDirection = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
-				slider.transform.rotation = Quaternion.AngleAxis(_boatDirection, Vector3.forward);
-				_boatDirection *= -1;
-			}
+			if (!sliderHandler.Pressed) return;
+
+			Vector3 dir = UnityEngine.Input.mousePosition - slider.transform.position;
+			_boatDirection = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
+			slider.transform.rotation = Quaternion.AngleAxis(_boatDirection, Vector3.forward);
+			_boatDirection *= -1;
 		}
 	}
 }
