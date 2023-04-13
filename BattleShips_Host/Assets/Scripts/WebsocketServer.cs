@@ -128,6 +128,13 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.StartGameSignal:
 				Debug.LogWarning("Received start game signal from client, which is not allowed! Ignoring...");
 				break;
+			case MessageFactory.MessageType.GoBackToLobbySignal:
+				Debug.LogWarning("Received go back to lobby signal from client, which is not allowed! Ignoring...");
+				break;
+			case MessageFactory.MessageType.BlowingUpdate:
+				bool isBlowing = MessageFactory.DecodeBlowingUpdate(e.RawData);
+				MatchManager.Instance.SetBoatBlowing(ID, isBlowing);
+				break;
 			default:
 				throw new ArgumentOutOfRangeException();
 		}
