@@ -18,3 +18,6 @@ This makes it so you only clone this specific repository with symlinks enabled, 
 
 ### Linux
 Should just work out of the box.
+
+## Networking on Windows
+Unity editor does not ask for Windows' permission regarding networking. Any phone-to-host networking has to be done via building the host.

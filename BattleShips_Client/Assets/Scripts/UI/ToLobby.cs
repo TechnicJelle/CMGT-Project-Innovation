@@ -2,7 +2,7 @@ using Shared.Scripts.UI;
 
 namespace UI
 {
-	public class InGame : EventViewNavigation
+	public class ToLobby : EventViewNavigation
 	{
 		private void Start()
 		{
