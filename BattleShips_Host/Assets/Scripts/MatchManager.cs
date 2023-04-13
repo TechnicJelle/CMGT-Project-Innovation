@@ -128,4 +128,9 @@ public class PlayerData
 		Points = 0;
 		Name = pName;
 	}
+
+	public void SetBoatBlowing(string id, bool blowing)
+	{
+		_players?[id].SetBlowing(blowing);
+	}
 }

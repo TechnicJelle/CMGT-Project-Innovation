@@ -78,6 +78,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startRotation: 0
   moveSpeed: 15
+  blowingSpeed: 100
   rotSpeed: 0.03
   go: 1
 --- !u!1001 &3917571787873483034
