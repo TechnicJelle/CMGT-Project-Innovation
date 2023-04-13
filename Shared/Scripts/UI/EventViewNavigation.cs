@@ -21,5 +21,10 @@ namespace Shared.Scripts.UI
 			_thisView.Hide();
 			gotoView.Show();
 		}
+
+		protected void HideThisPanel()
+		{
+			_thisView.Hide();
+		}
 	}
 }
