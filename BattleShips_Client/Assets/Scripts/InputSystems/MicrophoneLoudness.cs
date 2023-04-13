@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Input
+namespace InputSystems
 {
 	public class MicrophoneLoudness : MonoBehaviour
 	{

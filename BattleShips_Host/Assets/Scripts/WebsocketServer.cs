@@ -12,8 +12,7 @@ public class WebsocketServer : MonoBehaviour
 	public static WebsocketServer Instance { get; private set; }
 	private const int PORT = 55555;
 	private const string PATH = "/game";
-
-	[NonSerialized] public bool ShouldUpdateUI;
+	private WebSocketSessionManager Sessions => _server.WebSocketServices[PATH].Sessions;
 
 	// ReSharper disable once InconsistentNaming
 	[NonSerialized] public List<string> IDs;
@@ -23,6 +22,7 @@ public class WebsocketServer : MonoBehaviour
 	public RefreshUI OnRefreshUI;
 
 	private WebSocketServer _server;
+	private bool _shouldUpdateUI;
 
 	private void Awake()
 	{
@@ -59,22 +59,23 @@ public class WebsocketServer : MonoBehaviour
 		Debug.Log("Stopping websocket server...");
 
 		//disconnect every client
-		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
 		for (int i = IDs.Count - 1; i >= 0; i--)
 		{
 			string id = IDs[i];
 			Debug.Log($"Disconnecting {id}...");
-			gameHost.Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
+			Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
 		}
 
 		_server.Stop();
 	}
 
+	public void SetUpdateUI() => _shouldUpdateUI = true;
+
 	private void Update()
 	{
-		if (ShouldUpdateUI)
+		if (_shouldUpdateUI)
 		{
-			ShouldUpdateUI = false;
+			_shouldUpdateUI = false;
 			OnRefreshUI.Invoke(IDs);
 		}
 	}
@@ -100,8 +101,7 @@ public class WebsocketServer : MonoBehaviour
 	/// </summary>
 	public void Broadcast(byte[] bytes)
 	{
-		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
-		gameHost.Sessions.BroadcastAsync(bytes, null);
+		Sessions.BroadcastAsync(bytes, null);
 	}
 }
 
@@ -149,6 +149,6 @@ public class Game : WebSocketBehavior
 
 	private static void RefreshUI()
 	{
-		Server.ShouldUpdateUI = true;
+		Server.SetUpdateUI();
 	}
 }

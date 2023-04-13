@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 using Shared.Scripts;
 using Shared.Scripts.UI;
@@ -25,7 +24,7 @@ public class MatchManager : MonoBehaviour
 	private enum Cameras
 	{
 		Main,
-		Match
+		Match,
 	}
 
 	private void Awake()
@@ -52,7 +51,7 @@ public class MatchManager : MonoBehaviour
 			GameObject instance = Instantiate(playerPrefab, transform);
 			instance.name = id;
 			Boat boat = instance.GetComponent<Boat>();
-			_players.Add(id, new PlayerData(boat));
+			_players.Add(id, new PlayerData(boat, "Joe"));
 			ImmersiveCamera.Instance.AddPlayer(boat.transform);
 		}
 		ImmersiveCamera.Instance.FitAllPlayers();
@@ -84,7 +83,7 @@ public class MatchManager : MonoBehaviour
 
 	public void UpdateBoatDirection(string id, float direction)
 	{
-		_players?[id].Boat.SetTargetDirection(direction);	
+		_players?[id].Boat.SetTargetDirection(direction);
 	}
 
 	private void ChangeCamera(Cameras mode)
@@ -99,7 +98,7 @@ public class MatchManager : MonoBehaviour
 		PlayerData player = GetPlayerData(boat);
 		player.Points++;
 		if (player.Points > maxTreasure)
-			EndMatch(player); 
+			EndMatch(player);
 		Debug.Log($"Player {player} got to an island and now has {player.Points}");
 	}
 
@@ -115,22 +114,22 @@ public class MatchManager : MonoBehaviour
 		Debug.LogError("Could not find boat in list");
 		return null;
 	}
+
+	public void SetBoatBlowing(string id, bool blowing)
+	{
+		_players?[id].Boat.SetBlowing(blowing);
+	}
 }
 
 public class PlayerData
 {
 	public readonly Boat Boat;
+	public readonly string Name;
 	public int Points;
-	public string Name;
-	public PlayerData (Boat pBoat, string pName = "Joe")
+	public PlayerData (Boat pBoat, string pName)
 	{
 		Boat = pBoat;
-		Points = 0;
 		Name = pName;
-	}
-
-	public void SetBoatBlowing(string id, bool blowing)
-	{
-		_players?[id].SetBlowing(blowing);
+		Points = 0;
 	}
 }

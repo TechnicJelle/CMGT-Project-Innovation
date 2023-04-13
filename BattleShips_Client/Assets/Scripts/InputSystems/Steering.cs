@@ -2,7 +2,7 @@ using System;
 using Shared.Scripts;
 using UnityEngine;
 
-namespace Input
+namespace InputSystems
 {
 	public class Steering : MonoBehaviour
 	{
@@ -39,7 +39,7 @@ namespace Input
 			{
 				case SettingsManager.ControlType.Gyro:
 					Debug.Log("Gyroscope is supported");
-					UnityEngine.Input.gyro.enabled = true;
+					Input.gyro.enabled = true;
 					break;
 				case SettingsManager.ControlType.Accel:
 					Debug.Log("Accelerometer controls enabled");
@@ -85,13 +85,13 @@ namespace Input
 
 		private void HandleGyro()
 		{
-			Quaternion gyro = UnityEngine.Input.gyro.attitude;
+			Quaternion gyro = Input.gyro.attitude;
 			_boatDirection = -gyro.eulerAngles.z + 180;
 		}
 
 		private void HandleAccel()
 		{
-			Vector3 accel = UnityEngine.Input.acceleration;
+			Vector3 accel = Input.acceleration;
 			_boatDirection = Mathf.Atan2(accel.y, accel.x) * Mathf.Rad2Deg + 90;
 		}
 
@@ -99,7 +99,7 @@ namespace Input
 		{
 			if (!sliderHandler.Pressed) return;
 
-			Vector3 dir = UnityEngine.Input.mousePosition - slider.transform.position;
+			Vector3 dir = Input.mousePosition - slider.transform.position;
 			_boatDirection = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
 			slider.transform.rotation = Quaternion.AngleAxis(_boatDirection, Vector3.forward);
 			_boatDirection *= -1;

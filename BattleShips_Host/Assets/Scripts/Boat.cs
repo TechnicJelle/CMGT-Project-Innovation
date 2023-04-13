@@ -46,7 +46,7 @@ public class Boat : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.gameObject.CompareTag($"Island"))
+		if (collision.gameObject.CompareTag("Island"))
 		{
 			MatchManager.Instance.AddPoint(this);
 		}
