@@ -16,7 +16,12 @@ namespace UI
 
 		private void Start()
 		{
-			WebsocketClient.Instance.OnMatchStart += () => { _thisButton.interactable = false; }; //TODO: This is not happening for some reason
+			// Disable when match starts
+			WebsocketClient.Instance.OnMatchStart += () => { _thisButton.interactable = false; };
+
+			// But because this Start method gets called _after_ the OnMatchStart event is fired for the first time,
+			// we need to disable it here for the first match in the app's session as well
+			_thisButton.interactable = false;
 
 			WebsocketClient.Instance.OnDockingAvailable += () => { _thisButton.interactable = true; };
 
