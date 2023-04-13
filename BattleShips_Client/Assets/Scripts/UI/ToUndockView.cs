@@ -7,6 +7,7 @@ namespace UI
 		private void Start()
 		{
 			WebsocketClient.Instance.OnUndocked += SwitchPanel;
+			WebsocketClient.Instance.OnGoBackToLobby += HideThisPanel;
 		}
 	}
 }

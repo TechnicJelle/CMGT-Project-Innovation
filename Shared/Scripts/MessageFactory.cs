@@ -16,6 +16,8 @@ namespace Shared.Scripts
 			DockingAvailableUpdate,
 			RequestDockingStatusUpdate,
 			IsDockedUpdate,
+			SearchTreasureSignal,
+			FoundTreasureSignal,
 		}
 
 		public static MessageType CheckMessageType(byte[] message)

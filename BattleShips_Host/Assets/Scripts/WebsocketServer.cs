@@ -142,10 +142,14 @@ public class Game : WebSocketBehavior
 				if (requestDockingStatus) MatchManager.Instance.RequestDocking(ID);
 				else MatchManager.Instance.RequestUndocking(ID);
 				break;
+			case MessageFactory.MessageType.SearchTreasureSignal:
+				MatchManager.Instance.SearchTreasure(ID);
+				break;
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:
 			case MessageFactory.MessageType.IsDockedUpdate:
+			case MessageFactory.MessageType.FoundTreasureSignal:
 			default:
 				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
 				break;

@@ -11,23 +11,17 @@ namespace UI
 		private void Awake()
 		{
 			_thisButton = GetComponent<Button>();
-			_thisButton.interactable = false;
 			_thisButton.onClick.AddListener(RequestDock);
 		}
 
 		private void Start()
 		{
-			WebsocketClient.Instance.OnDockingAvailable += () =>
-			{
-				_thisButton.interactable = true;
-			};
+			WebsocketClient.Instance.OnMatchStart += () => { _thisButton.interactable = false; }; //TODO: This is not happening for some reason
 
-			WebsocketClient.Instance.OnDockingUnavailable += () =>
-			{
-				_thisButton.interactable = false;
-			};
+			WebsocketClient.Instance.OnDockingAvailable += () => { _thisButton.interactable = true; };
+
+			WebsocketClient.Instance.OnDockingUnavailable += () => { _thisButton.interactable = false; };
 		}
-
 		private static void RequestDock()
 		{
 			WebsocketClient.Instance.Send(MessageFactory.CreateDockingStatusUpdate(true));

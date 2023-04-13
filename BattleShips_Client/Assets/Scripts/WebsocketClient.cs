@@ -14,6 +14,7 @@ public class WebsocketClient : MonoBehaviour
 	public Action OnDockingUnavailable;
 	public Action OnDocked;
 	public Action OnUndocked;
+	public Action OnFoundTreasure;
 
 	[SerializeField] private View mainMenu;
 
@@ -26,6 +27,7 @@ public class WebsocketClient : MonoBehaviour
 	private bool _isDockingAvailable;
 	private bool _shouldUpdateDocked;
 	private bool _isDocked;
+	private bool _shouldUpdateFoundTreasure;
 
 	private void Awake()
 	{
@@ -67,9 +69,14 @@ public class WebsocketClient : MonoBehaviour
 						_shouldUpdateDocked = true;
 						_isDocked = MessageFactory.DecodeIsDockedUpdate(e.RawData);
 						break;
+					case MessageFactory.MessageType.FoundTreasureSignal:
+						Debug.Log("Found treasure signal received from server!");
+						_shouldUpdateFoundTreasure = true;
+						break;
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
+					case MessageFactory.MessageType.SearchTreasureSignal:
 					default:
 						Debug.LogWarning("Received a message from the server that is not allowed! Ignoring...");
 						break;
@@ -147,6 +154,12 @@ public class WebsocketClient : MonoBehaviour
 			_shouldUpdateDocked = false;
 			if (_isDocked) OnDocked.Invoke();
 			else OnUndocked.Invoke();
+		}
+
+		if (_shouldUpdateFoundTreasure)
+		{
+			_shouldUpdateFoundTreasure = false;
+			OnFoundTreasure.Invoke();
 		}
 	}
 }

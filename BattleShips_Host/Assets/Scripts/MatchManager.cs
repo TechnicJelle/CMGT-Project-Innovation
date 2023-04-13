@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -96,29 +97,6 @@ public class MatchManager : MonoBehaviour
 		matchCamera.enabled = mode == Cameras.Match;
 	}
 
-	public void AddPoint(Boat boat)
-	{
-		if (_players == null) return;
-		PlayerData player = GetPlayerData(boat);
-		player.Points++;
-		if (player.Points > maxTreasure)
-			EndMatch(player);
-		Debug.Log($"Player {player} got to an island and now has {player.Points}");
-	}
-
-	private PlayerData GetPlayerData(Boat boat)
-	{
-		if (_players == null) return null;
-		foreach (PlayerData player in _players.Values)
-		{
-			if (player.Boat == boat)
-				return player;
-		}
-
-		Debug.LogError("Could not find boat in list");
-		return null;
-	}
-
 	public void SetBoatBlowing(string id, bool blowing)
 	{
 		_players?[id].Boat.SetBlowing(blowing);
@@ -126,34 +104,85 @@ public class MatchManager : MonoBehaviour
 
 	public void RequestDocking(string id)
 	{
-		if (_players == null) return;
-		Boat boat = _players[id].Boat;
-		if (_players[id].IsDocked || boat.collidingIsland == null)
+		PlayerData player = _players?[id];
+		if (player == null) return;
+		Boat boat = player.Boat;
+		if (player.IsDocked || boat.collidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to dock, but is already docked, or not even colliding with an island!");
 			return;
 		}
+
 		Debug.Log($"Player {id} is docking!");
 
 		boat.go = false;
-		_players[id].IsDocked = true;
+		player.IsDocked = true;
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateIsDockedUpdate(true));
 	}
 
 	public void RequestUndocking(string id)
 	{
-		if(_players == null) return;
-		Boat boat = _players[id].Boat;
-		if (!_players[id].IsDocked || boat.collidingIsland == null)
+		PlayerData player = _players?[id];
+		if (player == null) return;
+		Boat boat = player.Boat;
+		if (!player.IsDocked || boat.collidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to undock, but is not docked, or even colliding with an island!");
 			return;
 		}
+
 		Debug.Log($"Player {id} is undocking!");
 
 		boat.go = true;
-		_players[id].IsDocked = false;
+		player.IsDocked = false;
+		player.IsSearchingTreasure = false;
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateIsDockedUpdate(false));
+	}
+
+	public void SearchTreasure(string id)
+	{
+		PlayerData player = _players?[id];
+		if (player == null) return;
+		if (!player.IsDocked || player.Boat.collidingIsland == null)
+		{
+			Debug.LogWarning($"Player {id} requested to search for treasure, but is not docked, or even colliding with an island!");
+			return;
+		}
+
+		Debug.Log($"Player {id} is searching for treasure!");
+		player.IsSearchingTreasure = true;
+		player.ShouldStartSearchingTreasure = true;
+	}
+
+	private void Update()
+	{
+		if (_players == null) return;
+		foreach ((string id, PlayerData player) in _players)
+		{
+			if (player.ShouldStartSearchingTreasure)
+			{
+				StartCoroutine(SearchTreasureCoroutine(id, player));
+				player.ShouldStartSearchingTreasure = false;
+			}
+		}
+	}
+
+	private IEnumerator SearchTreasureCoroutine(string id, PlayerData player)
+	{
+		Debug.Log("pre-wait");
+		yield return new WaitForSeconds(timeToGatherTreasure);
+		Debug.Log("post-wait");
+		if (!player.IsSearchingTreasure) yield break;
+
+		player.IsSearchingTreasure = false;
+		player.Points++;
+
+		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
+
+		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
+
+		if (player.Points >= maxTreasure)
+			EndMatch(player);
 	}
 }
 
@@ -163,6 +192,8 @@ public class PlayerData
 	public readonly string Name;
 	public int Points;
 	public bool IsDocked;
+	public bool ShouldStartSearchingTreasure;
+	public bool IsSearchingTreasure;
 
 	public PlayerData(Boat pBoat, string pName)
 	{
@@ -170,5 +201,6 @@ public class PlayerData
 		Name = pName;
 		Points = 0;
 		IsDocked = false;
+		IsSearchingTreasure = false;
 	}
 }
