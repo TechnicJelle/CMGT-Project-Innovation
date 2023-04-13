@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Shared.Scripts;
@@ -18,6 +19,7 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private TMP_Text winnerText;
 
 	[SerializeField] private int maxTreasure = 1;
+	[SerializeField] private float timeToGatherTreasure = 5f;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
 
@@ -55,6 +57,7 @@ public class MatchManager : MonoBehaviour
 			_players.Add(id, new PlayerData(boat, "Joe"));
 			ImmersiveCamera.Instance.AddPlayer(boat.transform);
 		}
+
 		ImmersiveCamera.Instance.FitAllPlayers();
 		ChangeCamera(Cameras.Match);
 	}
@@ -120,6 +123,38 @@ public class MatchManager : MonoBehaviour
 	{
 		_players?[id].Boat.SetBlowing(blowing);
 	}
+
+	public void RequestDocking(string id)
+	{
+		if (_players == null) return;
+		Boat boat = _players[id].Boat;
+		if (_players[id].IsDocked || boat.collidingIsland == null)
+		{
+			Debug.LogWarning($"Player {id} requested to dock, but is already docked, or not even colliding with an island!");
+			return;
+		}
+		Debug.Log($"Player {id} is docking!");
+
+		boat.go = false;
+		_players[id].IsDocked = true;
+		WebsocketServer.Instance.Send(id, MessageFactory.CreateIsDockedUpdate(true));
+	}
+
+	public void RequestUndocking(string id)
+	{
+		if(_players == null) return;
+		Boat boat = _players[id].Boat;
+		if (!_players[id].IsDocked || boat.collidingIsland == null)
+		{
+			Debug.LogWarning($"Player {id} requested to undock, but is not docked, or even colliding with an island!");
+			return;
+		}
+		Debug.Log($"Player {id} is undocking!");
+
+		boat.go = true;
+		_players[id].IsDocked = false;
+		WebsocketServer.Instance.Send(id, MessageFactory.CreateIsDockedUpdate(false));
+	}
 }
 
 public class PlayerData
@@ -127,10 +162,13 @@ public class PlayerData
 	public readonly Boat Boat;
 	public readonly string Name;
 	public int Points;
-	public PlayerData (Boat pBoat, string pName)
+	public bool IsDocked;
+
+	public PlayerData(Boat pBoat, string pName)
 	{
 		Boat = pBoat;
 		Name = pName;
 		Points = 0;
+		IsDocked = false;
 	}
 }

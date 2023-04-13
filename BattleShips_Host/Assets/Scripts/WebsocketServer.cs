@@ -55,7 +55,7 @@ public class WebsocketServer : MonoBehaviour
 
 	public void StopWebserver()
 	{
-		if(_server == null) return; //server was never started
+		if (_server == null) return; //server was never started
 		Debug.Log("Stopping websocket server...");
 
 		//disconnect every client
@@ -129,7 +129,7 @@ public class Game : WebSocketBehavior
 		switch (MessageFactory.CheckMessageType(e.RawData))
 		{
 			case MessageFactory.MessageType.BoatDirectionUpdate:
-				if(!MatchManager.IsMatchRunning) return;
+				if (!MatchManager.IsMatchRunning) return;
 				float direction = MessageFactory.DecodeBoatDirectionUpdate(e.RawData);
 				MatchManager.Instance.UpdateBoatDirection(ID, direction);
 				break;
@@ -137,9 +137,15 @@ public class Game : WebSocketBehavior
 				bool isBlowing = MessageFactory.DecodeBlowingUpdate(e.RawData);
 				MatchManager.Instance.SetBoatBlowing(ID, isBlowing);
 				break;
+			case MessageFactory.MessageType.RequestDockingStatusUpdate:
+				bool requestDockingStatus = MessageFactory.DecodeDockingStatusUpdate(e.RawData);
+				if (requestDockingStatus) MatchManager.Instance.RequestDocking(ID);
+				else MatchManager.Instance.RequestUndocking(ID);
+				break;
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:
+			case MessageFactory.MessageType.IsDockedUpdate:
 			default:
 				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
 				break;

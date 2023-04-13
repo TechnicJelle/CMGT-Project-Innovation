@@ -22,7 +22,12 @@ namespace InputSystems
 			_dt = 1 / positionNetworkUpdateFrequency;
 		}
 
-		private void OnEnable()
+		private void Start()
+		{
+			WebsocketClient.Instance.OnMatchStart += ResetInput;
+		}
+
+		private void ResetInput()
 		{
 			//reset rotation
 			_boatDirection = 0;

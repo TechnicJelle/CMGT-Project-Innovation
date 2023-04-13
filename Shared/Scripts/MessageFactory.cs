@@ -14,6 +14,8 @@ namespace Shared.Scripts
 			GoBackToLobbySignal,
 			BlowingUpdate,
 			DockingAvailableUpdate,
+			RequestDockingStatusUpdate,
+			IsDockedUpdate,
 		}
 
 		public static MessageType CheckMessageType(byte[] message)
@@ -66,7 +68,6 @@ namespace Shared.Scripts
 			message[0] = (byte) MessageType.BlowingUpdate;
 
 			byte[] blowingBytes = BitConverter.GetBytes(blowing);
-			if (!BitConverter.IsLittleEndian) Array.Reverse(blowingBytes);
 			Array.Copy(blowingBytes, 0, message, 1, sizeof(bool));
 
 			return message;
@@ -79,7 +80,6 @@ namespace Shared.Scripts
 
 			byte[] blowingBytes = new byte[sizeof(bool)];
 			Array.Copy(message, 1, blowingBytes, 0, sizeof(bool));
-			if (!BitConverter.IsLittleEndian) Array.Reverse(blowingBytes);
 
 			return BitConverter.ToBoolean(blowingBytes, 0);
 		}
@@ -92,7 +92,6 @@ namespace Shared.Scripts
 			message[0] = (byte) MessageType.DockingAvailableUpdate;
 
 			byte[] dockingAvailableBytes = BitConverter.GetBytes(dockingAvailable);
-			if (!BitConverter.IsLittleEndian) Array.Reverse(dockingAvailableBytes);
 			Array.Copy(dockingAvailableBytes, 0, message, 1, sizeof(bool));
 
 			return message;
@@ -105,9 +104,57 @@ namespace Shared.Scripts
 
 			byte[] dockingAvailableBytes = new byte[sizeof(bool)];
 			Array.Copy(message, 1, dockingAvailableBytes, 0, sizeof(bool));
-			if (!BitConverter.IsLittleEndian) Array.Reverse(dockingAvailableBytes);
 
 			return BitConverter.ToBoolean(dockingAvailableBytes, 0);
+		}
+#endregion
+
+#region RequestDockingUpdate
+		/// <param name="requestDocking"><b>True</b> for Docking, <b>False</b> for Undocking</param>
+		public static byte[] CreateDockingStatusUpdate(bool requestDocking)
+		{
+			byte[] message = new byte[1 + sizeof(bool)];
+			message[0] = (byte) MessageType.RequestDockingStatusUpdate;
+
+			byte[] dockingStatusBytes = BitConverter.GetBytes(requestDocking);
+			Array.Copy(dockingStatusBytes, 0, message, 1, sizeof(bool));
+
+			return message;
+		}
+
+		public static bool DecodeDockingStatusUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.RequestDockingStatusUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.RequestDockingStatusUpdate} message");
+
+			byte[] dockingStatusBytes = new byte[sizeof(bool)];
+			Array.Copy(message, 1, dockingStatusBytes, 0, sizeof(bool));
+
+			return BitConverter.ToBoolean(dockingStatusBytes, 0);
+		}
+#endregion
+
+#region IsDockedUpdate
+		public static byte[] CreateIsDockedUpdate(bool isDocked)
+		{
+			byte[] message = new byte[1 + sizeof(bool)];
+			message[0] = (byte) MessageType.IsDockedUpdate;
+
+			byte[] isDockedBytes = BitConverter.GetBytes(isDocked);
+			Array.Copy(isDockedBytes, 0, message, 1, sizeof(bool));
+
+			return message;
+		}
+
+		public static bool DecodeIsDockedUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.IsDockedUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.IsDockedUpdate} message");
+
+			byte[] isDockedBytes = new byte[sizeof(bool)];
+			Array.Copy(message, 1, isDockedBytes, 0, sizeof(bool));
+
+			return BitConverter.ToBoolean(isDockedBytes, 0);
 		}
 #endregion
 	}

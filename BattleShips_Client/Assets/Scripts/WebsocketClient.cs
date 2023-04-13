@@ -8,20 +8,24 @@ public class WebsocketClient : MonoBehaviour
 {
 	public static WebsocketClient Instance { get; private set; }
 
-	public Action OnConnected;
+	public Action OnMatchStart;
 	public Action OnGoBackToLobby;
 	public Action OnDockingAvailable;
 	public Action OnDockingUnavailable;
+	public Action OnDocked;
+	public Action OnUndocked;
 
 	[SerializeField] private View mainMenu;
 
 	private WebSocket _webSocket;
 
 	private bool _shouldDisconnect;
-	private bool _shouldStartGame;
+	private bool _shouldStartMatch;
 	private bool _shouldGoBackToLobby;
 	private bool _shouldUpdateDockingAvailable;
 	private bool _isDockingAvailable;
+	private bool _shouldUpdateDocked;
+	private bool _isDocked;
 
 	private void Awake()
 	{
@@ -48,7 +52,7 @@ public class WebsocketClient : MonoBehaviour
 				{
 					case MessageFactory.MessageType.StartGameSignal:
 						Debug.Log("Start game signal received from server!");
-						_shouldStartGame = true;
+						_shouldStartMatch = true;
 						break;
 					case MessageFactory.MessageType.GoBackToLobbySignal:
 						Debug.Log("Go back to lobby signal received from server!");
@@ -59,8 +63,13 @@ public class WebsocketClient : MonoBehaviour
 						_shouldUpdateDockingAvailable = true;
 						_isDockingAvailable = MessageFactory.DecodeDockingAvailableUpdate(e.RawData);
 						break;
+					case MessageFactory.MessageType.IsDockedUpdate:
+						_shouldUpdateDocked = true;
+						_isDocked = MessageFactory.DecodeIsDockedUpdate(e.RawData);
+						break;
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
+					case MessageFactory.MessageType.RequestDockingStatusUpdate:
 					default:
 						Debug.LogWarning("Received a message from the server that is not allowed! Ignoring...");
 						break;
@@ -114,10 +123,10 @@ public class WebsocketClient : MonoBehaviour
 			}
 		}
 
-		if (_shouldStartGame)
+		if (_shouldStartMatch)
 		{
-			_shouldStartGame = false;
-			OnConnected.Invoke();
+			_shouldStartMatch = false;
+			OnMatchStart.Invoke();
 		}
 
 		if (_shouldGoBackToLobby)
@@ -131,6 +140,13 @@ public class WebsocketClient : MonoBehaviour
 			_shouldUpdateDockingAvailable = false;
 			if (_isDockingAvailable) OnDockingAvailable.Invoke();
 			else OnDockingUnavailable.Invoke();
+		}
+
+		if (_shouldUpdateDocked)
+		{
+			_shouldUpdateDocked = false;
+			if (_isDocked) OnDocked.Invoke();
+			else OnUndocked.Invoke();
 		}
 	}
 }

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Shared.Scripts;
 using UnityEngine;
 
@@ -8,9 +9,11 @@ public class Boat : MonoBehaviour
 	[SerializeField] private float moveSpeed = 15;
 	[SerializeField] private float blowingSpeed = 30;
 	[SerializeField] [Range(0, 0.1f)] private float rotSpeed;
-	[SerializeField] private bool go;
+	[SerializeField] public bool go;
 
-	public string ID { private get; set;}
+	public string ID { private get; set; }
+
+	[CanBeNull] public GameObject collidingIsland;
 
 	private Rigidbody _rb;
 	private float _targetRotation;
@@ -51,6 +54,7 @@ public class Boat : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Island"))
 		{
+			collidingIsland = other.gameObject;
 			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(true));
 		}
 	}
@@ -60,6 +64,7 @@ public class Boat : MonoBehaviour
 		if (other.gameObject.CompareTag("Island"))
 		{
 			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(false));
+			collidingIsland = null;
 		}
 	}
 

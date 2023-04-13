@@ -1,9 +1,10 @@
+using Shared.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
-	public class Docking : MonoBehaviour
+	public class DockRequest : MonoBehaviour
 	{
 		private Button _thisButton;
 
@@ -11,7 +12,7 @@ namespace UI
 		{
 			_thisButton = GetComponent<Button>();
 			_thisButton.interactable = false;
-			_thisButton.onClick.AddListener(Dock);
+			_thisButton.onClick.AddListener(RequestDock);
 		}
 
 		private void Start()
@@ -27,9 +28,9 @@ namespace UI
 			};
 		}
 
-		private void Dock()
+		private static void RequestDock()
 		{
-			// WebsocketClient.Instance.Send(MessageFactory.EncodeDockingRequest());
+			WebsocketClient.Instance.Send(MessageFactory.CreateDockingStatusUpdate(true));
 		}
 	}
 }
