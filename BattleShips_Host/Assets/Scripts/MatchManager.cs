@@ -45,12 +45,13 @@ public class MatchManager : MonoBehaviour
 	public void StartMatch()
 	{
 		_players = new Dictionary<string, PlayerData>();
-		WebsocketServer.Instance.Broadcast(MessageFactory.CreateStartGameSignal());
+		WebsocketServer.Instance.Broadcast(MessageFactory.CreateSignal(MessageFactory.MessageType.StartGameSignal));
 		foreach (string id in WebsocketServer.Instance.IDs)
 		{
 			GameObject instance = Instantiate(playerPrefab, transform);
 			instance.name = id;
 			Boat boat = instance.GetComponent<Boat>();
+			boat.ID = id;
 			_players.Add(id, new PlayerData(boat, "Joe"));
 			ImmersiveCamera.Instance.AddPlayer(boat.transform);
 		}
@@ -61,7 +62,7 @@ public class MatchManager : MonoBehaviour
 	public void Cleanup()
 	{
 		if (_players == null) return; //match was never started
-		WebsocketServer.Instance.Broadcast(MessageFactory.CreateGoBackToLobbySignal());
+		WebsocketServer.Instance.Broadcast(MessageFactory.CreateSignal(MessageFactory.MessageType.GoBackToLobbySignal));
 		foreach (PlayerData player in _players.Values)
 		{
 			player.Points = 0;

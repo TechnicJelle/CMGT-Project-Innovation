@@ -10,6 +10,8 @@ public class WebsocketClient : MonoBehaviour
 
 	public Action OnConnected;
 	public Action OnGoBackToLobby;
+	public Action OnDockingAvailable;
+	public Action OnDockingUnavailable;
 
 	[SerializeField] private View mainMenu;
 
@@ -18,6 +20,8 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldDisconnect;
 	private bool _shouldStartGame;
 	private bool _shouldGoBackToLobby;
+	private bool _shouldUpdateDockingAvailable;
+	private bool _isDockingAvailable;
 
 	private void Awake()
 	{
@@ -42,9 +46,6 @@ public class WebsocketClient : MonoBehaviour
 			{
 				switch (MessageFactory.CheckMessageType(e.RawData))
 				{
-					case MessageFactory.MessageType.BoatDirectionUpdate:
-						Debug.LogWarning("Received boat direction update from server, which is not allowed! Ignoring...");
-						break;
 					case MessageFactory.MessageType.StartGameSignal:
 						Debug.Log("Start game signal received from server!");
 						_shouldStartGame = true;
@@ -53,8 +54,16 @@ public class WebsocketClient : MonoBehaviour
 						Debug.Log("Go back to lobby signal received from server!");
 						_shouldGoBackToLobby = true;
 						break;
+					case MessageFactory.MessageType.DockingAvailableUpdate:
+						Debug.Log("Docking available update received from server!");
+						_shouldUpdateDockingAvailable = true;
+						_isDockingAvailable = MessageFactory.DecodeDockingAvailableUpdate(e.RawData);
+						break;
+					case MessageFactory.MessageType.BoatDirectionUpdate:
+					case MessageFactory.MessageType.BlowingUpdate:
 					default:
-						throw new ArgumentOutOfRangeException();
+						Debug.LogWarning("Received a message from the server that is not allowed! Ignoring...");
+						break;
 				}
 			};
 			_webSocket.OnClose += (object _, CloseEventArgs e) =>
@@ -115,6 +124,13 @@ public class WebsocketClient : MonoBehaviour
 		{
 			_shouldGoBackToLobby = false;
 			OnGoBackToLobby.Invoke();
+		}
+
+		if (_shouldUpdateDockingAvailable)
+		{
+			_shouldUpdateDockingAvailable = false;
+			if (_isDockingAvailable) OnDockingAvailable.Invoke();
+			else OnDockingUnavailable.Invoke();
 		}
 	}
 }

@@ -97,6 +97,14 @@ public class WebsocketServer : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Send a message to one specific client
+	/// </summary>
+	public void Send(string id, byte[] bytes)
+	{
+		Sessions.SendToAsync(bytes, id, null);
+	}
+
+	/// <summary>
 	/// Sends a message to all connected clients
 	/// </summary>
 	public void Broadcast(byte[] bytes)
@@ -125,18 +133,16 @@ public class Game : WebSocketBehavior
 				float direction = MessageFactory.DecodeBoatDirectionUpdate(e.RawData);
 				MatchManager.Instance.UpdateBoatDirection(ID, direction);
 				break;
-			case MessageFactory.MessageType.StartGameSignal:
-				Debug.LogWarning("Received start game signal from client, which is not allowed! Ignoring...");
-				break;
-			case MessageFactory.MessageType.GoBackToLobbySignal:
-				Debug.LogWarning("Received go back to lobby signal from client, which is not allowed! Ignoring...");
-				break;
 			case MessageFactory.MessageType.BlowingUpdate:
 				bool isBlowing = MessageFactory.DecodeBlowingUpdate(e.RawData);
 				MatchManager.Instance.SetBoatBlowing(ID, isBlowing);
 				break;
+			case MessageFactory.MessageType.StartGameSignal:
+			case MessageFactory.MessageType.GoBackToLobbySignal:
+			case MessageFactory.MessageType.DockingAvailableUpdate:
 			default:
-				throw new ArgumentOutOfRangeException();
+				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
+				break;
 		}
 	}
 
