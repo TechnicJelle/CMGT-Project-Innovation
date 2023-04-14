@@ -1,11 +1,17 @@
 # CMGT-Project-Innovation
 
-# Asset Attribution
+## Asset Attribution
 Unless otherwise mentioned, everything in this project is made by us.
 
-## Fonts
+### Fonts
 - [Cinzel](https://fonts.google.com/specimen/Cinzel) by Natanael Gama
 - [Footlight MT Light](https://learn.microsoft.com/en-us/typography/font-list/footlight-mt) by Monotype Corporation
+
+### Libraries
+- [websocket-sharp](https://github.com/sta/websocket-sharp) (MIT)
+- [QRCoder](https://github.com/codebude/QRCoder) (MIT)
+- [QRCoder.Unity](https://github.com/codebude/QRCoder.Unity) (MIT)
+- [ZXing.Net](https://github.com/micjahn/ZXing.Net) (Apache 2.0)
 
 ## Cloning instructions
 This project uses Symlinks to share assets between the Host and the Client projects, so make sure your OS supports them.
@@ -22,6 +28,8 @@ Alternatively, you can also clone the project using this command:
 git clone -c core.symlinks=true <URL>
 ```
 This makes it so you only clone this specific repository with symlinks enabled, and you don't modify your whole global git setup.
+
+If neither of these two methods work, run the `setup_shared.ps1` script (with admin privileges)
 
 ### Linux
 Should just work out of the box.
