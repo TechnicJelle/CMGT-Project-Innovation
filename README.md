@@ -12,6 +12,7 @@ Unless otherwise mentioned, everything in this project is made by us.
 - [QRCoder](https://github.com/codebude/QRCoder) (MIT)
 - [QRCoder.Unity](https://github.com/codebude/QRCoder.Unity) (MIT)
 - [ZXing.Net](https://github.com/micjahn/ZXing.Net) (Apache 2.0)
+- [ByteMe](https://github.com/japajoe/ByteMe) (MIT)
 
 ## Cloning instructions
 This project uses Symlinks to share assets between the Host and the Client projects, so make sure your OS supports them.
