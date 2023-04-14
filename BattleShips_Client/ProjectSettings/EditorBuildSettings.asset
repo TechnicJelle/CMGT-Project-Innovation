@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/NetworkingTest.unity
+    path: Assets/Scenes/ClientApp.unity
     guid: 6692c3058430459d69ec23f729d95bd8
   - enabled: 0
     path: Assets/Scenes/GyroTest.unity
