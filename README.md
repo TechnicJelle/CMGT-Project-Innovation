@@ -1,5 +1,12 @@
 # CMGT-Project-Innovation
 
+# Asset Attribution
+Unless otherwise mentioned, everything in this project is made by us.
+
+## Fonts
+- [Cinzel](https://fonts.google.com/specimen/Cinzel) by Natanael Gama
+- [Footlight MT Light](https://learn.microsoft.com/en-us/typography/font-list/footlight-mt) by Monotype Corporation
+
 ## Cloning instructions
 This project uses Symlinks to share assets between the Host and the Client projects, so make sure your OS supports them.
 
