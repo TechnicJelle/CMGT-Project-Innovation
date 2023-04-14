@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{81720b3f-5f6c-4793-a5e2-205e9f038347}">
+		<property name="assetPath">
+			<value>sea.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>17.580408163265307</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{98268cc4-4c3a-417b-9dc4-13ee2e4abea4}</destination>
+		</relationship>
+	</object>
+</objects>

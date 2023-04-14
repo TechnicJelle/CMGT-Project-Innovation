@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 929.32324, g: 2586.2852, b: 3702.7812, a: 1}
+  m_IndirectSpecularColor: {r: 936.8115, g: 2591.0117, b: 3716.414, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2638,6 +2638,34 @@ MonoBehaviour:
   winnerText: {fileID: 1087921906}
   maxTreasure: 3
   timeToGatherTreasure: 5
+  Music:
+    Guid:
+      Data1: 1026046496
+      Data2: 1129872825
+      Data3: -856449354
+      Data4: -11754099
+    Path: event:/Music
+  Startmusic:
+    Guid:
+      Data1: 651416851
+      Data2: 1155341663
+      Data3: -1559469910
+      Data4: -923666108
+    Path: event:/Game started
+  Endmusic:
+    Guid:
+      Data1: -265626752
+      Data2: 1095801531
+      Data3: 349026970
+      Data4: -1960665381
+    Path: event:/Game finished
+  Click:
+    Guid:
+      Data1: -1165787819
+      Data2: 1184975911
+      Data3: 1981062301
+      Data4: 906822796
+    Path: event:/click
 --- !u!1 &1105295880
 GameObject:
   m_ObjectHideFlags: 0
@@ -4185,7 +4213,6 @@ GameObject:
   - component: {fileID: 1823688466}
   - component: {fileID: 1823688468}
   - component: {fileID: 1823688469}
-  - component: {fileID: 1823688470}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4389,36 +4416,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attenuationObject: {fileID: 0}
---- !u!114 &1823688470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1823688464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionTag: 
-  EventReference:
-    Guid:
-      Data1: -905828038
-      Data2: 1097886079
-      Data3: -1658849897
-      Data4: 1232060937
-    Path: event:/Test
-  Event: 
-  PlayEvent: 1
-  StopEvent: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: 1
-  OverrideMaxDistance: 20
 --- !u!1 &1832747187
 GameObject:
   m_ObjectHideFlags: 0

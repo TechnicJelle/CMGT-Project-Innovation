@@ -6,6 +6,9 @@ using Shared.Scripts;
 using Shared.Scripts.UI;
 using TMPro;
 using UnityEngine;
+using FMODUnity;
+
+
 
 public class MatchManager : MonoBehaviour
 {
@@ -19,10 +22,21 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private View endMatchView;
 	[SerializeField] private TMP_Text winnerText;
 
-	[SerializeField] private int maxTreasure = 1;
+	[SerializeField] private int maxTreasure = 3;
 	[SerializeField] private float timeToGatherTreasure = 5f;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
+
+	public FMODUnity.EventReference Music;
+    public FMODUnity.EventReference Startmusic;
+    public FMODUnity.EventReference Endmusic;
+	public FMODUnity.EventReference Click;
+    private FMOD.Studio.EventInstance music;
+    private FMOD.Studio.EventInstance startmusic;
+    private FMOD.Studio.EventInstance endmusic;
+	private FMOD.Studio.EventInstance click;
+	private float ending = 0f;
+	private bool OnceToChorus = true;
 
 	private enum Cameras
 	{
@@ -45,8 +59,27 @@ public class MatchManager : MonoBehaviour
 		ChangeCamera(Cameras.Main);
 	}
 
+	void Start()
+    {
+        music = FMODUnity.RuntimeManager.CreateInstance(Music);
+        startmusic = FMODUnity.RuntimeManager.CreateInstance(Startmusic);
+        endmusic = FMODUnity.RuntimeManager.CreateInstance(Endmusic);
+		click = FMODUnity.RuntimeManager.CreateInstance(Click);
+		music.start();
+    }
+	
 	public void StartMatch()
 	{
+		OnceToChorus = true;
+		startmusic.start();
+		music.setParameterByName("Sea sound", 1);
+		music.setParameterByName("chorus", 1);
+		music.setParameterByName("verse", 1);
+		music.setParameterByName("end", 0);
+		StartCoroutine(StartMusic());
+		// music.setParameterByName("Sea sound", 0);  <-- For if we don't want the start music
+
+
 		_players = new Dictionary<string, PlayerData>();
 		WebsocketServer.Instance.Broadcast(MessageFactory.CreateSignal(MessageFactory.MessageType.StartGameSignal));
 		foreach (string id in WebsocketServer.Instance.IDs)
@@ -80,6 +113,7 @@ public class MatchManager : MonoBehaviour
 
 	private void EndMatch(PlayerData winner)
 	{
+		
 		Cleanup();
 		winnerText.text = $"Winner:\n{winner.Name}";
 		gameView.Hide();
@@ -156,6 +190,10 @@ public class MatchManager : MonoBehaviour
 
 	private void Update()
 	{
+		if (Input.GetMouseButtonDown(0)){
+			click.start();
+			StartCoroutine(clickwait());
+		} 
 		if (_players == null) return;
 		foreach ((string id, PlayerData player) in _players)
 		{
@@ -177,13 +215,65 @@ public class MatchManager : MonoBehaviour
 		player.IsSearchingTreasure = false;
 		player.Points++;
 
+		if(OnceToChorus){
+			OnceToChorus = false;
+			music.setParameterByName("verse", 0);
+
+		} 
+// right here!!!!
 		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
 
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
 
-		if (player.Points >= maxTreasure)
+		if (player.Points >= maxTreasure) {
+			music.setParameterByName("Sea sound", 0);
+			music.setParameterByName("chorus", 0);
+			music.setParameterByName("verse", 0);
+			
+			StartCoroutine(EndMusic());
+			StartCoroutine(EndingM());
+		
 			EndMatch(player);
+		}
 	}
+
+	 IEnumerator StartMusic()
+    {
+        
+        yield return new WaitForSeconds(4f);
+        startmusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+		music.setParameterByName("Sea sound", 0);
+    }
+	
+	
+
+	 IEnumerator EndMusic()
+    {
+        yield return new WaitForSeconds(1f);
+        endmusic.start();
+		StartCoroutine(EndEndMusic());
+    }
+
+	 IEnumerator EndEndMusic()
+    {
+        yield return new WaitForSeconds(3f);
+        endmusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+		
+    }
+
+	 IEnumerator EndingM()
+    {
+        yield return new WaitForSeconds(0.1f);
+		ending = ending+0.025f;
+		music.setParameterByName("end", ending);
+        if(ending < 1f) {StartCoroutine(EndingM());}
+    } 
+
+	 IEnumerator clickwait()
+    {
+        yield return new WaitForSeconds(0.3f);
+		click.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    } 
 }
 
 public class PlayerData
