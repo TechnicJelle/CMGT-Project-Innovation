@@ -35,6 +35,7 @@ namespace UI
 			WebsocketClient.Instance.Send(MessageFactory.CreateSignal(MessageFactory.MessageType.SearchTreasureSignal));
 			_thisButton.interactable = false;
 			_buttonText.text = searchingText;
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Treasure);
 		}
 
 		private void FoundTreasure()
