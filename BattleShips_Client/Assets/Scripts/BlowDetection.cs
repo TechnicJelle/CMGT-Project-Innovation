@@ -35,6 +35,8 @@ public class BlowDetection : MonoBehaviour
 		float loudness = _microphoneLoudness.GetLoudnessFromMicrophone();
 		bool blowing = loudness > SettingsManager.Instance.microphoneThreshold;
 		WebsocketClient.Instance.Send(MessageFactory.CreateBlowingUpdate(blowing));
+		if (blowing)
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Wind);
 	}
 
 	private void OnDisable()

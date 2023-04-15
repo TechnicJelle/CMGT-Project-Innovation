@@ -48,6 +48,9 @@ public class WebsocketClient : MonoBehaviour
 		{
 			_webSocket = new WebSocket(link);
 			_webSocket.OnOpen += (_, _) => { Debug.Log("WS Connected"); };
+			
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Joining);
+			
 			_webSocket.OnMessage += (object _, MessageEventArgs e) =>
 			{
 				switch (MessageFactory.CheckMessageType(e.RawData))
@@ -152,7 +155,11 @@ public class WebsocketClient : MonoBehaviour
 		if (_shouldUpdateDocked)
 		{
 			_shouldUpdateDocked = false;
-			if (_isDocked) OnDocked.Invoke();
+			if (_isDocked)
+			{
+				OnDocked.Invoke();
+				SoundManager.Instance.PlaySound(SoundManager.Sound.Docking);
+			}
 			else OnUndocked.Invoke();
 		}
 
