@@ -13,7 +13,8 @@ namespace UI
 
 		private void OnDisable()
 		{
-			menuBackgroundScene.SetActive(false);
+			if (menuBackgroundScene != null)
+				menuBackgroundScene.SetActive(false);
 		}
 	}
 }
