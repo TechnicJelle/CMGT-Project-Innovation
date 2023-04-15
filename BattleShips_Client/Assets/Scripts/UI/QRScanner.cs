@@ -27,11 +27,9 @@ namespace UI
 				Debug.LogError("Goto View is null");
 			_parentView = transform.parent.GetComponentInParent<View>();
 
-			_webcamTexture = new WebCamTexture(Screen.width, Screen.width);
+			_webcamTexture = new WebCamTexture(512, 512);
 			_image = GetComponent<RawImage>();
 			_image.texture = _webcamTexture;
-			RectTransform rectTransform = GetComponent<RectTransform>();
-			rectTransform.sizeDelta = new Vector2(Screen.width, Screen.width);
 		}
 
 		private void SwitchPanel()
@@ -75,6 +73,7 @@ namespace UI
 				catch (Exception ex)
 				{
 					Debug.LogWarning(ex.Message);
+					break;
 				}
 
 				yield return null;

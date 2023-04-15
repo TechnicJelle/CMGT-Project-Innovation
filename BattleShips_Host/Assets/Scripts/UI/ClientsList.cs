@@ -8,12 +8,10 @@ namespace UI
 	public class ClientsList : MonoBehaviour
 	{
 		private TMP_Text _text;
-		private string _startText;
 
 		private void Awake()
 		{
 			_text = GetComponent<TMP_Text>();
-			_startText = _text.text;
 		}
 
 		private void Start()
@@ -24,10 +22,7 @@ namespace UI
 		private void OnEnable()
 		{
 			if (WebsocketServer.Instance == null) Debug.LogWarning("Make sure to start the game from the Main Menu, not from the Lobby! ;D");
-			if (WebsocketServer.Instance.IDs?.Count == 0)
-				_text.text = _startText;
-			else
-				RebuildClientList(WebsocketServer.Instance.IDs);
+			RebuildClientList(WebsocketServer.Instance.IDs);
 		}
 
 		private void RebuildClientList(List<string> ids)
