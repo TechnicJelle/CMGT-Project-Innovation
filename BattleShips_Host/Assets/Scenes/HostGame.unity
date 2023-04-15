@@ -2801,28 +2801,28 @@ MonoBehaviour:
   winnerText: {fileID: 1087921906}
   maxTreasure: 3
   timeToGatherTreasure: 5
-  Music:
+  music:
     Guid:
       Data1: 1026046496
       Data2: 1129872825
       Data3: -856449354
       Data4: -11754099
     Path: event:/Music
-  Startmusic:
+  startMusic:
     Guid:
       Data1: 651416851
       Data2: 1155341663
       Data3: -1559469910
       Data4: -923666108
     Path: event:/Game started
-  Endmusic:
+  endMusic:
     Guid:
       Data1: -265626752
       Data2: 1095801531
       Data3: 349026970
       Data4: -1960665381
     Path: event:/Game finished
-  Click:
+  click:
     Guid:
       Data1: -1165787819
       Data2: 1184975911
