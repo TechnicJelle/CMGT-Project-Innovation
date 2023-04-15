@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Shared.Scripts;
 using Shared.Scripts.UI;
@@ -21,10 +22,17 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private View endMatchView;
 	[SerializeField] private TMP_Text winnerText;
 
+	[SerializeField] private Transform boundaries;
+	[SerializeField] private Transform water;
+
+	[SerializeField] private float distanceBetweenSpawns = 8f;
+
 	[SerializeField] private int maxTreasure = 3;
 	[SerializeField] private float timeToGatherTreasure = 5f;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
+
+	private Bounds _spawnBounds;
 
 	[SerializeField] private EventReference music;
 	[SerializeField] private EventReference startMusic;
@@ -56,6 +64,53 @@ public class MatchManager : MonoBehaviour
 		if (playerPrefab.GetComponent<Boat>() == null)
 			Debug.LogError("Player prefab does not have a Boat component");
 		ChangeCamera(Cameras.Main);
+
+		//Boundaries
+		List<Transform> children = boundaries.Cast<Transform>().ToList();
+		_spawnBounds = new Bounds(children[0].position, Vector3.zero);
+		foreach (Transform t in children)
+		{
+			_spawnBounds.Encapsulate(t.position);
+		}
+		_spawnBounds.Expand(-7f); //To ensure no boats get stuck in the boundary
+	}
+
+	private Vector3 GetValidSpawnLocation()
+	{
+		//random point in bounds
+		Vector3 randomPoint = new(
+			UnityEngine.Random.Range(_spawnBounds.min.x, _spawnBounds.max.x),
+			30,
+			UnityEngine.Random.Range(_spawnBounds.min.z, _spawnBounds.max.z));
+
+		//check if point is above a collider
+		if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, 40f))
+		{
+			if (hit.transform == water)
+			{
+				if (_players != null)
+				{
+					//if point is too close to another player, try again
+					if (_players.Values.Any(player => Vector3.Distance(player.Boat.transform.position, hit.point) < distanceBetweenSpawns))
+					{
+						return GetValidSpawnLocation();
+					}
+				}
+
+				//safe!
+				Debug.DrawLine(randomPoint, hit.point, Color.blue, 100f);
+				return hit.point;
+			}
+		}
+
+		//not safe, or didn't hit anything at all somehow... try again
+		return GetValidSpawnLocation();
+	}
+
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireCube(_spawnBounds.center, _spawnBounds.size);
 	}
 
 	private void Start()
@@ -85,13 +140,14 @@ public class MatchManager : MonoBehaviour
 		{
 			GameObject instance = Instantiate(playerPrefab, transform);
 			instance.name = id;
+			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
 			boat.ID = id;
 			_players.Add(id, new PlayerData(boat, "Joe"));
-			ImmersiveCamera.Instance.AddPlayer(boat.transform);
+			// ImmersiveCamera.Instance.AddPlayer(boat.transform); //TODO
 		}
 
-		ImmersiveCamera.Instance.FitAllPlayers();
+		// ImmersiveCamera.Instance.FitAllPlayers(); //TODO
 		ChangeCamera(Cameras.Match);
 	}
 
@@ -105,7 +161,7 @@ public class MatchManager : MonoBehaviour
 			Destroy(player.Boat.gameObject);
 		}
 
-		ImmersiveCamera.Instance.ClearPlayers();
+		// ImmersiveCamera.Instance.ClearPlayers(); //TODO
 		_players = null;
 		ChangeCamera(Cameras.Main);
 	}
