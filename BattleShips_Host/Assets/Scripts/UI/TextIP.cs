@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
+	[RequireComponent(typeof(Button))]
 	public class TextIP : MonoBehaviour
 	{
 		private TMP_Text _text;

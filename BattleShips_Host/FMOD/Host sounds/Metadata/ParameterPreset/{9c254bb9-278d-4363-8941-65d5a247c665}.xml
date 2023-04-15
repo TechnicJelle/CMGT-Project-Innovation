@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{9c254bb9-278d-4363-8941-65d5a247c665}">
+		<property name="name">
+			<value>Sea sound</value>
+		</property>
+		<relationship name="folder">
+			<destination>{494c733d-6985-467c-aca4-9b8df9e0d72f}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{cdbc4dbb-07c8-495e-88c9-6e270e26f228}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{cdbc4dbb-07c8-495e-88c9-6e270e26f228}">
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+	</object>
+</objects>

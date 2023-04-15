@@ -3,18 +3,29 @@ using UnityEngine.EventSystems;
 
 public class SliderHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private bool log;
-    public bool Pressed { get; private set; } = false;
+	public bool Pressed { get; private set; }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (log) Debug.Log("PointerDown");
-        Pressed = true;
-    }
+	private void Awake()
+	{
+		//ensure that the handle always actually fits fully on screen
+		RectTransform rectTransform = GetComponent<RectTransform>();
+		Vector3 rectTransformPosition = rectTransform.localPosition;
+		rectTransformPosition.y = Mathf.Min(Screen.width, Screen.height) * 0.3f;
+		rectTransform.localPosition = rectTransformPosition;
+	}
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (log) Debug.Log("PointerUp");
-        Pressed = false;
-    }
+	public void OnPointerDown(PointerEventData eventData)
+	{
+		Pressed = true;
+	}
+
+	public void OnPointerUp(PointerEventData eventData)
+	{
+		Pressed = false;
+	}
+
+	public void Reset()
+	{
+		Pressed = false;
+	}
 }

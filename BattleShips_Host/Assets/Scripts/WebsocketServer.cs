@@ -12,8 +12,7 @@ public class WebsocketServer : MonoBehaviour
 	public static WebsocketServer Instance { get; private set; }
 	private const int PORT = 55555;
 	private const string PATH = "/game";
-
-	[NonSerialized] public bool ShouldUpdateUI;
+	private WebSocketSessionManager Sessions => _server.WebSocketServices[PATH].Sessions;
 
 	// ReSharper disable once InconsistentNaming
 	[NonSerialized] public List<string> IDs;
@@ -23,6 +22,7 @@ public class WebsocketServer : MonoBehaviour
 	public RefreshUI OnRefreshUI;
 
 	private WebSocketServer _server;
+	private bool _shouldUpdateUI;
 
 	private void Awake()
 	{
@@ -55,26 +55,27 @@ public class WebsocketServer : MonoBehaviour
 
 	public void StopWebserver()
 	{
-		if(_server == null) return; //server was never started
+		if (_server == null) return; //server was never started
 		Debug.Log("Stopping websocket server...");
 
 		//disconnect every client
-		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
 		for (int i = IDs.Count - 1; i >= 0; i--)
 		{
 			string id = IDs[i];
 			Debug.Log($"Disconnecting {id}...");
-			gameHost.Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
+			Sessions.CloseSession(id, CloseStatusCode.Normal, "Server is shutting down");
 		}
 
 		_server.Stop();
 	}
 
+	public void SetUpdateUI() => _shouldUpdateUI = true;
+
 	private void Update()
 	{
-		if (ShouldUpdateUI)
+		if (_shouldUpdateUI)
 		{
-			ShouldUpdateUI = false;
+			_shouldUpdateUI = false;
 			OnRefreshUI.Invoke(IDs);
 		}
 	}
@@ -96,12 +97,19 @@ public class WebsocketServer : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Send a message to one specific client
+	/// </summary>
+	public void Send(string id, byte[] bytes)
+	{
+		Sessions.SendToAsync(bytes, id, null);
+	}
+
+	/// <summary>
 	/// Sends a message to all connected clients
 	/// </summary>
 	public void Broadcast(byte[] bytes)
 	{
-		WebSocketServiceHost gameHost = _server.WebSocketServices[PATH];
-		gameHost.Sessions.BroadcastAsync(bytes, null);
+		Sessions.BroadcastAsync(bytes, null);
 	}
 }
 
@@ -121,22 +129,30 @@ public class Game : WebSocketBehavior
 		switch (MessageFactory.CheckMessageType(e.RawData))
 		{
 			case MessageFactory.MessageType.BoatDirectionUpdate:
-				if(!MatchManager.IsMatchRunning) return;
+				if (!MatchManager.IsMatchRunning) return;
 				float direction = MessageFactory.DecodeBoatDirectionUpdate(e.RawData);
 				MatchManager.Instance.UpdateBoatDirection(ID, direction);
-				break;
-			case MessageFactory.MessageType.StartGameSignal:
-				Debug.LogWarning("Received start game signal from client, which is not allowed! Ignoring...");
-				break;
-			case MessageFactory.MessageType.GoBackToLobbySignal:
-				Debug.LogWarning("Received go back to lobby signal from client, which is not allowed! Ignoring...");
 				break;
 			case MessageFactory.MessageType.BlowingUpdate:
 				bool isBlowing = MessageFactory.DecodeBlowingUpdate(e.RawData);
 				MatchManager.Instance.SetBoatBlowing(ID, isBlowing);
 				break;
+			case MessageFactory.MessageType.RequestDockingStatusUpdate:
+				bool requestDockingStatus = MessageFactory.DecodeDockingStatusUpdate(e.RawData);
+				if (requestDockingStatus) MatchManager.Instance.RequestDocking(ID);
+				else MatchManager.Instance.RequestUndocking(ID);
+				break;
+			case MessageFactory.MessageType.SearchTreasureSignal:
+				MatchManager.Instance.SearchTreasure(ID);
+				break;
+			case MessageFactory.MessageType.StartGameSignal:
+			case MessageFactory.MessageType.GoBackToLobbySignal:
+			case MessageFactory.MessageType.DockingAvailableUpdate:
+			case MessageFactory.MessageType.IsDockedUpdate:
+			case MessageFactory.MessageType.FoundTreasureSignal:
 			default:
-				throw new ArgumentOutOfRangeException();
+				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
+				break;
 		}
 	}
 
@@ -149,6 +165,6 @@ public class Game : WebSocketBehavior
 
 	private static void RefreshUI()
 	{
-		Server.ShouldUpdateUI = true;
+		Server.SetUpdateUI();
 	}
 }
