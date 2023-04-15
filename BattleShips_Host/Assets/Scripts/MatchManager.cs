@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -7,7 +6,7 @@ using Shared.Scripts.UI;
 using TMPro;
 using UnityEngine;
 using FMODUnity;
-
+using FMOD.Studio;
 
 
 public class MatchManager : MonoBehaviour
@@ -27,16 +26,16 @@ public class MatchManager : MonoBehaviour
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
 
-	public FMODUnity.EventReference Music;
-    public FMODUnity.EventReference Startmusic;
-    public FMODUnity.EventReference Endmusic;
-	public FMODUnity.EventReference Click;
-    private FMOD.Studio.EventInstance music;
-    private FMOD.Studio.EventInstance startmusic;
-    private FMOD.Studio.EventInstance endmusic;
-	private FMOD.Studio.EventInstance click;
-	private float ending = 0f;
-	private bool OnceToChorus = true;
+	[SerializeField] private EventReference music;
+	[SerializeField] private EventReference startMusic;
+	[SerializeField] private EventReference endMusic;
+	[SerializeField] private EventReference click;
+	private EventInstance _music;
+	private EventInstance _startMusic;
+	private EventInstance _endMusic;
+	private EventInstance _click;
+	private float _ending = 0f;
+	private bool _onceToChorus = true;
 
 	private enum Cameras
 	{
@@ -59,23 +58,23 @@ public class MatchManager : MonoBehaviour
 		ChangeCamera(Cameras.Main);
 	}
 
-	void Start()
-    {
-        music = FMODUnity.RuntimeManager.CreateInstance(Music);
-        startmusic = FMODUnity.RuntimeManager.CreateInstance(Startmusic);
-        endmusic = FMODUnity.RuntimeManager.CreateInstance(Endmusic);
-		click = FMODUnity.RuntimeManager.CreateInstance(Click);
-		music.start();
-    }
-	
+	private void Start()
+	{
+		_music = RuntimeManager.CreateInstance(music);
+		_startMusic = RuntimeManager.CreateInstance(startMusic);
+		_endMusic = RuntimeManager.CreateInstance(endMusic);
+		_click = RuntimeManager.CreateInstance(click);
+		_music.start();
+	}
+
 	public void StartMatch()
 	{
-		OnceToChorus = true;
-		startmusic.start();
-		music.setParameterByName("Sea sound", 1);
-		music.setParameterByName("chorus", 1);
-		music.setParameterByName("verse", 1);
-		music.setParameterByName("end", 0);
+		_onceToChorus = true;
+		_startMusic.start();
+		_music.setParameterByName("Sea sound", 1);
+		_music.setParameterByName("chorus", 1);
+		_music.setParameterByName("verse", 1);
+		_music.setParameterByName("end", 0);
 		StartCoroutine(StartMusic());
 		// music.setParameterByName("Sea sound", 0);  <-- For if we don't want the start music
 
@@ -113,7 +112,6 @@ public class MatchManager : MonoBehaviour
 
 	private void EndMatch(PlayerData winner)
 	{
-		
 		Cleanup();
 		winnerText.text = $"Winner:\n{winner.Name}";
 		gameView.Hide();
@@ -190,10 +188,12 @@ public class MatchManager : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetMouseButtonDown(0)){
-			click.start();
-			StartCoroutine(clickwait());
-		} 
+		if (Input.GetMouseButtonDown(0))
+		{
+			_click.start();
+			StartCoroutine(ClickWait());
+		}
+
 		if (_players == null) return;
 		foreach ((string id, PlayerData player) in _players)
 		{
@@ -207,73 +207,72 @@ public class MatchManager : MonoBehaviour
 
 	private IEnumerator SearchTreasureCoroutine(string id, PlayerData player)
 	{
-		Debug.Log("pre-wait");
 		yield return new WaitForSeconds(timeToGatherTreasure);
-		Debug.Log("post-wait");
 		if (!player.IsSearchingTreasure) yield break;
 
 		player.IsSearchingTreasure = false;
 		player.Points++;
 
-		if(OnceToChorus){
-			OnceToChorus = false;
-			music.setParameterByName("verse", 0);
+		if (_onceToChorus)
+		{
+			_onceToChorus = false;
+			_music.setParameterByName("verse", 0);
+		}
 
-		} 
-// right here!!!!
 		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
 
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
 
-		if (player.Points >= maxTreasure) {
-			music.setParameterByName("Sea sound", 0);
-			music.setParameterByName("chorus", 0);
-			music.setParameterByName("verse", 0);
-			
+		if (player.Points >= maxTreasure)
+		{
+			_music.setParameterByName("Sea sound", 0);
+			_music.setParameterByName("chorus", 0);
+			_music.setParameterByName("verse", 0);
+
 			StartCoroutine(EndMusic());
 			StartCoroutine(EndingM());
-		
+
 			EndMatch(player);
 		}
 	}
 
-	 IEnumerator StartMusic()
-    {
-        
-        yield return new WaitForSeconds(4f);
-        startmusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-		music.setParameterByName("Sea sound", 0);
-    }
-	
-	
+	private IEnumerator StartMusic()
+	{
+		yield return new WaitForSeconds(4f);
+		_startMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+		_music.setParameterByName("Sea sound", 0);
+	}
 
-	 IEnumerator EndMusic()
-    {
-        yield return new WaitForSeconds(1f);
-        endmusic.start();
+
+	private IEnumerator EndMusic()
+	{
+		yield return new WaitForSeconds(1f);
+		_endMusic.start();
 		StartCoroutine(EndEndMusic());
-    }
+	}
 
-	 IEnumerator EndEndMusic()
-    {
-        yield return new WaitForSeconds(3f);
-        endmusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-		
-    }
+	private IEnumerator EndEndMusic()
+	{
+		yield return new WaitForSeconds(3f);
+		_endMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+	}
 
-	 IEnumerator EndingM()
-    {
-        yield return new WaitForSeconds(0.1f);
-		ending = ending+0.025f;
-		music.setParameterByName("end", ending);
-        if(ending < 1f) {StartCoroutine(EndingM());}
-    } 
+	private IEnumerator EndingM()
+	{
+		yield return new WaitForSeconds(0.1f);
+		_ending += 0.025f;
+		_music.setParameterByName("end", _ending);
+		if (_ending < 1f)
+		{
+			StartCoroutine(EndingM());
+		}
+	}
 
-	 IEnumerator clickwait()
-    {
-        yield return new WaitForSeconds(0.3f);
-		click.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-    } 
+	private IEnumerator ClickWait()
+	{
+		yield return new WaitForSeconds(0.3f);
+		_click.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+	}
 }
 
 public class PlayerData
