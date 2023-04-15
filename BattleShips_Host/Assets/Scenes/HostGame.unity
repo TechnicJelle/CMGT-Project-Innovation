@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 929.13574, g: 2544.4746, b: 3650.1953, a: 1}
+  m_IndirectSpecularColor: {r: 892.9746, g: 2224.0781, b: 2648.5508, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -176,7 +176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &61934025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +395,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3250085134696766558, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ece15c809ff1b894bace353c58db0589, type: 2}
     - target: {fileID: 4094981361201722692, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -420,6 +425,16 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.75
       objectReference: {fileID: 0}
+    - target: {fileID: 5477741092962218162, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 5477741092962218162, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
     - target: {fileID: 6059866291783986589, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -450,6 +465,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.75
       objectReference: {fileID: 0}
+    - target: {fileID: 8911529977100202645, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8aa2f8885f45cf34c93998f02f601570, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d956bdfc3a429e4e93e51c2db7a17c5, type: 3}
 --- !u!4 &83868086 stripped
@@ -732,14 +752,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 11
-  m_ObsoleteShadowResolutionTier: 1
-  m_ObsoleteUseShadowQualitySettings: 0
-  m_ObsoleteCustomShadowResolution: 512
-  m_ObsoleteContactShadows: 0
-  m_PointlightHDType: 0
-  m_SpotLightShape: 0
-  m_AreaLightShape: 0
   m_Intensity: 130000
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 1
@@ -842,6 +854,14 @@ MonoBehaviour:
   m_AreaLightEmissiveMeshShadowCastingMode: 0
   m_AreaLightEmissiveMeshMotionVectorGenerationMode: 0
   m_AreaLightEmissiveMeshLayer: -1
+  m_Version: 11
+  m_ObsoleteShadowResolutionTier: 1
+  m_ObsoleteUseShadowQualitySettings: 0
+  m_ObsoleteCustomShadowResolution: 512
+  m_ObsoleteContactShadows: 0
+  m_PointlightHDType: 0
+  m_SpotLightShape: 0
+  m_AreaLightShape: 0
 --- !u!1 &169627682
 GameObject:
   m_ObjectHideFlags: 0
@@ -1254,6 +1274,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1265496675}
     m_Modifications:
+    - target: {fileID: 1336929120905888784, guid: 2d0b8a6bfa7240e43b058c62df765799,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 1336929120905888784, guid: 2d0b8a6bfa7240e43b058c62df765799,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 4361973172919955162, guid: 2d0b8a6bfa7240e43b058c62df765799,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 290f5b996eafed94c94aaae61cd1b991, type: 2}
     - target: {fileID: 5815558658004382542, guid: 2d0b8a6bfa7240e43b058c62df765799,
         type: 3}
       propertyPath: m_Name
@@ -1334,6 +1369,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8818549522895415765, guid: 2d0b8a6bfa7240e43b058c62df765799,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ece15c809ff1b894bace353c58db0589, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d0b8a6bfa7240e43b058c62df765799, type: 3}
 --- !u!4 &342747164 stripped
@@ -1402,9 +1442,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Quit
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: db28ded2a8217062c9cbc645abde58c7, type: 2}
-  m_sharedMaterial: {fileID: 8712089378818505612, guid: db28ded2a8217062c9cbc645abde58c7,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2169,16 +2208,36 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3754754812475786095, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ece15c809ff1b894bace353c58db0589, type: 2}
     - target: {fileID: 3958083776522019557, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
         type: 3}
       propertyPath: m_LocalScale.y
       value: 6.64
       objectReference: {fileID: 0}
+    - target: {fileID: 7397860324528058288, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 7397860324528058288, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
     - target: {fileID: 8820338437260600032, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
         type: 3}
       propertyPath: m_Name
       value: 'Vulcano_Island '
       objectReference: {fileID: 0}
+    - target: {fileID: 8889682433044007870, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 30922eee79a4cd14a9550f9f2bcfc998, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d8670a5bb9bbb14baf6648a43dfb68b, type: 3}
 --- !u!4 &569235520 stripped
@@ -2247,9 +2306,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Create Lobby
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: db28ded2a8217062c9cbc645abde58c7, type: 2}
-  m_sharedMaterial: {fileID: 8712089378818505612, guid: db28ded2a8217062c9cbc645abde58c7,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3045,6 +3103,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1265496675}
     m_Modifications:
+    - target: {fileID: 1647055852313487777, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3386141623775422817, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 3386141623775422817, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
     - target: {fileID: 6274426870641693968, guid: a009f0cbd5dd41d45b3c3e01216f355b,
         type: 3}
       propertyPath: m_RootOrder
@@ -3130,6 +3203,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 7.07
       objectReference: {fileID: 0}
+    - target: {fileID: 8177018403899484412, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ece15c809ff1b894bace353c58db0589, type: 2}
+    - target: {fileID: 8572493659639909666, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 68e72a49e0a6c74408fa65861ce33437, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a009f0cbd5dd41d45b3c3e01216f355b, type: 3}
 --- !u!4 &1021184819 stripped
@@ -3438,39 +3521,8 @@ MonoBehaviour:
   gameView: {fileID: 374057823}
   endMatchView: {fileID: 327830855}
   winnerText: {fileID: 1087921906}
-  boundaries: {fileID: 44056667}
-  water: {fileID: 1458395541}
-  distanceBetweenSpawns: 8
   maxTreasure: 3
   timeToGatherTreasure: 5
-  music:
-    Guid:
-      Data1: 1026046496
-      Data2: 1129872825
-      Data3: -856449354
-      Data4: -11754099
-    Path: event:/Music
-  startMusic:
-    Guid:
-      Data1: 651416851
-      Data2: 1155341663
-      Data3: -1559469910
-      Data4: -923666108
-    Path: event:/Game started
-  endMusic:
-    Guid:
-      Data1: -265626752
-      Data2: 1095801531
-      Data3: 349026970
-      Data4: -1960665381
-    Path: event:/Game finished
-  click:
-    Guid:
-      Data1: -1165787819
-      Data2: 1184975911
-      Data3: 1981062301
-      Data4: 906822796
-    Path: event:/click
 --- !u!1 &1105295880
 GameObject:
   m_ObjectHideFlags: 0
@@ -3629,6 +3681,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 10.41
       objectReference: {fileID: 0}
+    - target: {fileID: 149799066318538282, guid: 2d4739065eae45c4e80084d6643f928e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0a8a53be58498c84888b5584f31baea1, type: 2}
     - target: {fileID: 1364204454541820784, guid: 2d4739065eae45c4e80084d6643f928e,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -3659,6 +3716,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 10.41
       objectReference: {fileID: 0}
+    - target: {fileID: 5811290775675710197, guid: 2d4739065eae45c4e80084d6643f928e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 5811290775675710197, guid: 2d4739065eae45c4e80084d6643f928e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
     - target: {fileID: 6262847705907053491, guid: 2d4739065eae45c4e80084d6643f928e,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -3847,9 +3914,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Sea Spelunking
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: db28ded2a8217062c9cbc645abde58c7, type: 2}
-  m_sharedMaterial: {fileID: 8712089378818505612, guid: db28ded2a8217062c9cbc645abde58c7,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3993,12 +4059,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1458395541 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4023311994267138806, guid: 1278203cbca3c384baa32ed3e18475fe,
-    type: 3}
-  m_PrefabInstance: {fileID: 297128466}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1487339430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4091,6 +4151,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 9.23
       objectReference: {fileID: 0}
+    - target: {fileID: 753861776767603488, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ece15c809ff1b894bace353c58db0589, type: 2}
     - target: {fileID: 825982414786329810, guid: 560ad5a38cbad1145bbce878280c7726,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -4101,6 +4166,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 12.91
       objectReference: {fileID: 0}
+    - target: {fileID: 4963099405237986205, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
+    - target: {fileID: 4963099405237986205, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 445a55a1975fb5446a0768bf4d106e17, type: 2}
     - target: {fileID: 6481837496711222772, guid: 560ad5a38cbad1145bbce878280c7726,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -4111,6 +4186,26 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 12.91
       objectReference: {fileID: 0}
+    - target: {fileID: 7827449186355021771, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b9c7ebfe094f42545a23d3779c79dcb4, type: 2}
+    - target: {fileID: 7827449186355021771, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 18949b5c76b3c3042b12bbb891b4ee0e, type: 2}
+    - target: {fileID: 8238793244122053310, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e23e437af071e02489b5b79469fef084, type: 2}
+    - target: {fileID: 8245950805152716790, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 114e8dcaced94fb41bfe60d96cd19622, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 560ad5a38cbad1145bbce878280c7726, type: 3}
 --- !u!4 &1487339431 stripped
@@ -4293,10 +4388,6 @@ MonoBehaviour:
   minZoom: 100
   maxZoom: 15
   zoomLimiter: 70
-  lensZoom: 0
-  maxDist: 0.5
-  minDist: 3
-  distLimiter: 30
 --- !u!114 &1592438424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4309,53 +4400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c1ce4fb46143f46bc5cb5224c934f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 8
-  m_ObsoleteRenderingPath: 0
-  m_ObsoleteFrameSettings:
-    overrides: 0
-    enableShadow: 0
-    enableContactShadows: 0
-    enableShadowMask: 0
-    enableSSR: 0
-    enableSSAO: 0
-    enableSubsurfaceScattering: 0
-    enableTransmission: 0
-    enableAtmosphericScattering: 0
-    enableVolumetrics: 0
-    enableReprojectionForVolumetrics: 0
-    enableLightLayers: 0
-    enableExposureControl: 1
-    diffuseGlobalDimmer: 0
-    specularGlobalDimmer: 0
-    shaderLitMode: 0
-    enableDepthPrepassWithDeferredRendering: 0
-    enableTransparentPrepass: 0
-    enableMotionVectors: 0
-    enableObjectMotionVectors: 0
-    enableDecals: 0
-    enableRoughRefraction: 0
-    enableTransparentPostpass: 0
-    enableDistortion: 0
-    enablePostprocess: 0
-    enableOpaqueObjects: 0
-    enableTransparentObjects: 0
-    enableRealtimePlanarReflection: 0
-    enableMSAA: 0
-    enableAsyncCompute: 0
-    runLightListAsync: 0
-    runSSRAsync: 0
-    runSSAOAsync: 0
-    runContactShadowsAsync: 0
-    runVolumeVoxelizationAsync: 0
-    lightLoopSettings:
-      overrides: 0
-      enableDeferredTileAndCluster: 0
-      enableComputeLightEvaluation: 0
-      enableComputeLightVariants: 0
-      enableComputeMaterialVariants: 0
-      enableFptlForForwardOpaque: 0
-      enableBigTilePrepass: 0
-      isFptlEnabled: 0
   clearColorMode: 0
   backgroundColorHDR: {r: 0.025, g: 0.07, b: 0.19, a: 0}
   clearDepth: 1
@@ -4422,6 +4466,53 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+  m_Version: 8
+  m_ObsoleteRenderingPath: 0
+  m_ObsoleteFrameSettings:
+    overrides: 0
+    enableShadow: 0
+    enableContactShadows: 0
+    enableShadowMask: 0
+    enableSSR: 0
+    enableSSAO: 0
+    enableSubsurfaceScattering: 0
+    enableTransmission: 0
+    enableAtmosphericScattering: 0
+    enableVolumetrics: 0
+    enableReprojectionForVolumetrics: 0
+    enableLightLayers: 0
+    enableExposureControl: 1
+    diffuseGlobalDimmer: 0
+    specularGlobalDimmer: 0
+    shaderLitMode: 0
+    enableDepthPrepassWithDeferredRendering: 0
+    enableTransparentPrepass: 0
+    enableMotionVectors: 0
+    enableObjectMotionVectors: 0
+    enableDecals: 0
+    enableRoughRefraction: 0
+    enableTransparentPostpass: 0
+    enableDistortion: 0
+    enablePostprocess: 0
+    enableOpaqueObjects: 0
+    enableTransparentObjects: 0
+    enableRealtimePlanarReflection: 0
+    enableMSAA: 0
+    enableAsyncCompute: 0
+    runLightListAsync: 0
+    runSSRAsync: 0
+    runSSAOAsync: 0
+    runContactShadowsAsync: 0
+    runVolumeVoxelizationAsync: 0
+    lightLoopSettings:
+      overrides: 0
+      enableDeferredTileAndCluster: 0
+      enableComputeLightEvaluation: 0
+      enableComputeLightVariants: 0
+      enableComputeMaterialVariants: 0
+      enableFptlForForwardOpaque: 0
+      enableBigTilePrepass: 0
+      isFptlEnabled: 0
 --- !u!20 &1592438426
 Camera:
   m_ObjectHideFlags: 0
@@ -5415,53 +5506,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c1ce4fb46143f46bc5cb5224c934f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 8
-  m_ObsoleteRenderingPath: 0
-  m_ObsoleteFrameSettings:
-    overrides: 0
-    enableShadow: 0
-    enableContactShadows: 0
-    enableShadowMask: 0
-    enableSSR: 0
-    enableSSAO: 0
-    enableSubsurfaceScattering: 0
-    enableTransmission: 0
-    enableAtmosphericScattering: 0
-    enableVolumetrics: 0
-    enableReprojectionForVolumetrics: 0
-    enableLightLayers: 0
-    enableExposureControl: 1
-    diffuseGlobalDimmer: 0
-    specularGlobalDimmer: 0
-    shaderLitMode: 0
-    enableDepthPrepassWithDeferredRendering: 0
-    enableTransparentPrepass: 0
-    enableMotionVectors: 0
-    enableObjectMotionVectors: 0
-    enableDecals: 0
-    enableRoughRefraction: 0
-    enableTransparentPostpass: 0
-    enableDistortion: 0
-    enablePostprocess: 0
-    enableOpaqueObjects: 0
-    enableTransparentObjects: 0
-    enableRealtimePlanarReflection: 0
-    enableMSAA: 0
-    enableAsyncCompute: 0
-    runLightListAsync: 0
-    runSSRAsync: 0
-    runSSAOAsync: 0
-    runContactShadowsAsync: 0
-    runVolumeVoxelizationAsync: 0
-    lightLoopSettings:
-      overrides: 0
-      enableDeferredTileAndCluster: 0
-      enableComputeLightEvaluation: 0
-      enableComputeLightVariants: 0
-      enableComputeMaterialVariants: 0
-      enableFptlForForwardOpaque: 0
-      enableBigTilePrepass: 0
-      isFptlEnabled: 0
   clearColorMode: 0
   backgroundColorHDR: {r: 0.025, g: 0.07, b: 0.19, a: 0}
   clearDepth: 1
@@ -5528,6 +5572,53 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+  m_Version: 8
+  m_ObsoleteRenderingPath: 0
+  m_ObsoleteFrameSettings:
+    overrides: 0
+    enableShadow: 0
+    enableContactShadows: 0
+    enableShadowMask: 0
+    enableSSR: 0
+    enableSSAO: 0
+    enableSubsurfaceScattering: 0
+    enableTransmission: 0
+    enableAtmosphericScattering: 0
+    enableVolumetrics: 0
+    enableReprojectionForVolumetrics: 0
+    enableLightLayers: 0
+    enableExposureControl: 1
+    diffuseGlobalDimmer: 0
+    specularGlobalDimmer: 0
+    shaderLitMode: 0
+    enableDepthPrepassWithDeferredRendering: 0
+    enableTransparentPrepass: 0
+    enableMotionVectors: 0
+    enableObjectMotionVectors: 0
+    enableDecals: 0
+    enableRoughRefraction: 0
+    enableTransparentPostpass: 0
+    enableDistortion: 0
+    enablePostprocess: 0
+    enableOpaqueObjects: 0
+    enableTransparentObjects: 0
+    enableRealtimePlanarReflection: 0
+    enableMSAA: 0
+    enableAsyncCompute: 0
+    runLightListAsync: 0
+    runSSRAsync: 0
+    runSSAOAsync: 0
+    runContactShadowsAsync: 0
+    runVolumeVoxelizationAsync: 0
+    lightLoopSettings:
+      overrides: 0
+      enableDeferredTileAndCluster: 0
+      enableComputeLightEvaluation: 0
+      enableComputeLightVariants: 0
+      enableComputeMaterialVariants: 0
+      enableFptlForForwardOpaque: 0
+      enableBigTilePrepass: 0
+      isFptlEnabled: 0
 --- !u!114 &1823688469
 MonoBehaviour:
   m_ObjectHideFlags: 0
