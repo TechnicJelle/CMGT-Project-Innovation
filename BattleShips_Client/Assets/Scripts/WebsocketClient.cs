@@ -47,10 +47,12 @@ public class WebsocketClient : MonoBehaviour
 		try
 		{
 			_webSocket = new WebSocket(link);
-			_webSocket.OnOpen += (_, _) => { Debug.Log("WS Connected"); };
-			
-			SoundManager.Instance.PlaySound(SoundManager.Sound.Joining);
-			
+			_webSocket.OnOpen += (_, _) =>
+			{
+				Debug.Log("WS Connected");
+				SoundManager.Instance.PlaySound(SoundManager.Sound.Joining);
+			};
+
 			_webSocket.OnMessage += (object _, MessageEventArgs e) =>
 			{
 				switch (MessageFactory.CheckMessageType(e.RawData))
