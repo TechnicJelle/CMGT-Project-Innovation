@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 4008370465461898507}
   m_Layer: 0
   m_Name: TriggerColliders
-  m_TagString: Untagged
+  m_TagString: Island
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
