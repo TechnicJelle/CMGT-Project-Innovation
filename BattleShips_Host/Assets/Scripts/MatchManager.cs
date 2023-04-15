@@ -79,9 +79,9 @@ public class MatchManager : MonoBehaviour
 	{
 		//random point in bounds
 		Vector3 randomPoint = new(
-			UnityEngine.Random.Range(_spawnBounds.min.x, _spawnBounds.max.x),
+			Random.Range(_spawnBounds.min.x, _spawnBounds.max.x),
 			30,
-			UnityEngine.Random.Range(_spawnBounds.min.z, _spawnBounds.max.z));
+			Random.Range(_spawnBounds.min.z, _spawnBounds.max.z));
 
 		//check if point is above a collider
 		if (Physics.Raycast(randomPoint, Vector3.down, out RaycastHit hit, 40f))
@@ -130,7 +130,7 @@ public class MatchManager : MonoBehaviour
 		_music.setParameterByName("chorus", 1);
 		_music.setParameterByName("verse", 1);
 		_music.setParameterByName("end", 0);
-		StartCoroutine(StartMusic());
+		StartCoroutine(StartMatchMusic());
 		// music.setParameterByName("Sea sound", 0);  <-- For if we don't want the start music
 
 
@@ -151,9 +151,19 @@ public class MatchManager : MonoBehaviour
 		ChangeCamera(Cameras.Match);
 	}
 
+	/// <summary>
+	/// This function should always be called when stopping the match
+	/// </summary>
 	public void Cleanup()
 	{
 		if (_players == null) return; //match was never started
+
+		_music.setParameterByName("Sea sound", 0);
+		_music.setParameterByName("chorus", 0);
+		_music.setParameterByName("verse", 0);
+
+		StartCoroutine(EndMatchMusic());
+
 		WebsocketServer.Instance.Broadcast(MessageFactory.CreateSignal(MessageFactory.MessageType.GoBackToLobbySignal));
 		foreach (PlayerData player in _players.Values)
 		{
@@ -166,9 +176,16 @@ public class MatchManager : MonoBehaviour
 		ChangeCamera(Cameras.Main);
 	}
 
-	private void EndMatch(PlayerData winner)
+	/// <summary>
+	/// This function should only be called when a match is stopped by winning
+	/// </summary>
+	/// <param name="winner"></param>
+	private void WinMatch(PlayerData winner)
 	{
 		Cleanup();
+
+		StartCoroutine(PlayVictoryTune());
+
 		winnerText.text = $"Winner:\n{winner.Name}";
 		gameView.Hide();
 		endMatchView.Show();
@@ -281,46 +298,38 @@ public class MatchManager : MonoBehaviour
 
 		if (player.Points >= maxTreasure)
 		{
-			_music.setParameterByName("Sea sound", 0);
-			_music.setParameterByName("chorus", 0);
-			_music.setParameterByName("verse", 0);
-
-			StartCoroutine(EndMusic());
-			StartCoroutine(EndingM());
-
-			EndMatch(player);
+			WinMatch(player);
 		}
 	}
 
-	private IEnumerator StartMusic()
+	private IEnumerator StartMatchMusic()
 	{
 		yield return new WaitForSeconds(4f);
 		_startMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 		_music.setParameterByName("Sea sound", 0);
 	}
 
-
-	private IEnumerator EndMusic()
+	private IEnumerator PlayVictoryTune()
 	{
 		yield return new WaitForSeconds(1f);
 		_endMusic.start();
-		StartCoroutine(EndEndMusic());
+		StartCoroutine(EndVictoryTune());
 	}
 
-	private IEnumerator EndEndMusic()
+	private IEnumerator EndVictoryTune()
 	{
 		yield return new WaitForSeconds(3f);
 		_endMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 	}
 
-	private IEnumerator EndingM()
+	private IEnumerator EndMatchMusic()
 	{
 		yield return new WaitForSeconds(0.1f);
 		_ending += 0.025f;
 		_music.setParameterByName("end", _ending);
 		if (_ending < 1f)
 		{
-			StartCoroutine(EndingM());
+			StartCoroutine(EndMatchMusic());
 		}
 	}
 
