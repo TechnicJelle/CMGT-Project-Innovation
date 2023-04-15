@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -6,6 +5,9 @@ using Shared.Scripts;
 using Shared.Scripts.UI;
 using TMPro;
 using UnityEngine;
+using FMODUnity;
+using FMOD.Studio;
+
 
 public class MatchManager : MonoBehaviour
 {
@@ -19,10 +21,21 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private View endMatchView;
 	[SerializeField] private TMP_Text winnerText;
 
-	[SerializeField] private int maxTreasure = 1;
+	[SerializeField] private int maxTreasure = 3;
 	[SerializeField] private float timeToGatherTreasure = 5f;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
+
+	[SerializeField] private EventReference music;
+	[SerializeField] private EventReference startMusic;
+	[SerializeField] private EventReference endMusic;
+	[SerializeField] private EventReference click;
+	private EventInstance _music;
+	private EventInstance _startMusic;
+	private EventInstance _endMusic;
+	private EventInstance _click;
+	private float _ending = 0f;
+	private bool _onceToChorus = true;
 
 	private enum Cameras
 	{
@@ -45,8 +58,27 @@ public class MatchManager : MonoBehaviour
 		ChangeCamera(Cameras.Main);
 	}
 
+	private void Start()
+	{
+		_music = RuntimeManager.CreateInstance(music);
+		_startMusic = RuntimeManager.CreateInstance(startMusic);
+		_endMusic = RuntimeManager.CreateInstance(endMusic);
+		_click = RuntimeManager.CreateInstance(click);
+		_music.start();
+	}
+
 	public void StartMatch()
 	{
+		_onceToChorus = true;
+		_startMusic.start();
+		_music.setParameterByName("Sea sound", 1);
+		_music.setParameterByName("chorus", 1);
+		_music.setParameterByName("verse", 1);
+		_music.setParameterByName("end", 0);
+		StartCoroutine(StartMusic());
+		// music.setParameterByName("Sea sound", 0);  <-- For if we don't want the start music
+
+
 		_players = new Dictionary<string, PlayerData>();
 		WebsocketServer.Instance.Broadcast(MessageFactory.CreateSignal(MessageFactory.MessageType.StartGameSignal));
 		foreach (string id in WebsocketServer.Instance.IDs)
@@ -156,6 +188,12 @@ public class MatchManager : MonoBehaviour
 
 	private void Update()
 	{
+		if (Input.GetMouseButtonDown(0))
+		{
+			_click.start();
+			StartCoroutine(ClickWait());
+		}
+
 		if (_players == null) return;
 		foreach ((string id, PlayerData player) in _players)
 		{
@@ -169,20 +207,71 @@ public class MatchManager : MonoBehaviour
 
 	private IEnumerator SearchTreasureCoroutine(string id, PlayerData player)
 	{
-		Debug.Log("pre-wait");
 		yield return new WaitForSeconds(timeToGatherTreasure);
-		Debug.Log("post-wait");
 		if (!player.IsSearchingTreasure) yield break;
 
 		player.IsSearchingTreasure = false;
 		player.Points++;
+
+		if (_onceToChorus)
+		{
+			_onceToChorus = false;
+			_music.setParameterByName("verse", 0);
+		}
 
 		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
 
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
 
 		if (player.Points >= maxTreasure)
+		{
+			_music.setParameterByName("Sea sound", 0);
+			_music.setParameterByName("chorus", 0);
+			_music.setParameterByName("verse", 0);
+
+			StartCoroutine(EndMusic());
+			StartCoroutine(EndingM());
+
 			EndMatch(player);
+		}
+	}
+
+	private IEnumerator StartMusic()
+	{
+		yield return new WaitForSeconds(4f);
+		_startMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+		_music.setParameterByName("Sea sound", 0);
+	}
+
+
+	private IEnumerator EndMusic()
+	{
+		yield return new WaitForSeconds(1f);
+		_endMusic.start();
+		StartCoroutine(EndEndMusic());
+	}
+
+	private IEnumerator EndEndMusic()
+	{
+		yield return new WaitForSeconds(3f);
+		_endMusic.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+	}
+
+	private IEnumerator EndingM()
+	{
+		yield return new WaitForSeconds(0.1f);
+		_ending += 0.025f;
+		_music.setParameterByName("end", _ending);
+		if (_ending < 1f)
+		{
+			StartCoroutine(EndingM());
+		}
+	}
+
+	private IEnumerator ClickWait()
+	{
+		yield return new WaitForSeconds(0.3f);
+		_click.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 	}
 }
 
