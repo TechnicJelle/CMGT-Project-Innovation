@@ -1,5 +1,8 @@
 # CMGT-Project-Innovation
 
+[![image](https://user-images.githubusercontent.com/22576047/232597420-24ab8765-afef-43bc-97f2-6c21292bbfab.png)](https://youtu.be/Eb1Xb2S-tgk)
+
+
 ## Asset Attribution
 Unless otherwise mentioned, everything in this project is made by us.
 
