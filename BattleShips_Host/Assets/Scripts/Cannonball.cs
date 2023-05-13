@@ -51,9 +51,10 @@ public class Cannonball : MonoBehaviour
 			return;
 		}
 
-		Cannonball cannonball = other.gameObject.GetComponent<Cannonball>();
-		if (cannonball != null)
+		Cannonball otherCannonball = other.gameObject.GetComponent<Cannonball>();
+		if (otherCannonball != null)
 		{
+			if (this.Shooter == otherCannonball.Shooter) return; //don't hit other own cannon balls
 			Debug.Log("Hit other cannonball");
 
 			//TODO: Cannonball clink effect
