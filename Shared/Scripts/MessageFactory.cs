@@ -18,6 +18,13 @@ namespace Shared.Scripts
 			IsDockedUpdate,
 			SearchTreasureSignal,
 			FoundTreasureSignal,
+			ShootingUpdate,
+		}
+
+		public enum ShootingDirection : byte
+		{
+			Port,
+			Starboard,
 		}
 
 		public static MessageType CheckMessageType(byte[] message)
@@ -157,6 +164,26 @@ namespace Shared.Scripts
 			Array.Copy(message, 1, isDockedBytes, 0, sizeof(bool));
 
 			return BitConverter.ToBoolean(isDockedBytes, 0);
+		}
+#endregion
+
+#region ShootingUpdate
+public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
+		{
+			byte[] message = new byte[1 + sizeof(byte)];
+			message[0] = (byte) MessageType.ShootingUpdate;
+
+			message[1] = (byte) shootingDirection;
+
+			return message;
+		}
+
+		public static ShootingDirection DecodeShootingUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.ShootingUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.ShootingUpdate} message");
+
+			return (ShootingDirection) message[1];
 		}
 #endregion
 	}

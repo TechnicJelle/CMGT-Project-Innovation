@@ -20,11 +20,22 @@ public class Boat : MonoBehaviour
 	private Vector3 _direction;
 	private bool _blowing;
 
+	private MessageFactory.ShootingDirection? _shouldShoot;
+
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody>();
 		_targetRotation = startRotation;
 		_direction = Vector3.forward;
+	}
+
+	private void Update()
+	{
+		if (_shouldShoot != null)
+		{
+			Debug.Log(name + ": " + _shouldShoot);
+			_shouldShoot = null;
+		}
 	}
 
 	private void FixedUpdate()
@@ -49,7 +60,6 @@ public class Boat : MonoBehaviour
 		_targetRotation = direction;
 	}
 
-
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.CompareTag("Island"))
@@ -71,5 +81,10 @@ public class Boat : MonoBehaviour
 	public void SetBlowing(bool blowing)
 	{
 		_blowing = blowing;
+	}
+
+	public void SetShoot(MessageFactory.ShootingDirection shootingDirection)
+	{
+		_shouldShoot = shootingDirection;
 	}
 }

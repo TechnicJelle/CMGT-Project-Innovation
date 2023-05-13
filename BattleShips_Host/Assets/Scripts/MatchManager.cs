@@ -207,6 +207,11 @@ public class MatchManager : MonoBehaviour
 		_players?[id].Boat.SetBlowing(blowing);
 	}
 
+	public void BoatShoot(string id, MessageFactory.ShootingDirection shootingDirection)
+	{
+		_players?[id].Boat.SetShoot(shootingDirection);
+	}
+
 	public void RequestDocking(string id)
 	{
 		PlayerData player = _players?[id];

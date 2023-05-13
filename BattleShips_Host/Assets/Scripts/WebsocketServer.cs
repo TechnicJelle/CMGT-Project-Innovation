@@ -145,6 +145,10 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.SearchTreasureSignal:
 				MatchManager.Instance.SearchTreasure(ID);
 				break;
+			case MessageFactory.MessageType.ShootingUpdate:
+				MessageFactory.ShootingDirection shootingDirection = MessageFactory.DecodeShootingUpdate(e.RawData);
+				MatchManager.Instance.BoatShoot(ID, shootingDirection);
+				break;
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:
