@@ -101,6 +101,7 @@ public class WebsocketServer : MonoBehaviour
 	/// </summary>
 	public void Send(string id, byte[] bytes)
 	{
+		// Debug.Log(BitConverter.ToString(bytes));
 		Sessions.SendToAsync(bytes, id, null);
 	}
 
@@ -154,6 +155,7 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.DockingAvailableUpdate:
 			case MessageFactory.MessageType.IsDockedUpdate:
 			case MessageFactory.MessageType.FoundTreasureSignal:
+			case MessageFactory.MessageType.ReloadUpdate:
 			default:
 				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
 				break;

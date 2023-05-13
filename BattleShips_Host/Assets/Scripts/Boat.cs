@@ -27,6 +27,7 @@ public class Boat : MonoBehaviour
 	[SerializeField] private int startHealth = 10;
 	[SerializeField] private float reloadSpeed = 2f;
 	[SerializeField] private int shotsInOneGo = 3;
+	[SerializeField] private int reloadUpdatesPerSecond = 1;
 
 	// == Not visible in inspector ==
 	// Properties
@@ -43,6 +44,8 @@ public class Boat : MonoBehaviour
 	private MessageFactory.ShootingDirection? _shouldShoot;
 	private int _health;
 	private readonly Dictionary<MessageFactory.ShootingDirection, float> _reloadTimers = new();
+	private readonly Dictionary<MessageFactory.ShootingDirection, float> _webSendAccumulator = new();
+	private float _reloadDT;
 
 	private void Awake()
 	{
@@ -53,8 +56,12 @@ public class Boat : MonoBehaviour
 		sldHealth.maxValue = startHealth;
 		sldHealth.value = _health;
 
+		_reloadDT = 1f / reloadUpdatesPerSecond;
 		foreach (MessageFactory.ShootingDirection dir in Enum.GetValues(typeof(MessageFactory.ShootingDirection)))
+		{
 			_reloadTimers.Add(dir, 0f);
+			_webSendAccumulator.Add(dir, 0f);
+		}
 	}
 
 	public void Setup(string id, Camera cam)
@@ -68,7 +75,15 @@ public class Boat : MonoBehaviour
 	{
 		for (byte i = 0; i < _reloadTimers.Count; i++)
 		{
-			_reloadTimers[(MessageFactory.ShootingDirection) i] += Time.deltaTime;
+			MessageFactory.ShootingDirection dir = (MessageFactory.ShootingDirection) i;
+			float progress = _reloadTimers[dir] += Time.deltaTime;
+			_webSendAccumulator[dir] += Time.deltaTime;
+
+			while (_webSendAccumulator[dir] >= _reloadDT)
+			{
+				WebsocketServer.Instance.Send(_id, MessageFactory.CreateReloadUpdate(dir, progress / reloadSpeed)); //normalize
+				_webSendAccumulator[dir] -= _reloadDT;
+			}
 		}
 
 

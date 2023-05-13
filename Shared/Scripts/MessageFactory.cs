@@ -19,6 +19,7 @@ namespace Shared.Scripts
 			SearchTreasureSignal,
 			FoundTreasureSignal,
 			ShootingUpdate,
+			ReloadUpdate,
 		}
 
 		public enum ShootingDirection : byte
@@ -29,6 +30,7 @@ namespace Shared.Scripts
 
 		public static MessageType CheckMessageType(byte[] message)
 		{
+			// Debug.Log($"Checking message type: {message[0]} == {(MessageType) message[0]}");
 			return (MessageType) message[0];
 		}
 
@@ -184,6 +186,38 @@ public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
 				throw new ArgumentException($"Message is not a {MessageType.ShootingUpdate} message");
 
 			return (ShootingDirection) message[1];
+		}
+#endregion
+
+#region ReloadUpdate
+		public static byte[] CreateReloadUpdate(ShootingDirection shootingDirection, float progress)
+		{
+			byte[] message = new byte[1 + sizeof(byte) + sizeof(float)];
+			message[0] = (byte) MessageType.ReloadUpdate;
+
+			message[1] = (byte) shootingDirection;
+
+			byte[] progressBytes = BitConverter.GetBytes(progress);
+			if (!BitConverter.IsLittleEndian) Array.Reverse(progressBytes);
+			Array.Copy(progressBytes, 0, message, 2, sizeof(float));
+
+			return message;
+		}
+
+		public static (ShootingDirection, float) DecodeReloadUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.ReloadUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.ReloadUpdate} message");
+
+			ShootingDirection shootingDirection = (ShootingDirection) message[1];
+
+			byte[] progressBytes = new byte[sizeof(float)];
+			Array.Copy(message, 2, progressBytes, 0, sizeof(float));
+			if (!BitConverter.IsLittleEndian) Array.Reverse(progressBytes);
+
+			float progress = BitConverter.ToSingle(progressBytes, 0);
+
+			return (shootingDirection, progress);
 		}
 #endregion
 	}

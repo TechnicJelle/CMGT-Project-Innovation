@@ -357,6 +357,8 @@ MonoBehaviour:
   shootingPower: 1000
   startHealth: 10
   reloadSpeed: 2
+  shotsInOneGo: 3
+  reloadUpdatesPerSecond: 3
 --- !u!1 &4644949546126456855
 GameObject:
   m_ObjectHideFlags: 0
