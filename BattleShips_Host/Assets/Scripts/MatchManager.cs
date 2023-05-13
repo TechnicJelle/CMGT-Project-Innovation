@@ -217,7 +217,7 @@ public class MatchManager : MonoBehaviour
 		PlayerData player = _players?[id];
 		if (player == null) return;
 		Boat boat = player.Boat;
-		if (player.IsDocked || boat.collidingIsland == null)
+		if (player.IsDocked || boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to dock, but is already docked, or not even colliding with an island!");
 			return;
@@ -235,7 +235,7 @@ public class MatchManager : MonoBehaviour
 		PlayerData player = _players?[id];
 		if (player == null) return;
 		Boat boat = player.Boat;
-		if (!player.IsDocked || boat.collidingIsland == null)
+		if (!player.IsDocked || boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to undock, but is not docked, or even colliding with an island!");
 			return;
@@ -253,7 +253,7 @@ public class MatchManager : MonoBehaviour
 	{
 		PlayerData player = _players?[id];
 		if (player == null) return;
-		if (!player.IsDocked || player.Boat.collidingIsland == null)
+		if (!player.IsDocked || player.Boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to search for treasure, but is not docked, or even colliding with an island!");
 			return;

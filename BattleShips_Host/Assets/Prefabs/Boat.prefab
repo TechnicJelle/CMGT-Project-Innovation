@@ -82,6 +82,9 @@ MonoBehaviour:
   blowingSpeed: 100
   rotSpeed: 0.03
   go: 1
+  cannonballPrefab: {fileID: 6994834413564048391, guid: 03f0645f7d63c0ada909446f5af4248c,
+    type: 3}
+  shootingPower: 1000
 --- !u!1001 &727621068693648142
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Shared.Scripts;
 using UnityEngine;
@@ -5,37 +6,63 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Boat : MonoBehaviour
 {
+	[Header("Movement")]
 	[SerializeField] [Range(0.0f, 360.0f)] private float startRotation;
 	[SerializeField] private float moveSpeed = 15;
 	[SerializeField] private float blowingSpeed = 30;
 	[SerializeField] [Range(0, 0.1f)] private float rotSpeed;
 	[SerializeField] public bool go;
 
+	[Header("Shooting")]
+	[SerializeField] private GameObject cannonballPrefab;
+	[SerializeField] private float shootingPower = 1000;
+
+	// == Not visible in inspector ==
+	// Properties
 	public string ID { private get; set; }
 
-	[CanBeNull] public GameObject collidingIsland;
-
-	private Rigidbody _rb;
+	// Movement
+	private Rigidbody _rigidbody;
 	private float _targetRotation;
-	private Vector3 _direction;
-	private bool _blowing;
+	private Vector3 _movementDirection;
+	private bool _isBlowing;
+	[CanBeNull] public GameObject CollidingIsland { get; private set; }
 
+	// Shooting
 	private MessageFactory.ShootingDirection? _shouldShoot;
 
 	private void Awake()
 	{
-		_rb = GetComponent<Rigidbody>();
+		_rigidbody = GetComponent<Rigidbody>();
 		_targetRotation = startRotation;
-		_direction = Vector3.forward;
+		_movementDirection = Vector3.forward;
 	}
 
 	private void Update()
 	{
 		if (_shouldShoot != null)
 		{
-			Debug.Log(name + ": " + _shouldShoot);
+			Shoot(_shouldShoot.Value);
 			_shouldShoot = null;
 		}
+	}
+
+	private void Shoot(MessageFactory.ShootingDirection shootingDirection)
+	{
+		Transform t = transform;
+		Vector3 right = t.right;
+		Vector3 direction = shootingDirection switch
+		{
+			MessageFactory.ShootingDirection.Port => -right,
+			MessageFactory.ShootingDirection.Starboard => right,
+			_ => throw new ArgumentOutOfRangeException(nameof(shootingDirection), shootingDirection, null),
+		};
+
+		Bounds boatBounds = GetComponent<Collider>().bounds;
+		Vector3 ballRadius = cannonballPrefab.GetComponentInChildren<SphereCollider>().radius * cannonballPrefab.transform.localScale;
+		float offset = boatBounds.size.x / 2f + ballRadius.x;
+		GameObject cannonball = Instantiate(cannonballPrefab, t.position + direction * offset + t.up, Quaternion.identity);
+		cannonball.GetComponent<Rigidbody>().AddForce(direction * shootingPower);
 	}
 
 	private void FixedUpdate()
@@ -45,13 +72,13 @@ public class Boat : MonoBehaviour
 
 	private void Move()
 	{
-		_direction = Quaternion.Euler(new Vector3(0, _targetRotation, 0)) * Vector3.forward;
+		_movementDirection = Quaternion.Euler(new Vector3(0, _targetRotation, 0)) * Vector3.forward;
 		Vector3 forward = transform.forward;
-		forward = Vector3.Lerp(forward, _direction, rotSpeed);
+		forward = Vector3.Lerp(forward, _movementDirection, rotSpeed);
 		transform.forward = forward;
 		if (go)
 		{
-			_rb.AddForce(forward * ((_blowing ? blowingSpeed : moveSpeed) * Time.fixedDeltaTime * 100));
+			_rigidbody.AddForce(forward * ((_isBlowing ? blowingSpeed : moveSpeed) * Time.fixedDeltaTime * 100));
 		}
 	}
 
@@ -64,7 +91,7 @@ public class Boat : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Island"))
 		{
-			collidingIsland = other.gameObject;
+			CollidingIsland = other.gameObject;
 			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(true));
 		}
 	}
@@ -74,13 +101,13 @@ public class Boat : MonoBehaviour
 		if (other.gameObject.CompareTag("Island"))
 		{
 			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(false));
-			collidingIsland = null;
+			CollidingIsland = null;
 		}
 	}
 
 	public void SetBlowing(bool blowing)
 	{
-		_blowing = blowing;
+		_isBlowing = blowing;
 	}
 
 	public void SetShoot(MessageFactory.ShootingDirection shootingDirection)
