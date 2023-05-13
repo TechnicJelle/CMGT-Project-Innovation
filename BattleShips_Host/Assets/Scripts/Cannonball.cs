@@ -8,6 +8,7 @@ public class Cannonball : MonoBehaviour
 	private void Start()
 	{
 		//TODO: Shot smoke effect (should not move along with the cannonball, nor with the ship)
+		Debug.DrawRay(transform.position, transform.forward * 5, Color.white, 10);
 	}
 
 	private void OnCollisionEnter(Collision other)
@@ -37,8 +38,10 @@ public class Cannonball : MonoBehaviour
 		}
 
 		Boat boat = other.gameObject.GetComponent<Boat>();
-		if (boat != null && boat != Shooter)
+		if (boat != null)
 		{
+			if(boat == Shooter) return;
+
 			boat.Damage();
 
 			//TODO: Boat explosion effect

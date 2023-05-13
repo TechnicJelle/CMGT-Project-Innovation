@@ -98,7 +98,7 @@ public class Boat : MonoBehaviour
 		{
 			float alongSide = boatBounds.size.z / shotsInOneGo * i + 0.5f;
 			Vector3 fromBack = boatBounds.size.z / 2 * forward;
-			GameObject cannonball = Instantiate(cannonballPrefab, t.position + direction * offset - fromBack + alongSide * forward + t.up, Quaternion.identity);
+			GameObject cannonball = Instantiate(cannonballPrefab, t.position + direction * offset - fromBack + alongSide * forward + t.up, Quaternion.LookRotation(direction));
 			float rand = Random.Range(0.9f, 1.1f);
 			cannonball.GetComponent<Rigidbody>().AddForce(direction * (shootingPower * rand));
 			cannonball.GetComponent<Cannonball>().Shooter = this;
