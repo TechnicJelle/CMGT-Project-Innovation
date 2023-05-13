@@ -1,11 +1,17 @@
 using System;
 using JetBrains.Annotations;
 using Shared.Scripts;
+using TMPro;
+using UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Boat : MonoBehaviour
 {
+	[SerializeField] private TMP_Text txtName;
+	[SerializeField] private Slider sldHealth;
+
 	[Header("Movement")]
 	[SerializeField] [Range(0.0f, 360.0f)] private float startRotation;
 	[SerializeField] private float moveSpeed = 15;
@@ -20,7 +26,7 @@ public class Boat : MonoBehaviour
 
 	// == Not visible in inspector ==
 	// Properties
-	public string ID { private get; set; }
+	private string _id;
 
 	// Movement
 	private Rigidbody _rigidbody;
@@ -39,6 +45,15 @@ public class Boat : MonoBehaviour
 		_targetRotation = startRotation;
 		_movementDirection = Vector3.forward;
 		_health = startHealth;
+		sldHealth.maxValue = startHealth;
+		sldHealth.value = _health;
+	}
+
+	public void Setup(string id, Camera cam)
+	{
+		_id = id;
+		txtName.text = id;
+		GetComponentInChildren<PointToCamera>().SetCamera(cam);
 	}
 
 	private void Update()
@@ -96,7 +111,7 @@ public class Boat : MonoBehaviour
 		if (other.gameObject.CompareTag("IslandDocking"))
 		{
 			CollidingIsland = other.gameObject;
-			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(true));
+			WebsocketServer.Instance.Send(_id, MessageFactory.CreateDockingAvailableUpdate(true));
 		}
 	}
 
@@ -104,19 +119,16 @@ public class Boat : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("IslandDocking"))
 		{
-			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(false));
+			WebsocketServer.Instance.Send(_id, MessageFactory.CreateDockingAvailableUpdate(false));
 			CollidingIsland = null;
 		}
 	}
 
 	public void Damage()
 	{
-		Debug.Log(name + ": oof ouch");
 		_health--;
-		if (_health <= 0)
-		{
-			Die();
-		}
+		if (_health <= 0) Die();
+		sldHealth.value = _health;
 	}
 
 	private void Die()

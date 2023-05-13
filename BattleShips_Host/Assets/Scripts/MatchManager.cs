@@ -142,7 +142,7 @@ public class MatchManager : MonoBehaviour
 			instance.name = id;
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
-			boat.ID = id;
+			boat.Setup(id, matchCamera);
 			_players.Add(id, new PlayerData(boat, "Joe"));
 			// ImmersiveCamera.Instance.AddPlayer(boat.transform); //TODO
 		}
