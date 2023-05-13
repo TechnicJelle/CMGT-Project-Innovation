@@ -330,6 +330,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.75
       objectReference: {fileID: 0}
+    - target: {fileID: 3014777352721158320, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
+        type: 3}
+      propertyPath: m_TagString
+      value: IslandDocking
+      objectReference: {fileID: 0}
     - target: {fileID: 3014777352721158323, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -344,6 +349,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 'Bone_Island '
+      objectReference: {fileID: 0}
+    - target: {fileID: 3014777353147954444, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
+        type: 3}
+      propertyPath: m_TagString
+      value: Island
       objectReference: {fileID: 0}
     - target: {fileID: 3014777353147954447, guid: 6d956bdfc3a429e4e93e51c2db7a17c5,
         type: 3}
@@ -1551,6 +1561,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'Oasis_Island  '
       objectReference: {fileID: 0}
+    - target: {fileID: 5815558658004382542, guid: 2d0b8a6bfa7240e43b058c62df765799,
+        type: 3}
+      propertyPath: m_TagString
+      value: Island
+      objectReference: {fileID: 0}
     - target: {fileID: 5815558658004382543, guid: 2d0b8a6bfa7240e43b058c62df765799,
         type: 3}
       propertyPath: m_RootOrder
@@ -1625,6 +1640,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815558658277114999, guid: 2d0b8a6bfa7240e43b058c62df765799,
+        type: 3}
+      propertyPath: m_TagString
+      value: IslandDocking
       objectReference: {fileID: 0}
     - target: {fileID: 8818549522895415765, guid: 2d0b8a6bfa7240e43b058c62df765799,
         type: 3}
@@ -2481,6 +2501,11 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5141103010178335899, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
+        type: 3}
+      propertyPath: m_TagString
+      value: IslandDocking
+      objectReference: {fileID: 0}
     - target: {fileID: 7397860324528058288, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2495,6 +2520,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 'Vulcano_Island '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820338437260600032, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Island
       objectReference: {fileID: 0}
     - target: {fileID: 8889682433044007870, guid: 1d8670a5bb9bbb14baf6648a43dfb68b,
         type: 3}
@@ -3679,10 +3709,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'Monkey_Island '
       objectReference: {fileID: 0}
+    - target: {fileID: 6274426870641693969, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Island
+      objectReference: {fileID: 0}
     - target: {fileID: 6274426870646878764, guid: a009f0cbd5dd41d45b3c3e01216f355b,
         type: 3}
       propertyPath: m_LocalScale.y
       value: 7.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 6274426870646878765, guid: a009f0cbd5dd41d45b3c3e01216f355b,
+        type: 3}
+      propertyPath: m_TagString
+      value: IslandDocking
       objectReference: {fileID: 0}
     - target: {fileID: 8177018403899484412, guid: a009f0cbd5dd41d45b3c3e01216f355b,
         type: 3}
@@ -4304,6 +4344,11 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: -38.74697
       objectReference: {fileID: 0}
+    - target: {fileID: 7618485526310979686, guid: 2d4739065eae45c4e80084d6643f928e,
+        type: 3}
+      propertyPath: m_TagString
+      value: IslandDocking
+      objectReference: {fileID: 0}
     - target: {fileID: 7618485526310979687, guid: 2d4739065eae45c4e80084d6643f928e,
         type: 3}
       propertyPath: m_LocalScale.y
@@ -4313,6 +4358,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 'U_Island '
+      objectReference: {fileID: 0}
+    - target: {fileID: 7618485526375964881, guid: 2d4739065eae45c4e80084d6643f928e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Island
       objectReference: {fileID: 0}
     - target: {fileID: 7618485526375964882, guid: 2d4739065eae45c4e80084d6643f928e,
         type: 3}
@@ -4705,10 +4755,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'Shipwreck_Island '
       objectReference: {fileID: 0}
+    - target: {fileID: 55966698010504034, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_TagString
+      value: Island
+      objectReference: {fileID: 0}
     - target: {fileID: 55966698361920446, guid: 560ad5a38cbad1145bbce878280c7726,
         type: 3}
       propertyPath: m_LocalScale.y
       value: 9.23
+      objectReference: {fileID: 0}
+    - target: {fileID: 55966698361920447, guid: 560ad5a38cbad1145bbce878280c7726,
+        type: 3}
+      propertyPath: m_TagString
+      value: IslandDocking
       objectReference: {fileID: 0}
     - target: {fileID: 753861776767603488, guid: 560ad5a38cbad1145bbce878280c7726,
         type: 3}

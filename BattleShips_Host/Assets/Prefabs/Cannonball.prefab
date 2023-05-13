@@ -107,6 +107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2667996473316969684}
   - component: {fileID: 4300373367856105880}
+  - component: {fileID: 2374631332487419380}
   m_Layer: 0
   m_Name: Cannonball
   m_TagString: Untagged
@@ -141,8 +142,20 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2374631332487419380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6994834413564048391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb273f4c6960b44b86d91f322669cc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

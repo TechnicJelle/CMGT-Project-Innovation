@@ -75,7 +75,7 @@ public class MatchManager : MonoBehaviour
 		_spawnBounds.Expand(-7f); //To ensure no boats get stuck in the boundary
 	}
 
-	private Vector3 GetValidSpawnLocation()
+	public Vector3 GetValidSpawnLocation()
 	{
 		//random point in bounds
 		Vector3 randomPoint = new(

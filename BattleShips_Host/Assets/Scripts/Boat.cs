@@ -16,6 +16,7 @@ public class Boat : MonoBehaviour
 	[Header("Shooting")]
 	[SerializeField] private GameObject cannonballPrefab;
 	[SerializeField] private float shootingPower = 1000;
+	[SerializeField] private int startHealth = 10;
 
 	// == Not visible in inspector ==
 	// Properties
@@ -30,12 +31,14 @@ public class Boat : MonoBehaviour
 
 	// Shooting
 	private MessageFactory.ShootingDirection? _shouldShoot;
+	private int _health;
 
 	private void Awake()
 	{
 		_rigidbody = GetComponent<Rigidbody>();
 		_targetRotation = startRotation;
 		_movementDirection = Vector3.forward;
+		_health = startHealth;
 	}
 
 	private void Update()
@@ -63,6 +66,7 @@ public class Boat : MonoBehaviour
 		float offset = boatBounds.size.x / 2f + ballRadius.x;
 		GameObject cannonball = Instantiate(cannonballPrefab, t.position + direction * offset + t.up, Quaternion.identity);
 		cannonball.GetComponent<Rigidbody>().AddForce(direction * shootingPower);
+		cannonball.GetComponent<Cannonball>().Shooter = this;
 	}
 
 	private void FixedUpdate()
@@ -89,7 +93,7 @@ public class Boat : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.CompareTag("Island"))
+		if (other.gameObject.CompareTag("IslandDocking"))
 		{
 			CollidingIsland = other.gameObject;
 			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(true));
@@ -98,11 +102,28 @@ public class Boat : MonoBehaviour
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.gameObject.CompareTag("Island"))
+		if (other.gameObject.CompareTag("IslandDocking"))
 		{
 			WebsocketServer.Instance.Send(ID, MessageFactory.CreateDockingAvailableUpdate(false));
 			CollidingIsland = null;
 		}
+	}
+
+	public void Damage()
+	{
+		Debug.Log(name + ": oof ouch");
+		_health--;
+		if (_health <= 0)
+		{
+			Die();
+		}
+	}
+
+	private void Die()
+	{
+		transform.position = MatchManager.Instance.GetValidSpawnLocation();
+		//TODO: Drop treasure(s?)
+		_health = startHealth;
 	}
 
 	public void SetBlowing(bool blowing)
