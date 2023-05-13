@@ -356,6 +356,7 @@ MonoBehaviour:
     type: 3}
   shootingPower: 1000
   startHealth: 10
+  reloadSpeed: 2
 --- !u!1 &4644949546126456855
 GameObject:
   m_ObjectHideFlags: 0

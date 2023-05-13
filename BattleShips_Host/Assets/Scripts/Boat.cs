@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Shared.Scripts;
 using TMPro;
 using UI;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Boat : MonoBehaviour
@@ -23,6 +25,8 @@ public class Boat : MonoBehaviour
 	[SerializeField] private GameObject cannonballPrefab;
 	[SerializeField] private float shootingPower = 1000;
 	[SerializeField] private int startHealth = 10;
+	[SerializeField] private float reloadSpeed = 2f;
+	[SerializeField] private int shotsInOneGo = 3;
 
 	// == Not visible in inspector ==
 	// Properties
@@ -38,6 +42,7 @@ public class Boat : MonoBehaviour
 	// Shooting
 	private MessageFactory.ShootingDirection? _shouldShoot;
 	private int _health;
+	private readonly Dictionary<MessageFactory.ShootingDirection, float> _reloadTimers = new();
 
 	private void Awake()
 	{
@@ -47,6 +52,9 @@ public class Boat : MonoBehaviour
 		_health = startHealth;
 		sldHealth.maxValue = startHealth;
 		sldHealth.value = _health;
+
+		foreach (MessageFactory.ShootingDirection dir in Enum.GetValues(typeof(MessageFactory.ShootingDirection)))
+			_reloadTimers.Add(dir, 0f);
 	}
 
 	public void Setup(string id, Camera cam)
@@ -58,9 +66,15 @@ public class Boat : MonoBehaviour
 
 	private void Update()
 	{
+		for (byte i = 0; i < _reloadTimers.Count; i++)
+		{
+			_reloadTimers[(MessageFactory.ShootingDirection) i] += Time.deltaTime;
+		}
+
+
 		if (_shouldShoot != null)
 		{
-			Shoot(_shouldShoot.Value);
+			if(_reloadTimers[_shouldShoot.Value] >= reloadSpeed) Shoot(_shouldShoot.Value);
 			_shouldShoot = null;
 		}
 	}
@@ -69,6 +83,7 @@ public class Boat : MonoBehaviour
 	{
 		Transform t = transform;
 		Vector3 right = t.right;
+		Vector3 forward = t.forward;
 		Vector3 direction = shootingDirection switch
 		{
 			MessageFactory.ShootingDirection.Port => -right,
@@ -79,9 +94,17 @@ public class Boat : MonoBehaviour
 		Bounds boatBounds = GetComponent<Collider>().bounds;
 		Vector3 ballRadius = cannonballPrefab.GetComponentInChildren<SphereCollider>().radius * cannonballPrefab.transform.localScale;
 		float offset = boatBounds.size.x / 2f + ballRadius.x;
-		GameObject cannonball = Instantiate(cannonballPrefab, t.position + direction * offset + t.up, Quaternion.identity);
-		cannonball.GetComponent<Rigidbody>().AddForce(direction * shootingPower);
-		cannonball.GetComponent<Cannonball>().Shooter = this;
+		for (int i = 0; i < shotsInOneGo; i++)
+		{
+			float alongSide = boatBounds.size.z / shotsInOneGo * i + 0.5f;
+			Vector3 fromBack = boatBounds.size.z / 2 * forward;
+			GameObject cannonball = Instantiate(cannonballPrefab, t.position + direction * offset - fromBack + alongSide * forward + t.up, Quaternion.identity);
+			float rand = Random.Range(0.9f, 1.1f);
+			cannonball.GetComponent<Rigidbody>().AddForce(direction * (shootingPower * rand));
+			cannonball.GetComponent<Cannonball>().Shooter = this;
+		}
+
+		_reloadTimers[shootingDirection] = 0;
 	}
 
 	private void FixedUpdate()
