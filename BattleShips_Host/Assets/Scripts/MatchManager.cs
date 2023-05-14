@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using JetBrains.Annotations;
 using Shared.Scripts;
 using Shared.Scripts.UI;
@@ -16,8 +17,9 @@ public class MatchManager : MonoBehaviour
 	public static bool IsMatchRunning => Instance._players != null;
 
 	[SerializeField] private GameObject playerPrefab;
-	[SerializeField] private Camera mainCamera;
-	[SerializeField] private Camera matchCamera;
+	[SerializeField] private CinemachineVirtualCamera menuCamera;
+	[SerializeField] private CinemachineVirtualCamera matchCamera;
+	[SerializeField] private CinemachineTargetGroup targetGroup;
 	[SerializeField] private View gameView;
 	[SerializeField] private View endMatchView;
 	[SerializeField] private TMP_Text winnerText;
@@ -47,7 +49,7 @@ public class MatchManager : MonoBehaviour
 
 	private enum Cameras
 	{
-		Main,
+		Menu,
 		Match,
 	}
 
@@ -63,7 +65,7 @@ public class MatchManager : MonoBehaviour
 
 		if (playerPrefab.GetComponent<Boat>() == null)
 			Debug.LogError("Player prefab does not have a Boat component");
-		ChangeCamera(Cameras.Main);
+		ChangeCamera(Cameras.Menu);
 
 		//Boundaries
 		List<Transform> children = boundaries.Cast<Transform>().ToList();
@@ -142,12 +144,11 @@ public class MatchManager : MonoBehaviour
 			instance.name = id;
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
-			boat.Setup(id, matchCamera);
+			boat.Setup(id, matchCamera.transform);
 			_players.Add(id, new PlayerData(boat, "Joe"));
-			// ImmersiveCamera.Instance.AddPlayer(boat.transform); //TODO
+			targetGroup.AddMember(boat.transform, 1, 1);
 		}
 
-		// ImmersiveCamera.Instance.FitAllPlayers(); //TODO
 		ChangeCamera(Cameras.Match);
 	}
 
@@ -171,9 +172,12 @@ public class MatchManager : MonoBehaviour
 			Destroy(player.Boat.gameObject);
 		}
 
-		// ImmersiveCamera.Instance.ClearPlayers(); //TODO
+		foreach (PlayerData player in _players.Values)
+		{
+			targetGroup.RemoveMember(player.Boat.transform);
+		}
 		_players = null;
-		ChangeCamera(Cameras.Main);
+		ChangeCamera(Cameras.Menu);
 	}
 
 	/// <summary>
@@ -198,7 +202,7 @@ public class MatchManager : MonoBehaviour
 
 	private void ChangeCamera(Cameras mode)
 	{
-		mainCamera.enabled = mode == Cameras.Main;
+		menuCamera.enabled = mode == Cameras.Menu;
 		matchCamera.enabled = mode == Cameras.Match;
 	}
 
