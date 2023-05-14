@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1132.2207, g: 2755.2812, b: 2438.5234, a: 1}
+  m_IndirectSpecularColor: {r: 6055.3516, g: 7782.2676, b: 5777.965, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2988,13 +2988,13 @@ MonoBehaviour:
   m_CenterOnActivate: 1
   m_GroupFramingMode: 2
   m_AdjustmentMode: 2
-  m_GroupFramingSize: 0.8
+  m_GroupFramingSize: 0.6
   m_MaxDollyIn: 5000
   m_MaxDollyOut: 5000
-  m_MinimumDistance: 20
+  m_MinimumDistance: 100
   m_MaximumDistance: 5000
   m_MinimumFOV: 25
-  m_MaximumFOV: 60
+  m_MaximumFOV: 140
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
 --- !u!1 &771691381
