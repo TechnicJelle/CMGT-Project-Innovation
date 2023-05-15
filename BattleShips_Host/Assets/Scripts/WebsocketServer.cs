@@ -101,6 +101,7 @@ public class WebsocketServer : MonoBehaviour
 	/// </summary>
 	public void Send(string id, byte[] bytes)
 	{
+		// Debug.Log(BitConverter.ToString(bytes));
 		Sessions.SendToAsync(bytes, id, null);
 	}
 
@@ -145,11 +146,16 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.SearchTreasureSignal:
 				MatchManager.Instance.SearchTreasure(ID);
 				break;
+			case MessageFactory.MessageType.ShootingUpdate:
+				MessageFactory.ShootingDirection shootingDirection = MessageFactory.DecodeShootingUpdate(e.RawData);
+				MatchManager.Instance.BoatShoot(ID, shootingDirection);
+				break;
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:
 			case MessageFactory.MessageType.IsDockedUpdate:
 			case MessageFactory.MessageType.FoundTreasureSignal:
+			case MessageFactory.MessageType.ReloadUpdate:
 			default:
 				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
 				break;

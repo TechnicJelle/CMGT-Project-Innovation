@@ -75,7 +75,7 @@ public class MatchManager : MonoBehaviour
 		_spawnBounds.Expand(-7f); //To ensure no boats get stuck in the boundary
 	}
 
-	private Vector3 GetValidSpawnLocation()
+	public Vector3 GetValidSpawnLocation()
 	{
 		//random point in bounds
 		Vector3 randomPoint = new(
@@ -142,7 +142,7 @@ public class MatchManager : MonoBehaviour
 			instance.name = id;
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
-			boat.ID = id;
+			boat.Setup(id, matchCamera);
 			_players.Add(id, new PlayerData(boat, "Joe"));
 			// ImmersiveCamera.Instance.AddPlayer(boat.transform); //TODO
 		}
@@ -207,12 +207,17 @@ public class MatchManager : MonoBehaviour
 		_players?[id].Boat.SetBlowing(blowing);
 	}
 
+	public void BoatShoot(string id, MessageFactory.ShootingDirection shootingDirection)
+	{
+		_players?[id].Boat.SetShoot(shootingDirection);
+	}
+
 	public void RequestDocking(string id)
 	{
 		PlayerData player = _players?[id];
 		if (player == null) return;
 		Boat boat = player.Boat;
-		if (player.IsDocked || boat.collidingIsland == null)
+		if (player.IsDocked || boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to dock, but is already docked, or not even colliding with an island!");
 			return;
@@ -230,7 +235,7 @@ public class MatchManager : MonoBehaviour
 		PlayerData player = _players?[id];
 		if (player == null) return;
 		Boat boat = player.Boat;
-		if (!player.IsDocked || boat.collidingIsland == null)
+		if (!player.IsDocked || boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to undock, but is not docked, or even colliding with an island!");
 			return;
@@ -248,7 +253,7 @@ public class MatchManager : MonoBehaviour
 	{
 		PlayerData player = _players?[id];
 		if (player == null) return;
-		if (!player.IsDocked || player.Boat.collidingIsland == null)
+		if (!player.IsDocked || player.Boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to search for treasure, but is not docked, or even colliding with an island!");
 			return;

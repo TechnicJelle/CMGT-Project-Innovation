@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Shared.Scripts;
 using Shared.Scripts.UI;
 using UnityEngine;
+using UnityEngine.UI;
 using WebSocketSharp;
 
 public class WebsocketClient : MonoBehaviour
@@ -18,6 +20,9 @@ public class WebsocketClient : MonoBehaviour
 
 	[SerializeField] private View mainMenu;
 
+	[SerializeField] private Slider portProgress;
+	[SerializeField] private Slider starboardProgress;
+
 	private WebSocket _webSocket;
 
 	private bool _shouldDisconnect;
@@ -29,12 +34,28 @@ public class WebsocketClient : MonoBehaviour
 	private bool _isDocked;
 	private bool _shouldUpdateFoundTreasure;
 
+	private enum ReloadSoundState
+	{
+		Ready,
+		Start,
+		Playing,
+	}
+
+	private readonly Dictionary<MessageFactory.ShootingDirection, float> _reloadTimers = new();
+	private readonly Dictionary<MessageFactory.ShootingDirection, ReloadSoundState> _reloadSounds = new();
+
 	private void Awake()
 	{
 		if (Instance != null)
 			Debug.LogError($"There is more than one {this} in the scene");
 		else
 			Instance = this;
+
+		foreach (MessageFactory.ShootingDirection dir in Enum.GetValues(typeof(MessageFactory.ShootingDirection)))
+		{
+			_reloadTimers.Add(dir, 0f);
+			_reloadSounds.Add(dir, ReloadSoundState.Ready);
+		}
 	}
 
 	public bool Connect(string ip, int port) =>
@@ -55,6 +76,7 @@ public class WebsocketClient : MonoBehaviour
 
 			_webSocket.OnMessage += (object _, MessageEventArgs e) =>
 			{
+				// Debug.Log(BitConverter.ToString(e.RawData));
 				switch (MessageFactory.CheckMessageType(e.RawData))
 				{
 					case MessageFactory.MessageType.StartGameSignal:
@@ -78,10 +100,21 @@ public class WebsocketClient : MonoBehaviour
 						Debug.Log("Found treasure signal received from server!");
 						_shouldUpdateFoundTreasure = true;
 						break;
+					case MessageFactory.MessageType.ReloadUpdate:
+						Debug.Log("Reload update received from server!");
+						(MessageFactory.ShootingDirection dir, float progress) = MessageFactory.DecodeReloadUpdate(e.RawData);
+						_reloadTimers[dir] = progress;
+
+						//Reload sound, start playing at 20% progress, to put the final click of the sound at 100%
+						//(reload is 2s, sound is 2s with the click at 1.5s)
+						if (_reloadSounds[dir] == ReloadSoundState.Ready && progress >= 0.2f) _reloadSounds[dir] = ReloadSoundState.Start;
+						if (progress >= 1f) _reloadSounds[dir] = ReloadSoundState.Ready;
+						break;
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
 					case MessageFactory.MessageType.SearchTreasureSignal:
+					case MessageFactory.MessageType.ShootingUpdate:
 					default:
 						Debug.LogWarning("Received a message from the server that is not allowed! Ignoring...");
 						break;
@@ -170,5 +203,24 @@ public class WebsocketClient : MonoBehaviour
 			_shouldUpdateFoundTreasure = false;
 			OnFoundTreasure.Invoke();
 		}
+
+		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);
+		UpdateDir(starboardProgress, MessageFactory.ShootingDirection.Starboard);
+
+		//Reload sound
+		for (byte i = 0; i < _reloadSounds.Count; i++)
+		{
+			MessageFactory.ShootingDirection dir = (MessageFactory.ShootingDirection) i;
+			if (_reloadSounds[dir] == ReloadSoundState.Start)
+			{
+				SoundManager.Instance.PlaySound(SoundManager.Sound.Reloading);
+				_reloadSounds[dir] = ReloadSoundState.Playing;
+			}
+		}
+	}
+
+	private void UpdateDir(Slider slider, MessageFactory.ShootingDirection direction)
+	{
+		slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hid bar when not reloading
 	}
 }

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Island
+  - IslandDocking
   layers:
   - Default
   - TransparentFX
