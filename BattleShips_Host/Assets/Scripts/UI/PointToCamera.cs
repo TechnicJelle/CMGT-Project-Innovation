@@ -4,9 +4,9 @@ namespace UI
 {
 	public class PointToCamera : MonoBehaviour
 	{
-		private Camera _camera;
+		private Transform _camera;
 
-		public void SetCamera(Camera cam)
+		public void SetCamera(Transform cam)
 		{
 			_camera = cam;
 		}

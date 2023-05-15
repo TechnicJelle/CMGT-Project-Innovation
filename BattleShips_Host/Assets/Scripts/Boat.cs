@@ -64,7 +64,7 @@ public class Boat : MonoBehaviour
 		}
 	}
 
-	public void Setup(string id, Camera cam)
+	public void Setup(string id, Transform cam)
 	{
 		_id = id;
 		txtName.text = id;
