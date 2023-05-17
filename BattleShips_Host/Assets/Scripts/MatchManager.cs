@@ -347,6 +347,21 @@ public class MatchManager : MonoBehaviour
 		yield return new WaitForSeconds(0.3f);
 		_click.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 	}
+
+	public int GetPlayerPoints(string playerId)
+	{
+		return _players[playerId].Points;
+	}
+
+	public void SetPlayerPoints(string playerId, int playerPoints)
+	{
+		if (playerPoints >= maxTreasure)
+		{
+			WinMatch(_players[playerId]);
+			return;
+		}
+		_players[playerId].Points = playerPoints;
+	}
 }
 
 public class PlayerData
