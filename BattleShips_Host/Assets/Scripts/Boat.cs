@@ -159,6 +159,7 @@ public class Boat : MonoBehaviour
 			int currentPoints = MatchManager.Instance.GetPlayerPoints(_id);
 			int shipPoitns = other.GetComponent<Shipwreck>().Treasure;
 			MatchManager.Instance.SetPlayerPoints(_id, currentPoints + shipPoitns);
+			Destroy(other.gameObject);
 		}
 	}
 
