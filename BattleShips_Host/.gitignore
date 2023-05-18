@@ -91,6 +91,9 @@ crashlytics-build.properties
 # Ignore cache inside FMOD Project folder itself
 /FMOD/**/.cache
 
+# Ignore StreamingAssets folder that get copied on build
+/[Aa]ssets/StreamingAssets*
+
 # Log-files
 fmod.log
 fmod_editor.log
