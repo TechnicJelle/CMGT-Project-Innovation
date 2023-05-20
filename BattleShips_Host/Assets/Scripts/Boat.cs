@@ -29,6 +29,8 @@ public class Boat : MonoBehaviour
 	[SerializeField] private int shotsInOneGo = 3;
 	[SerializeField] private int reloadUpdatesPerSecond = 1;
 
+	[SerializeField] private Shipwreck shipwreckPrefab;
+	
 	// == Not visible in inspector ==
 	// Properties
 	private string _id;
@@ -151,6 +153,14 @@ public class Boat : MonoBehaviour
 			CollidingIsland = other.gameObject;
 			WebsocketServer.Instance.Send(_id, MessageFactory.CreateDockingAvailableUpdate(true));
 		}
+
+		if (other.gameObject.CompareTag("Shipwreck"))
+		{
+			int currentPoints = MatchManager.Instance.GetPlayerPoints(_id);
+			int shipPoints = other.GetComponent<Shipwreck>().Treasure;
+			MatchManager.Instance.SetPlayerPoints(_id, currentPoints + shipPoints);
+			Destroy(other.gameObject);
+		}
 	}
 
 	private void OnTriggerExit(Collider other)
@@ -171,9 +181,16 @@ public class Boat : MonoBehaviour
 
 	private void Die()
 	{
+		Vector3 oldPos = transform.position;
 		transform.position = MatchManager.Instance.GetValidSpawnLocation();
-		//TODO: Drop treasure(s?)
+		
+		//Drop shipwreck with treasure
+		Shipwreck wreck = Instantiate(shipwreckPrefab, oldPos, Quaternion.identity);
+		int wreckTreasure = MatchManager.Instance.GetPlayerPoints(_id);
+		wreck.Initialize(wreckTreasure);
+		
 		_health = startHealth;
+		MatchManager.Instance.SetPlayerPoints(_id, 0);
 	}
 
 	public void SetBlowing(bool blowing)

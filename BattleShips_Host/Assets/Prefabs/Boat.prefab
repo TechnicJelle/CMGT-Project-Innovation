@@ -359,6 +359,8 @@ MonoBehaviour:
   reloadSpeed: 2
   shotsInOneGo: 3
   reloadUpdatesPerSecond: 3
+  shipwreckPrefab: {fileID: 5983619673053067490, guid: 419b95566eae0ec4d95835bdbc16cd6b,
+    type: 3}
 --- !u!1 &4644949546126456855
 GameObject:
   m_ObjectHideFlags: 0
