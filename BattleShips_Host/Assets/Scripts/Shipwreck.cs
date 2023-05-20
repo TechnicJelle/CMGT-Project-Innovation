@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class Shipwreck : MonoBehaviour
 {
-    private int treasure;
-
-    public int Treasure => treasure;
+    public int Treasure { get; private set; }
 
     public void Initialize(int pTreasure)
     {
-        treasure = pTreasure;
-        this.transform.Rotate(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360));
+        Treasure = pTreasure;
+        this.transform.Rotate(0, Random.Range(0, 360), 0);
     }
 }

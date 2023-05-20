@@ -287,13 +287,13 @@ public class MatchManager : MonoBehaviour
 		}
 	}
 
+
 	private IEnumerator SearchTreasureCoroutine(string id, PlayerData player)
 	{
 		yield return new WaitForSeconds(timeToGatherTreasure);
 		if (!player.IsSearchingTreasure) yield break;
 
 		player.IsSearchingTreasure = false;
-		player.Points++;
 
 		if (_onceToChorus)
 		{
@@ -301,14 +301,11 @@ public class MatchManager : MonoBehaviour
 			_music.setParameterByName("verse", 0);
 		}
 
-		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
-
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
 
-		if (player.Points >= maxTreasure)
-		{
-			WinMatch(player);
-		}
+		SetPlayerPoints(id, player.Points+1);
+		
+		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
 	}
 
 	private IEnumerator StartMatchMusic()
@@ -350,17 +347,31 @@ public class MatchManager : MonoBehaviour
 
 	public int GetPlayerPoints(string playerId)
 	{
+		PlayerData player = _players?[playerId];
+		if (player == null)
+		{
+			Debug.Log("Id not found when getting points. Id: "+playerId);
+			return -1;
+		}
+		
 		return _players[playerId].Points;
 	}
 
 	public void SetPlayerPoints(string playerId, int playerPoints)
 	{
-		if (playerPoints >= maxTreasure)
+		PlayerData player = _players?[playerId];
+		if (player == null)
 		{
-			WinMatch(_players[playerId]);
+			Debug.Log("Id not found when setting points. Id: "+playerId);
 			return;
 		}
-		_players[playerId].Points = playerPoints;
+
+		player.Points = playerPoints;
+		
+		if (playerPoints >= maxTreasure)
+		{
+			WinMatch(player);
+		}
 	}
 }
 

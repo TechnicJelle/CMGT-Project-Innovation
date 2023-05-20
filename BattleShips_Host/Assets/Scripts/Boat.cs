@@ -157,8 +157,8 @@ public class Boat : MonoBehaviour
 		if (other.gameObject.CompareTag("Shipwreck"))
 		{
 			int currentPoints = MatchManager.Instance.GetPlayerPoints(_id);
-			int shipPoitns = other.GetComponent<Shipwreck>().Treasure;
-			MatchManager.Instance.SetPlayerPoints(_id, currentPoints + shipPoitns);
+			int shipPoints = other.GetComponent<Shipwreck>().Treasure;
+			MatchManager.Instance.SetPlayerPoints(_id, currentPoints + shipPoints);
 			Destroy(other.gameObject);
 		}
 	}
@@ -185,7 +185,7 @@ public class Boat : MonoBehaviour
 		transform.position = MatchManager.Instance.GetValidSpawnLocation();
 		
 		//Drop shipwreck with treasure
-		Shipwreck wreck = Instantiate(shipwreckPrefab, oldPos, Quaternion.identity, null);
+		Shipwreck wreck = Instantiate(shipwreckPrefab, oldPos, Quaternion.identity);
 		int wreckTreasure = MatchManager.Instance.GetPlayerPoints(_id);
 		wreck.Initialize(wreckTreasure);
 		
