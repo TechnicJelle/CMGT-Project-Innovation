@@ -33,6 +33,7 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldUpdateDocked;
 	private bool _isDocked;
 	private bool _shouldUpdateFoundTreasure;
+	private bool _shouldVibrate;
 
 	private enum ReloadSoundState
 	{
@@ -110,6 +111,12 @@ public class WebsocketClient : MonoBehaviour
 						if (_reloadSounds[dir] == ReloadSoundState.Ready && progress >= 0.2f) _reloadSounds[dir] = ReloadSoundState.Start;
 						if (progress >= 1f) _reloadSounds[dir] = ReloadSoundState.Ready;
 						break;
+					case MessageFactory.MessageType.DamageBoat:
+						Debug.Log("Boat HIT, should rumble");
+						_shouldVibrate = true;
+						Invoke(nameof(StopVibration), 2f);
+						break;
+					
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
@@ -204,6 +211,11 @@ public class WebsocketClient : MonoBehaviour
 			OnFoundTreasure.Invoke();
 		}
 
+		if (_shouldVibrate)
+		{
+			Handheld.Vibrate();
+		}
+
 		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);
 		UpdateDir(starboardProgress, MessageFactory.ShootingDirection.Starboard);
 
@@ -222,5 +234,10 @@ public class WebsocketClient : MonoBehaviour
 	private void UpdateDir(Slider slider, MessageFactory.ShootingDirection direction)
 	{
 		slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hid bar when not reloading
+	}
+
+	private void StopVibration()
+	{
+		_shouldVibrate = false;
 	}
 }
