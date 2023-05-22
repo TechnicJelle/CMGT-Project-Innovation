@@ -114,7 +114,6 @@ public class WebsocketClient : MonoBehaviour
 					case MessageFactory.MessageType.DamageBoat:
 						Debug.Log("Boat HIT, should rumble");
 						_shouldVibrate = true;
-						Invoke(nameof(StopVibration), 2f);
 						break;
 					
 					case MessageFactory.MessageType.BoatDirectionUpdate:
@@ -213,7 +212,8 @@ public class WebsocketClient : MonoBehaviour
 
 		if (_shouldVibrate)
 		{
-			Handheld.Vibrate();
+			_shouldVibrate = false;
+			Vibrator.Vibrate(500);
 		}
 
 		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);
@@ -234,10 +234,5 @@ public class WebsocketClient : MonoBehaviour
 	private void UpdateDir(Slider slider, MessageFactory.ShootingDirection direction)
 	{
 		slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hid bar when not reloading
-	}
-
-	private void StopVibration()
-	{
-		_shouldVibrate = false;
 	}
 }
