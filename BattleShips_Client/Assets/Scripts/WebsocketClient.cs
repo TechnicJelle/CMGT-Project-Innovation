@@ -33,6 +33,7 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldUpdateDocked;
 	private bool _isDocked;
 	private bool _shouldUpdateFoundTreasure;
+	private bool _shouldVibrate;
 
 	private enum ReloadSoundState
 	{
@@ -110,6 +111,11 @@ public class WebsocketClient : MonoBehaviour
 						if (_reloadSounds[dir] == ReloadSoundState.Ready && progress >= 0.2f) _reloadSounds[dir] = ReloadSoundState.Start;
 						if (progress >= 1f) _reloadSounds[dir] = ReloadSoundState.Ready;
 						break;
+					case MessageFactory.MessageType.DamageBoat:
+						Debug.Log("Boat HIT, should rumble");
+						_shouldVibrate = true;
+						break;
+					
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
@@ -202,6 +208,12 @@ public class WebsocketClient : MonoBehaviour
 		{
 			_shouldUpdateFoundTreasure = false;
 			OnFoundTreasure.Invoke();
+		}
+
+		if (_shouldVibrate)
+		{
+			_shouldVibrate = false;
+			Vibrator.Vibrate(500);
 		}
 
 		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);

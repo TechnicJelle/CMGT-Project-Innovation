@@ -20,6 +20,7 @@ namespace Shared.Scripts
 			FoundTreasureSignal,
 			ShootingUpdate,
 			ReloadUpdate,
+			DamageBoat
 		}
 
 		public enum ShootingDirection : byte
