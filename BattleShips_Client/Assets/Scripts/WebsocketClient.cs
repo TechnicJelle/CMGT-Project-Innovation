@@ -33,7 +33,8 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldUpdateDocked;
 	private bool _isDocked;
 	private bool _shouldUpdateFoundTreasure;
-	private bool _shouldVibrate;
+	private bool _shouldDamage;
+	private bool _shouldDie;
 
 	private enum ReloadSoundState
 	{
@@ -112,8 +113,10 @@ public class WebsocketClient : MonoBehaviour
 						if (progress >= 1f) _reloadSounds[dir] = ReloadSoundState.Ready;
 						break;
 					case MessageFactory.MessageType.DamageBoat:
+						bool shouldDie = MessageFactory.DecodeDamageBoat(e.RawData);
+						_shouldDie = shouldDie;
+						_shouldDamage = !shouldDie;
 						Debug.Log("Boat HIT, should rumble");
-						_shouldVibrate = true;
 						break;
 					
 					case MessageFactory.MessageType.BoatDirectionUpdate:
@@ -210,10 +213,18 @@ public class WebsocketClient : MonoBehaviour
 			OnFoundTreasure.Invoke();
 		}
 
-		if (_shouldVibrate)
+		if (_shouldDamage)
 		{
-			_shouldVibrate = false;
+			_shouldDamage = false;
 			Vibrator.Vibrate(500);
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Damaged);
+		}
+
+		if (_shouldDie)
+		{
+			_shouldDie = false;
+			Vibrator.Vibrate(1000);
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Death);
 		}
 
 		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);

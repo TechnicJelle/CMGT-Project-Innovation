@@ -175,9 +175,9 @@ public class Boat : MonoBehaviour
 	public void Damage()
 	{
 		_health--;
+		WebsocketServer.Instance.Send(_id, MessageFactory.CreateDamageBoat(_health <= 0));
 		if (_health <= 0) Die();
 		sldHealth.value = _health;
-		WebsocketServer.Instance.Send(_id, MessageFactory.CreateSignal(MessageFactory.MessageType.DamageBoat));
 	}
 
 	private void Die()

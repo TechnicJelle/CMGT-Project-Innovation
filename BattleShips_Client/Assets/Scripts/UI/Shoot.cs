@@ -19,6 +19,7 @@ namespace UI
 		private void ShootCannon()
 		{
 			WebsocketClient.Instance.Send(MessageFactory.CreateShootingUpdate(shootingDirection));
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Shooting);
 		}
 	}
 }
