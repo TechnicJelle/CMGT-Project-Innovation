@@ -30,7 +30,7 @@ public class Boat : MonoBehaviour
 	[SerializeField] private int reloadUpdatesPerSecond = 1;
 
 	[SerializeField] private Shipwreck shipwreckPrefab;
-	
+
 	// == Not visible in inspector ==
 	// Properties
 	private string _id;
@@ -172,24 +172,30 @@ public class Boat : MonoBehaviour
 		}
 	}
 
+	public void Heal(int amount)
+	{
+		_health = Mathf.Min(_health + amount, startHealth);
+		sldHealth.value = _health;
+	}
+
 	public void Damage()
 	{
 		_health--;
+		WebsocketServer.Instance.Send(_id, MessageFactory.CreateDamageBoat(_health <= 0));
 		if (_health <= 0) Die();
 		sldHealth.value = _health;
-		WebsocketServer.Instance.Send(_id, MessageFactory.CreateSignal(MessageFactory.MessageType.DamageBoat));
 	}
 
 	private void Die()
 	{
 		Vector3 oldPos = transform.position;
 		transform.position = MatchManager.Instance.GetValidSpawnLocation();
-		
+
 		//Drop shipwreck with treasure
 		Shipwreck wreck = Instantiate(shipwreckPrefab, oldPos, Quaternion.identity);
 		int wreckTreasure = MatchManager.Instance.GetPlayerPoints(_id);
 		wreck.Initialize(wreckTreasure);
-		
+
 		_health = startHealth;
 		MatchManager.Instance.SetPlayerPoints(_id, 0);
 	}

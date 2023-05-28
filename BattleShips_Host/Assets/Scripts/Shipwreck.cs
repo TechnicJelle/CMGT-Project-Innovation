@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Shipwreck : MonoBehaviour
@@ -9,6 +7,6 @@ public class Shipwreck : MonoBehaviour
     public void Initialize(int pTreasure)
     {
         Treasure = pTreasure;
-        this.transform.Rotate(0, Random.Range(0, 360), 0);
+        transform.Rotate(0, Random.Range(0, 360), 0);
     }
 }

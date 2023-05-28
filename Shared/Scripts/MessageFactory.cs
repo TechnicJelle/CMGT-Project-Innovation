@@ -20,7 +20,9 @@ namespace Shared.Scripts
 			FoundTreasureSignal,
 			ShootingUpdate,
 			ReloadUpdate,
-			DamageBoat
+			DamageBoat,
+			RepairingSignal,
+			RepairDoneSignal
 		}
 
 		public enum ShootingDirection : byte
@@ -219,6 +221,30 @@ public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
 			float progress = BitConverter.ToSingle(progressBytes, 0);
 
 			return (shootingDirection, progress);
+		}
+#endregion
+
+#region DamageBoat
+		public static byte[] CreateDamageBoat(bool shouldDie)
+		{
+			byte[] message = new byte[1 + sizeof(bool)];
+			message[0] = (byte)MessageType.DamageBoat;
+
+			byte[] deathBytes = BitConverter.GetBytes(shouldDie);
+			Array.Copy(deathBytes, 0, message, 1, sizeof(bool));
+
+			return message;
+		}
+
+		public static bool DecodeDamageBoat(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.DamageBoat)
+				throw new ArgumentException($"Message is not a {MessageType.DamageBoat} message");
+
+			byte[] deathBytes = new byte[sizeof(bool)];
+			Array.Copy(message, 1, deathBytes, 0, sizeof(bool));
+
+			return BitConverter.ToBoolean(deathBytes);
 		}
 #endregion
 	}

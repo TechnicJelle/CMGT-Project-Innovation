@@ -11,6 +11,10 @@ public class SoundManager : MonoBehaviour
 	[SerializeField] private AudioClip joining;
 	[SerializeField] private AudioClip wind;
 	[SerializeField] private AudioClip reloading;
+	[SerializeField] private AudioClip shooting;
+	[SerializeField] private AudioClip death;
+	[SerializeField] private AudioClip damaged;
+	[SerializeField] private AudioClip repairing;
 
 	public enum Sound
 	{
@@ -19,9 +23,11 @@ public class SoundManager : MonoBehaviour
 		Joining,
 		Wind,
 		Reloading,
+		Shooting,
+		Death,
+		Damaged,
+		Repairing
 	}
-
-	private static Sound _soundType;
 
 	private void Awake()
 	{
@@ -54,6 +60,18 @@ public class SoundManager : MonoBehaviour
 				break;
 			case Sound.Reloading:
 				_audioSource.PlayOneShot(reloading);
+				break;
+			case Sound.Shooting:
+				_audioSource.PlayOneShot(shooting);
+				break;
+			case Sound.Death:
+				_audioSource.PlayOneShot(death);
+				break;
+			case Sound.Damaged:
+				_audioSource.PlayOneShot(damaged);
+				break;
+			case Sound.Repairing:
+				_audioSource.PlayOneShot(repairing);
 				break;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(type), type, null);

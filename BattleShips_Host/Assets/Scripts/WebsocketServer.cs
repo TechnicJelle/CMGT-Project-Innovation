@@ -150,6 +150,11 @@ public class Game : WebSocketBehavior
 				MessageFactory.ShootingDirection shootingDirection = MessageFactory.DecodeShootingUpdate(e.RawData);
 				MatchManager.Instance.BoatShoot(ID, shootingDirection);
 				break;
+			case MessageFactory.MessageType.RepairingSignal:
+				MatchManager.Instance.RepairBoat(ID);
+				break;
+			case MessageFactory.MessageType.DamageBoat:
+			case MessageFactory.MessageType.RepairDoneSignal:
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:

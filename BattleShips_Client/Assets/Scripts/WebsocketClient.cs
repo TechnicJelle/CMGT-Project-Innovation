@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Shared.Scripts;
 using Shared.Scripts.UI;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 using WebSocketSharp;
@@ -17,11 +18,12 @@ public class WebsocketClient : MonoBehaviour
 	public Action OnDocked;
 	public Action OnUndocked;
 	public Action OnFoundTreasure;
+	public Action OnRepairDone;
 
 	[SerializeField] private View mainMenu;
 
-	[SerializeField] private Slider portProgress;
-	[SerializeField] private Slider starboardProgress;
+	[SerializeField] private Shoot portButton;
+	[SerializeField] private Shoot starboardButton;
 
 	private WebSocket _webSocket;
 
@@ -33,7 +35,9 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldUpdateDocked;
 	private bool _isDocked;
 	private bool _shouldUpdateFoundTreasure;
-	private bool _shouldVibrate;
+	private bool _shouldDamage;
+	private bool _shouldDie;
+	private bool _shouldUpdateRepair;
 
 	private enum ReloadSoundState
 	{
@@ -101,8 +105,11 @@ public class WebsocketClient : MonoBehaviour
 						Debug.Log("Found treasure signal received from server!");
 						_shouldUpdateFoundTreasure = true;
 						break;
+					case MessageFactory.MessageType.RepairDoneSignal:
+						Debug.Log("Repaired boat signal received from server!");
+						_shouldUpdateRepair = true;
+						break;
 					case MessageFactory.MessageType.ReloadUpdate:
-						Debug.Log("Reload update received from server!");
 						(MessageFactory.ShootingDirection dir, float progress) = MessageFactory.DecodeReloadUpdate(e.RawData);
 						_reloadTimers[dir] = progress;
 
@@ -112,10 +119,12 @@ public class WebsocketClient : MonoBehaviour
 						if (progress >= 1f) _reloadSounds[dir] = ReloadSoundState.Ready;
 						break;
 					case MessageFactory.MessageType.DamageBoat:
+						bool shouldDie = MessageFactory.DecodeDamageBoat(e.RawData);
+						_shouldDie = shouldDie;
+						_shouldDamage = !shouldDie;
 						Debug.Log("Boat HIT, should rumble");
-						_shouldVibrate = true;
 						break;
-					
+
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
@@ -210,14 +219,28 @@ public class WebsocketClient : MonoBehaviour
 			OnFoundTreasure.Invoke();
 		}
 
-		if (_shouldVibrate)
+		if (_shouldDamage)
 		{
-			_shouldVibrate = false;
+			_shouldDamage = false;
 			Vibrator.Vibrate(500);
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Damaged);
 		}
 
-		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);
-		UpdateDir(starboardProgress, MessageFactory.ShootingDirection.Starboard);
+		if (_shouldDie)
+		{
+			_shouldDie = false;
+			Vibrator.Vibrate(1000);
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Death);
+		}
+
+		if (_shouldUpdateRepair)
+		{
+			_shouldUpdateRepair = false;
+			OnRepairDone.Invoke();
+		}
+
+		UpdateDir(portButton, MessageFactory.ShootingDirection.Port);
+		UpdateDir(starboardButton, MessageFactory.ShootingDirection.Starboard);
 
 		//Reload sound
 		for (byte i = 0; i < _reloadSounds.Count; i++)
@@ -231,8 +254,9 @@ public class WebsocketClient : MonoBehaviour
 		}
 	}
 
-	private void UpdateDir(Slider slider, MessageFactory.ShootingDirection direction)
+	private void UpdateDir(Shoot button, MessageFactory.ShootingDirection direction)
 	{
-		slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hid bar when not reloading
+		if (_reloadTimers[direction] > 1f && button.IsNotEnabled()) button.ReEnable();
+		button.ReloadProgress = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
 	}
 }
