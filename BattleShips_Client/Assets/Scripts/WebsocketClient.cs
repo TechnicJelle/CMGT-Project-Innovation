@@ -130,6 +130,7 @@ public class WebsocketClient : MonoBehaviour
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
 					case MessageFactory.MessageType.SearchTreasureSignal:
 					case MessageFactory.MessageType.ShootingUpdate:
+					case MessageFactory.MessageType.RepairingSignal:
 					default:
 						Debug.LogWarning("Received a message from the server that is not allowed! Ignoring...");
 						break;
