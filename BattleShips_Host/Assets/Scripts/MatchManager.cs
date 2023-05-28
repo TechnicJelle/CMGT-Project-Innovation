@@ -276,7 +276,7 @@ public class MatchManager : MonoBehaviour
 		if (player == null) return;
 		if (!player.IsDocked || player.Boat.CollidingIsland == null)
 		{
-			Debug.LogWarning($"Player {id} requested to search for treasure, but is not docked, or even colliding with an island!");
+			Debug.LogWarning($"Player {id} requested to repair, but is not docked, or even colliding with an island!");
 			return;
 		}
 
