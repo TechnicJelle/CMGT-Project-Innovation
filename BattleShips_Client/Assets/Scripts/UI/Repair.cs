@@ -9,7 +9,7 @@ namespace UI
     {
         private Button _button;
         private TMP_Text _buttonText;
-        
+
         private string _defaultText;
         [SerializeField] private string repairingText = "Repairing...";
         [SerializeField] private string doneText = "Repaired!";
@@ -19,7 +19,7 @@ namespace UI
             _button = GetComponent<Button>();
             _buttonText = GetComponentInChildren<TMP_Text>();
             _defaultText = _buttonText.text;
-            
+
             _button.onClick.AddListener(RequestRepair);
             WebsocketClient.Instance.OnRepairDone += RepairDone;
         }

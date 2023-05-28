@@ -106,11 +106,10 @@ public class WebsocketClient : MonoBehaviour
 						_shouldUpdateFoundTreasure = true;
 						break;
 					case MessageFactory.MessageType.RepairDoneSignal:
-						Debug.Log("Repaired boat signal recieved from server!");
+						Debug.Log("Repaired boat signal received from server!");
 						_shouldUpdateRepair = true;
 						break;
 					case MessageFactory.MessageType.ReloadUpdate:
-						Debug.Log("Reload update received from server!");
 						(MessageFactory.ShootingDirection dir, float progress) = MessageFactory.DecodeReloadUpdate(e.RawData);
 						_reloadTimers[dir] = progress;
 
@@ -125,7 +124,7 @@ public class WebsocketClient : MonoBehaviour
 						_shouldDamage = !shouldDie;
 						Debug.Log("Boat HIT, should rumble");
 						break;
-					
+
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
