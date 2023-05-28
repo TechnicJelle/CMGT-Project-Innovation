@@ -4,7 +4,6 @@ using Shared.Scripts;
 using Shared.Scripts.UI;
 using UI;
 using UnityEngine;
-using UnityEngine.UI;
 using WebSocketSharp;
 
 public class WebsocketClient : MonoBehaviour
@@ -104,7 +103,6 @@ public class WebsocketClient : MonoBehaviour
 						_shouldUpdateFoundTreasure = true;
 						break;
 					case MessageFactory.MessageType.ReloadUpdate:
-						Debug.Log("Reload update received from server!");
 						(MessageFactory.ShootingDirection dir, float progress) = MessageFactory.DecodeReloadUpdate(e.RawData);
 						_reloadTimers[dir] = progress;
 
@@ -119,7 +117,7 @@ public class WebsocketClient : MonoBehaviour
 						_shouldDamage = !shouldDie;
 						Debug.Log("Boat HIT, should rumble");
 						break;
-					
+
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:
@@ -245,8 +243,7 @@ public class WebsocketClient : MonoBehaviour
 
 	private void UpdateDir(Shoot button, MessageFactory.ShootingDirection direction)
 	{
-		if (_reloadTimers[direction] > 1f && _reloadTimers[direction] < 1.5f) button.CanShoot = true;
-		button.Slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
-		Debug.Log(_reloadTimers[direction]);
+		if (_reloadTimers[direction] >= 1f && button.IsNotEnabled()) button.ReEnable();
+		button.ReloadProgress = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
 	}
 }
