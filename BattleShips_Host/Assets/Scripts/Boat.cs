@@ -172,6 +172,12 @@ public class Boat : MonoBehaviour
 		}
 	}
 
+	public void Heal(int amount)
+	{
+		_health = Mathf.Min(_health + amount, startHealth);
+		sldHealth.value = _health;
+	}
+
 	public void Damage()
 	{
 		_health--;

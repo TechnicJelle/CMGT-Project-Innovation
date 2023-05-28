@@ -18,6 +18,7 @@ public class WebsocketClient : MonoBehaviour
 	public Action OnDocked;
 	public Action OnUndocked;
 	public Action OnFoundTreasure;
+	public Action OnRepairDone;
 
 	[SerializeField] private View mainMenu;
 
@@ -36,6 +37,7 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldUpdateFoundTreasure;
 	private bool _shouldDamage;
 	private bool _shouldDie;
+	private bool _shouldUpdateRepair;
 
 	private enum ReloadSoundState
 	{
@@ -102,6 +104,10 @@ public class WebsocketClient : MonoBehaviour
 					case MessageFactory.MessageType.FoundTreasureSignal:
 						Debug.Log("Found treasure signal received from server!");
 						_shouldUpdateFoundTreasure = true;
+						break;
+					case MessageFactory.MessageType.RepairDoneSignal:
+						Debug.Log("Repaired boat signal recieved from server!");
+						_shouldUpdateRepair = true;
 						break;
 					case MessageFactory.MessageType.ReloadUpdate:
 						Debug.Log("Reload update received from server!");
@@ -228,6 +234,12 @@ public class WebsocketClient : MonoBehaviour
 			SoundManager.Instance.PlaySound(SoundManager.Sound.Death);
 		}
 
+		if (_shouldUpdateRepair)
+		{
+			_shouldUpdateRepair = false;
+			OnRepairDone.Invoke();
+		}
+
 		UpdateDir(portButton, MessageFactory.ShootingDirection.Port);
 		UpdateDir(starboardButton, MessageFactory.ShootingDirection.Starboard);
 
@@ -247,6 +259,5 @@ public class WebsocketClient : MonoBehaviour
 	{
 		if (_reloadTimers[direction] > 1f && _reloadTimers[direction] < 1.5f) button.CanShoot = true;
 		button.Slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
-		Debug.Log(_reloadTimers[direction]);
 	}
 }

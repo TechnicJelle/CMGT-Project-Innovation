@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using Shared.Scripts;
 using UnityEngine;
 using WebSocketSharp;
@@ -149,6 +150,9 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.ShootingUpdate:
 				MessageFactory.ShootingDirection shootingDirection = MessageFactory.DecodeShootingUpdate(e.RawData);
 				MatchManager.Instance.BoatShoot(ID, shootingDirection);
+				break;
+			case MessageFactory.MessageType.RepairingSignal:
+				MatchManager.Instance.RepairBoat(ID);
 				break;
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
