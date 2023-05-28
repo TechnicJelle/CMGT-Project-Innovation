@@ -8,10 +8,14 @@ namespace UI
 	{
 		[SerializeField] private MessageFactory.ShootingDirection shootingDirection;
 		[SerializeField] private Slider slider;
-		public Slider Slider => slider;
+
+		public float ReloadProgress
+		{
+			set => slider.value = value;
+		}
 
 		private Button _thisButton;
-		public bool CanShoot {get; set; }
+		private float _timeAtDisable;
 
 		private void Awake()
 		{
@@ -21,14 +25,26 @@ namespace UI
 
 		private void ShootCannon()
 		{
-			Debug.Log($"CanShoot: {CanShoot}");
-			if (CanShoot)
-			{
-				CanShoot = false;
-				SoundManager.Instance.PlaySound(SoundManager.Sound.Shooting);
-			}
-			
+			SoundManager.Instance.PlaySound(SoundManager.Sound.Shooting);
 			WebsocketClient.Instance.Send(MessageFactory.CreateShootingUpdate(shootingDirection));
+			Disable();
+		}
+
+		private void Disable()
+		{
+			_thisButton.interactable = false;
+			_timeAtDisable = Time.timeSinceLevelLoad;
+		}
+
+		public bool IsNotEnabled()
+		{
+			return !_thisButton.interactable;
+		}
+
+		public void ReEnable()
+		{
+			if (Time.timeSinceLevelLoad - _timeAtDisable < 1f) return; //prevent button immediately re-enabling due to sync difference between host and client.
+			_thisButton.interactable = true;
 		}
 	}
 }

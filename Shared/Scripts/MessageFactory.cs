@@ -242,13 +242,12 @@ public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
 		{
 			if (CheckMessageType(message) != MessageType.DamageBoat)
 				throw new ArgumentException($"Message is not a {MessageType.DamageBoat} message");
-			
+
 			byte[] deathBytes = new byte[sizeof(bool)];
 			Array.Copy(message, 1, deathBytes, 0, sizeof(bool));
 
 			return BitConverter.ToBoolean(deathBytes);
 		}
-
 #endregion
 	}
 }
