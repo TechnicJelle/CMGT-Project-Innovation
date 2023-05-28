@@ -30,7 +30,7 @@ public class Boat : MonoBehaviour
 	[SerializeField] private int reloadUpdatesPerSecond = 1;
 
 	[SerializeField] private Shipwreck shipwreckPrefab;
-	
+
 	// == Not visible in inspector ==
 	// Properties
 	private string _id;
@@ -190,12 +190,12 @@ public class Boat : MonoBehaviour
 	{
 		Vector3 oldPos = transform.position;
 		transform.position = MatchManager.Instance.GetValidSpawnLocation();
-		
+
 		//Drop shipwreck with treasure
 		Shipwreck wreck = Instantiate(shipwreckPrefab, oldPos, Quaternion.identity);
 		int wreckTreasure = MatchManager.Instance.GetPlayerPoints(_id);
 		wreck.Initialize(wreckTreasure);
-		
+
 		_health = startHealth;
 		MatchManager.Instance.SetPlayerPoints(_id, 0);
 	}

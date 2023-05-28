@@ -272,14 +272,14 @@ public class MatchManager : MonoBehaviour
 
 	public void RepairBoat(string id)
 	{
-		PlayerData player = _players[id];
+		PlayerData player = _players?[id];
 		if (player == null) return;
 		if (!player.IsDocked || player.Boat.CollidingIsland == null)
 		{
 			Debug.LogWarning($"Player {id} requested to search for treasure, but is not docked, or even colliding with an island!");
 			return;
 		}
-		
+
 		Debug.Log($"Player {id} is repairing!");
 		player.ShouldStartRepairing = true;
 		player.IsRepairing = true;
@@ -330,7 +330,7 @@ public class MatchManager : MonoBehaviour
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
 
 		SetPlayerPoints(id, player.Points+1);
-		
+
 		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
 	}
 
@@ -346,11 +346,11 @@ public class MatchManager : MonoBehaviour
 			_onceToChorus = false;
 			_music.setParameterByName("verse", 0);
 		}
-		
+
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.RepairDoneSignal));
-		
+
 		player.Boat.Heal(HealthRepaired);
-		
+
 		Debug.Log($"Player {id} repaired their boat!");
 	}
 
@@ -399,7 +399,7 @@ public class MatchManager : MonoBehaviour
 			Debug.Log("Id not found when getting points. Id: "+playerId);
 			return -1;
 		}
-		
+
 		return _players[playerId].Points;
 	}
 
@@ -413,7 +413,7 @@ public class MatchManager : MonoBehaviour
 		}
 
 		player.Points = playerPoints;
-		
+
 		if (playerPoints >= maxTreasure)
 		{
 			WinMatch(player);
