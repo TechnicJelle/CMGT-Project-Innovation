@@ -7,8 +7,11 @@ namespace UI
 	public class Shoot : MonoBehaviour
 	{
 		[SerializeField] private MessageFactory.ShootingDirection shootingDirection;
+		[SerializeField] private Slider slider;
+		public Slider Slider => slider;
 
 		private Button _thisButton;
+		public bool CanShoot {get; set; }
 
 		private void Awake()
 		{
@@ -18,8 +21,14 @@ namespace UI
 
 		private void ShootCannon()
 		{
+			Debug.Log($"CanShoot: {CanShoot}");
+			if (CanShoot)
+			{
+				CanShoot = false;
+				SoundManager.Instance.PlaySound(SoundManager.Sound.Shooting);
+			}
+			
 			WebsocketClient.Instance.Send(MessageFactory.CreateShootingUpdate(shootingDirection));
-			SoundManager.Instance.PlaySound(SoundManager.Sound.Shooting);
 		}
 	}
 }

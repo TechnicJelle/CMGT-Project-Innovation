@@ -1085,6 +1085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingDirection: 1
+  slider: {fileID: 1375203512}
 --- !u!114 &257849445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2403,6 +2404,10 @@ MonoBehaviour:
   joining: {fileID: 8300000, guid: 47574ad402046c955889d9a567383ee5, type: 3}
   wind: {fileID: 8300000, guid: b0252803b73de2b5ba737cde611ed7fa, type: 3}
   reloading: {fileID: 8300000, guid: b5241ea97e8565d78a1c4b1e4f7f2e6a, type: 3}
+  shooting: {fileID: 8300000, guid: 91251253e8be1173ab32153844fd7c6e, type: 3}
+  death: {fileID: 8300000, guid: a2a6486d097f24cdf9820826ae9e8c53, type: 3}
+  damaged: {fileID: 8300000, guid: 34008e0c9b19ddb0d808e786153bb8a1, type: 3}
+  repairing: {fileID: 8300000, guid: 70e8ae31a43de1c4c8e2b04c03dd683e, type: 3}
 --- !u!4 &607215793
 Transform:
   m_ObjectHideFlags: 0
@@ -3691,8 +3696,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenu: {fileID: 442834127}
-  portProgress: {fileID: 201273421}
-  starboardProgress: {fileID: 1375203512}
+  portButton: {fileID: 1126813070}
+  starboardButton: {fileID: 257849444}
 --- !u!4 &838480979
 Transform:
   m_ObjectHideFlags: 0
@@ -5310,6 +5315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingDirection: 0
+  slider: {fileID: 201273421}
 --- !u!1 &1138181002
 GameObject:
   m_ObjectHideFlags: 0

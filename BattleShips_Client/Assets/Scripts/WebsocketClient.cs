@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Shared.Scripts;
 using Shared.Scripts.UI;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 using WebSocketSharp;
@@ -20,8 +21,8 @@ public class WebsocketClient : MonoBehaviour
 
 	[SerializeField] private View mainMenu;
 
-	[SerializeField] private Slider portProgress;
-	[SerializeField] private Slider starboardProgress;
+	[SerializeField] private Shoot portButton;
+	[SerializeField] private Shoot starboardButton;
 
 	private WebSocket _webSocket;
 
@@ -227,8 +228,8 @@ public class WebsocketClient : MonoBehaviour
 			SoundManager.Instance.PlaySound(SoundManager.Sound.Death);
 		}
 
-		UpdateDir(portProgress, MessageFactory.ShootingDirection.Port);
-		UpdateDir(starboardProgress, MessageFactory.ShootingDirection.Starboard);
+		UpdateDir(portButton, MessageFactory.ShootingDirection.Port);
+		UpdateDir(starboardButton, MessageFactory.ShootingDirection.Starboard);
 
 		//Reload sound
 		for (byte i = 0; i < _reloadSounds.Count; i++)
@@ -242,8 +243,10 @@ public class WebsocketClient : MonoBehaviour
 		}
 	}
 
-	private void UpdateDir(Slider slider, MessageFactory.ShootingDirection direction)
+	private void UpdateDir(Shoot button, MessageFactory.ShootingDirection direction)
 	{
-		slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hid bar when not reloading
+		if (_reloadTimers[direction] > 1f && _reloadTimers[direction] < 1.5f) button.CanShoot = true;
+		button.Slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
+		Debug.Log(_reloadTimers[direction]);
 	}
 }
