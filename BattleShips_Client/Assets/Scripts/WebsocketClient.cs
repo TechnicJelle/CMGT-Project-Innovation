@@ -257,7 +257,7 @@ public class WebsocketClient : MonoBehaviour
 
 	private void UpdateDir(Shoot button, MessageFactory.ShootingDirection direction)
 	{
-		if (_reloadTimers[direction] > 1f && _reloadTimers[direction] < 1.5f) button.CanShoot = true;
-		button.Slider.value = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
+		if (_reloadTimers[direction] > 1f && button.IsNotEnabled()) button.ReEnable();
+		button.ReloadProgress = _reloadTimers[direction] > 1f ? 0f : _reloadTimers[direction]; //hide bar when not reloading
 	}
 }
