@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Cannonball : MonoBehaviour
@@ -7,7 +8,6 @@ public class Cannonball : MonoBehaviour
 	public ParticleSystem pWater;
 	public ParticleSystem pSand;
 	public ParticleSystem pBoat;
-	
 
 	private void Start()
 	{
@@ -15,8 +15,8 @@ public class Cannonball : MonoBehaviour
 			pBoat.Pause();
 		if (!pWater.isPaused)
 			pWater.Pause();
+
 		//pSand (as smoke) plays automatically
-		Debug.DrawRay(transform.position, transform.forward * 5, Color.white, 10);
 	}
 
 	private void OnCollisionEnter(Collision other)
@@ -28,9 +28,8 @@ public class Cannonball : MonoBehaviour
 			Debug.Log("Hit water");
 
 			pWater.Play();
-			Debug.DrawRay(transform.position, Vector3.up * 10, Color.blue, 10);
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
@@ -39,9 +38,8 @@ public class Cannonball : MonoBehaviour
 			Debug.Log("Hit an island");
 
 			pSand.Play();
-			Debug.DrawRay(transform.position, Vector3.up * 10, Color.yellow, 10);
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
@@ -53,9 +51,8 @@ public class Cannonball : MonoBehaviour
 			boat.Damage();
 
 			pBoat.Play();
-			Debug.DrawRay(transform.position, Vector3.up * 10, Color.red, 10);
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
@@ -68,10 +65,29 @@ public class Cannonball : MonoBehaviour
 			//TODO: Cannonball clink effect
 			Debug.DrawRay(transform.position, Vector3.up * 10, Color.grey, 10);
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
-		Debug.Log("other type of hit " + other.gameObject.name);
+		if(other.gameObject.name.Contains("Boundary", StringComparison.OrdinalIgnoreCase)) return; //ignore boundary collisions
+
+		Debug.LogWarning("other type of hit " + other.gameObject.name);
+	}
+
+	private void Kill()
+	{
+		Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+		rb.AddForce(Physics.gravity * 50, ForceMode.Acceleration); //push down faster
+		rb.drag = 1;
+		rb.freezeRotation = true;
+		rb.rotation = Quaternion.identity;
+		Destroy(gameObject.GetComponentInChildren<SphereCollider>());
+		StartCoroutine(KillInABit());
+	}
+
+	private IEnumerator KillInABit()
+	{
+		yield return new WaitForSeconds(4);
+		Destroy(gameObject);
 	}
 }
