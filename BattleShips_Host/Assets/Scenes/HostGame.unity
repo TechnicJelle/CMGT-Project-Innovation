@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 6043.2715, g: 7765.435, b: 5763.2656, a: 1}
+  m_IndirectSpecularColor: {r: 5719.586, g: 6885.3105, b: 4373.6367, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1019,14 +1019,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 11
-  m_ObsoleteShadowResolutionTier: 1
-  m_ObsoleteUseShadowQualitySettings: 0
-  m_ObsoleteCustomShadowResolution: 512
-  m_ObsoleteContactShadows: 0
-  m_PointlightHDType: 0
-  m_SpotLightShape: 0
-  m_AreaLightShape: 0
   m_Intensity: 130000
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 1
@@ -1129,6 +1121,14 @@ MonoBehaviour:
   m_AreaLightEmissiveMeshShadowCastingMode: 0
   m_AreaLightEmissiveMeshMotionVectorGenerationMode: 0
   m_AreaLightEmissiveMeshLayer: -1
+  m_Version: 11
+  m_ObsoleteShadowResolutionTier: 1
+  m_ObsoleteUseShadowQualitySettings: 0
+  m_ObsoleteCustomShadowResolution: 512
+  m_ObsoleteContactShadows: 0
+  m_PointlightHDType: 0
+  m_SpotLightShape: 0
+  m_AreaLightShape: 0
 --- !u!1 &169627682
 GameObject:
   m_ObjectHideFlags: 0
@@ -1355,6 +1355,46 @@ PrefabInstance:
       propertyPath: m_Name
       value: FourthBoat
       objectReference: {fileID: 0}
+    - target: {fileID: 138550084849587329, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
+    - target: {fileID: 361081264788286362, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 908e2010c7b62b3488af1c058034fb53, type: 2}
+    - target: {fileID: 364744451310485751, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 33ab26dd540b54e49941d2e3fbc0c4a8, type: 2}
+    - target: {fileID: 364744451310485751, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1730f57b11c9f5d4bb51956f635a7faa, type: 2}
+    - target: {fileID: 470835725586370544, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a63a19d85429afe47b0475d5fefdb706, type: 2}
+    - target: {fileID: 1211106899153663995, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c0b1c0ca1664f541af45279082e42ad, type: 2}
+    - target: {fileID: 1523036150647934819, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
+    - target: {fileID: 1749239028715793351, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
     - target: {fileID: 2017776516554693332, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
         type: 3}
       propertyPath: m_RootOrder
@@ -1410,6 +1450,71 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2156543940160052209, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6e9679bff3732fc429fe4e22fd3fb86a, type: 2}
+    - target: {fileID: 2550182807328119193, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7283d51b3b85acd4f8caf9f9aa3b37b7, type: 2}
+    - target: {fileID: 2661185631026968134, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: bd69b2c6bfa77e9438fdd1500b9390ad, type: 2}
+    - target: {fileID: 3748886410863270621, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
+    - target: {fileID: 3965467885434429624, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 33ab26dd540b54e49941d2e3fbc0c4a8, type: 2}
+    - target: {fileID: 3965467885434429624, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1730f57b11c9f5d4bb51956f635a7faa, type: 2}
+    - target: {fileID: 4301812946771514547, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e0ff8ebb2e277104f8ab33ab645dcd9d, type: 2}
+    - target: {fileID: 5134818678822691239, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
+    - target: {fileID: 5998963528080035144, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6e3ef1d344f317c42923baf0be20cf2d, type: 2}
+    - target: {fileID: 6306491445351188345, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
+    - target: {fileID: 7928517376223602699, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ad60cfbe8f9650b47bba2cdd83b783e5, type: 2}
+    - target: {fileID: 9115247352673342608, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 33ab26dd540b54e49941d2e3fbc0c4a8, type: 2}
+    - target: {fileID: 9115247352673342608, guid: d9fd226ebfb66324c8b7b8fdc03a2c31,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1730f57b11c9f5d4bb51956f635a7faa, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9fd226ebfb66324c8b7b8fdc03a2c31, type: 3}
 --- !u!4 &261813815 stripped
@@ -3317,14 +3422,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 11
-  m_ObsoleteShadowResolutionTier: 1
-  m_ObsoleteUseShadowQualitySettings: 0
-  m_ObsoleteCustomShadowResolution: 512
-  m_ObsoleteContactShadows: 0
-  m_PointlightHDType: 0
-  m_SpotLightShape: 0
-  m_AreaLightShape: 0
   m_Intensity: 59619.434
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
@@ -3427,6 +3524,14 @@ MonoBehaviour:
   m_AreaLightEmissiveMeshShadowCastingMode: 0
   m_AreaLightEmissiveMeshMotionVectorGenerationMode: 0
   m_AreaLightEmissiveMeshLayer: -1
+  m_Version: 11
+  m_ObsoleteShadowResolutionTier: 1
+  m_ObsoleteUseShadowQualitySettings: 0
+  m_ObsoleteCustomShadowResolution: 512
+  m_ObsoleteContactShadows: 0
+  m_PointlightHDType: 0
+  m_SpotLightShape: 0
+  m_AreaLightShape: 0
 --- !u!108 &898058974
 Light:
   m_ObjectHideFlags: 0
@@ -6210,7 +6315,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 44.700138
+  field of view: 30.26398
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -6255,53 +6360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c1ce4fb46143f46bc5cb5224c934f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 8
-  m_ObsoleteRenderingPath: 0
-  m_ObsoleteFrameSettings:
-    overrides: 0
-    enableShadow: 0
-    enableContactShadows: 0
-    enableShadowMask: 0
-    enableSSR: 0
-    enableSSAO: 0
-    enableSubsurfaceScattering: 0
-    enableTransmission: 0
-    enableAtmosphericScattering: 0
-    enableVolumetrics: 0
-    enableReprojectionForVolumetrics: 0
-    enableLightLayers: 0
-    enableExposureControl: 1
-    diffuseGlobalDimmer: 0
-    specularGlobalDimmer: 0
-    shaderLitMode: 0
-    enableDepthPrepassWithDeferredRendering: 0
-    enableTransparentPrepass: 0
-    enableMotionVectors: 0
-    enableObjectMotionVectors: 0
-    enableDecals: 0
-    enableRoughRefraction: 0
-    enableTransparentPostpass: 0
-    enableDistortion: 0
-    enablePostprocess: 0
-    enableOpaqueObjects: 0
-    enableTransparentObjects: 0
-    enableRealtimePlanarReflection: 0
-    enableMSAA: 0
-    enableAsyncCompute: 0
-    runLightListAsync: 0
-    runSSRAsync: 0
-    runSSAOAsync: 0
-    runContactShadowsAsync: 0
-    runVolumeVoxelizationAsync: 0
-    lightLoopSettings:
-      overrides: 0
-      enableDeferredTileAndCluster: 0
-      enableComputeLightEvaluation: 0
-      enableComputeLightVariants: 0
-      enableComputeMaterialVariants: 0
-      enableFptlForForwardOpaque: 0
-      enableBigTilePrepass: 0
-      isFptlEnabled: 0
   clearColorMode: 0
   backgroundColorHDR: {r: 0.025, g: 0.07, b: 0.19, a: 0}
   clearDepth: 1
@@ -6368,6 +6426,53 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+  m_Version: 8
+  m_ObsoleteRenderingPath: 0
+  m_ObsoleteFrameSettings:
+    overrides: 0
+    enableShadow: 0
+    enableContactShadows: 0
+    enableShadowMask: 0
+    enableSSR: 0
+    enableSSAO: 0
+    enableSubsurfaceScattering: 0
+    enableTransmission: 0
+    enableAtmosphericScattering: 0
+    enableVolumetrics: 0
+    enableReprojectionForVolumetrics: 0
+    enableLightLayers: 0
+    enableExposureControl: 1
+    diffuseGlobalDimmer: 0
+    specularGlobalDimmer: 0
+    shaderLitMode: 0
+    enableDepthPrepassWithDeferredRendering: 0
+    enableTransparentPrepass: 0
+    enableMotionVectors: 0
+    enableObjectMotionVectors: 0
+    enableDecals: 0
+    enableRoughRefraction: 0
+    enableTransparentPostpass: 0
+    enableDistortion: 0
+    enablePostprocess: 0
+    enableOpaqueObjects: 0
+    enableTransparentObjects: 0
+    enableRealtimePlanarReflection: 0
+    enableMSAA: 0
+    enableAsyncCompute: 0
+    runLightListAsync: 0
+    runSSRAsync: 0
+    runSSAOAsync: 0
+    runContactShadowsAsync: 0
+    runVolumeVoxelizationAsync: 0
+    lightLoopSettings:
+      overrides: 0
+      enableDeferredTileAndCluster: 0
+      enableComputeLightEvaluation: 0
+      enableComputeLightVariants: 0
+      enableComputeMaterialVariants: 0
+      enableFptlForForwardOpaque: 0
+      enableBigTilePrepass: 0
+      isFptlEnabled: 0
 --- !u!114 &1823688469
 MonoBehaviour:
   m_ObjectHideFlags: 0
