@@ -125,7 +125,7 @@ public class WebsocketClient : MonoBehaviour
 						_shouldDamage = !shouldDie;
 						Debug.Log("Boat HIT, should rumble");
 						break;
-					
+					case MessageFactory.MessageType.RepairingSignal:
 					case MessageFactory.MessageType.BoatDirectionUpdate:
 					case MessageFactory.MessageType.BlowingUpdate:
 					case MessageFactory.MessageType.RequestDockingStatusUpdate:

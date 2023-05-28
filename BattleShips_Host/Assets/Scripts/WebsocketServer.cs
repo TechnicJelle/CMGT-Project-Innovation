@@ -154,6 +154,8 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.RepairingSignal:
 				MatchManager.Instance.RepairBoat(ID);
 				break;
+			case MessageFactory.MessageType.DamageBoat:
+			case MessageFactory.MessageType.RepairDoneSignal:
 			case MessageFactory.MessageType.StartGameSignal:
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:

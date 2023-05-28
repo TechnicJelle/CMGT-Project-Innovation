@@ -20,7 +20,7 @@ namespace UI
             _buttonText = GetComponentInChildren<TMP_Text>();
             _defaultText = _buttonText.text;
             
-            _button.onClick.AddListener(RequiestRepair);
+            _button.onClick.AddListener(RequestRepair);
             WebsocketClient.Instance.OnRepairDone += RepairDone;
         }
 
@@ -30,7 +30,7 @@ namespace UI
             _buttonText.text = _defaultText;
         }
 
-        private void RequiestRepair()
+        private void RequestRepair()
         {
             WebsocketClient.Instance.Send(MessageFactory.CreateSignal(MessageFactory.MessageType.RepairingSignal));
             _button.interactable = false;
