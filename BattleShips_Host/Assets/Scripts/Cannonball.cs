@@ -4,10 +4,18 @@ using UnityEngine;
 public class Cannonball : MonoBehaviour
 {
 	[NonSerialized] public Boat Shooter;
+	public ParticleSystem pWater;
+	public ParticleSystem pSand;
+	public ParticleSystem pBoat;
+	
 
 	private void Start()
 	{
-		//TODO: Shot smoke effect (should not move along with the cannonball, nor with the ship)
+		if (!pBoat.isPaused)
+			pBoat.Pause();
+		if (!pWater.isPaused)
+			pWater.Pause();
+		//pSand (as smoke) plays automatically
 		Debug.DrawRay(transform.position, transform.forward * 5, Color.white, 10);
 	}
 
@@ -19,7 +27,7 @@ public class Cannonball : MonoBehaviour
 		{
 			Debug.Log("Hit water");
 
-			//TODO: Water sploosh effect
+			pWater.Play();
 			Debug.DrawRay(transform.position, Vector3.up * 10, Color.blue, 10);
 
 			Destroy(gameObject);
@@ -30,7 +38,7 @@ public class Cannonball : MonoBehaviour
 		{
 			Debug.Log("Hit an island");
 
-			//TODO: Sand plomf effect
+			pSand.Play();
 			Debug.DrawRay(transform.position, Vector3.up * 10, Color.yellow, 10);
 
 			Destroy(gameObject);
@@ -44,7 +52,7 @@ public class Cannonball : MonoBehaviour
 
 			boat.Damage();
 
-			//TODO: Boat explosion effect
+			pBoat.Play();
 			Debug.DrawRay(transform.position, Vector3.up * 10, Color.red, 10);
 
 			Destroy(gameObject);
