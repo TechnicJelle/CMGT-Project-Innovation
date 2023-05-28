@@ -146,8 +146,9 @@ public class MatchManager : MonoBehaviour
 			instance.name = id;
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
-			boat.Setup(id, matchCamera.transform);
-			_players.Add(id, new PlayerData(boat, "Joe"));
+			string clientName = WebsocketServer.Instance.Clients[id].Name;
+			boat.Setup(id, clientName, matchCamera.transform);
+			_players.Add(id, new PlayerData(boat, clientName));
 			targetGroup.AddMember(boat.transform, 1, 1);
 		}
 

@@ -66,10 +66,10 @@ public class Boat : MonoBehaviour
 		}
 	}
 
-	public void Setup(string id, Transform cam)
+	public void Setup(string id, string nameTag, Transform cam)
 	{
 		_id = id;
-		txtName.text = id;
+		txtName.text = nameTag;
 		GetComponentInChildren<PointToCamera>().SetCamera(cam);
 	}
 

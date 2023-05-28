@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Shared.Scripts
 {
@@ -22,7 +23,8 @@ namespace Shared.Scripts
 			ReloadUpdate,
 			DamageBoat,
 			RepairingSignal,
-			RepairDoneSignal
+			RepairDoneSignal,
+			NameUpdate,
 		}
 
 		public enum ShootingDirection : byte
@@ -195,7 +197,7 @@ public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
 #region ReloadUpdate
 		public static byte[] CreateReloadUpdate(ShootingDirection shootingDirection, float progress)
 		{
-			byte[] message = new byte[1 + sizeof(byte) + sizeof(float)];
+			byte[] message = new byte[1 + sizeof(ShootingDirection) + sizeof(float)];
 			message[0] = (byte) MessageType.ReloadUpdate;
 
 			message[1] = (byte) shootingDirection;
@@ -245,6 +247,41 @@ public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
 			Array.Copy(message, 1, deathBytes, 0, sizeof(bool));
 
 			return BitConverter.ToBoolean(deathBytes);
+		}
+#endregion
+
+#region NameUpdate
+		public static byte[] CreateNameUpdate(string newName)
+		{
+			byte[] stringBytes = Encoding.UTF8.GetBytes(newName);
+
+			byte[] message = new byte[1 + sizeof(int) + stringBytes.Length];
+			message[0] = (byte) MessageType.NameUpdate;
+
+			byte[] stringLengthBytes = BitConverter.GetBytes(stringBytes.Length);
+			if (!BitConverter.IsLittleEndian) Array.Reverse(stringLengthBytes);
+			Array.Copy(stringLengthBytes, 0, message, 1, sizeof(int));
+
+			Array.Copy(stringBytes, 0, message, 1 + sizeof(int), stringBytes.Length);
+
+			return message;
+		}
+
+		public static string DecodeNameUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.NameUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.NameUpdate} message");
+
+			byte[] stringLengthBytes = new byte[sizeof(int)];
+			Array.Copy(message, 1, stringLengthBytes, 0, sizeof(int));
+			if (!BitConverter.IsLittleEndian) Array.Reverse(stringLengthBytes);
+
+			int stringLength = BitConverter.ToInt32(stringLengthBytes, 0);
+
+			byte[] stringBytes = new byte[stringLength];
+			Array.Copy(message, 1 + sizeof(int), stringBytes, 0, stringLength);
+
+			return Encoding.UTF8.GetString(stringBytes);
 		}
 #endregion
 	}

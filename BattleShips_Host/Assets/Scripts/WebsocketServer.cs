@@ -9,6 +9,7 @@ using WebSocketSharp.Server;
 
 public class WebsocketServer : MonoBehaviour
 {
+	public static readonly Color[] PlayerColours = { Color.red, Color.blue, Color.green, Color.yellow, };
 	public static WebsocketServer Instance { get; private set; }
 	private const int PORT = 55555;
 	private const string PATH = "/game";
@@ -16,8 +17,9 @@ public class WebsocketServer : MonoBehaviour
 
 	// ReSharper disable once InconsistentNaming
 	[NonSerialized] public List<string> IDs;
+	[NonSerialized] public Dictionary<string, ClientEntry> Clients;
 
-	public delegate void RefreshUI(List<string> ids);
+	public delegate void RefreshUI();
 
 	public RefreshUI OnRefreshUI;
 
@@ -39,6 +41,7 @@ public class WebsocketServer : MonoBehaviour
 			_server = new WebSocketServer(PORT);
 			_server.AddWebSocketService<Game>(PATH);
 			IDs = new List<string>();
+			Clients = new Dictionary<string, ClientEntry>();
 
 			_server.Start();
 			Debug.Log("Started websocket server...");
@@ -76,7 +79,7 @@ public class WebsocketServer : MonoBehaviour
 		if (_shouldUpdateUI)
 		{
 			_shouldUpdateUI = false;
-			OnRefreshUI.Invoke(IDs);
+			OnRefreshUI.Invoke();
 		}
 	}
 
@@ -112,6 +115,18 @@ public class WebsocketServer : MonoBehaviour
 	{
 		Sessions.BroadcastAsync(bytes, null);
 	}
+
+	public class ClientEntry
+	{
+		public string Name;
+		public Color Colour;
+
+		public ClientEntry(string name, Color colour)
+		{
+			Name = name;
+			Colour = colour;
+		}
+	}
 }
 
 public class Game : WebSocketBehavior
@@ -122,6 +137,9 @@ public class Game : WebSocketBehavior
 	{
 		Debug.Log($"Connection Opened with {ID}");
 		Server.IDs.Add(ID);
+		int colourIndex = (Server.IDs.Count - 1) % WebsocketServer.PlayerColours.Length; //possibly could be a problem with more players? needs testing
+		Color colour = WebsocketServer.PlayerColours[colourIndex];
+		Server.Clients.Add(ID, new WebsocketServer.ClientEntry(ID, colour));
 		RefreshUI();
 	}
 
@@ -153,6 +171,12 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.RepairingSignal:
 				MatchManager.Instance.RepairBoat(ID);
 				break;
+			case MessageFactory.MessageType.NameUpdate:
+				string newName = MessageFactory.DecodeNameUpdate(e.RawData);
+				Debug.Log($"{ID}'s new name: \"{newName}\"");
+				Server.Clients[ID].Name = newName.IsNullOrEmpty() ? ID : newName;
+				RefreshUI();
+				break;
 			case MessageFactory.MessageType.DamageBoat:
 			case MessageFactory.MessageType.RepairDoneSignal:
 			case MessageFactory.MessageType.StartGameSignal:
@@ -171,6 +195,7 @@ public class Game : WebSocketBehavior
 	{
 		Debug.Log($"Connection Closed with {ID}");
 		Server.IDs.Remove(ID);
+		Server.Clients.Remove(ID);
 		RefreshUI();
 	}
 
