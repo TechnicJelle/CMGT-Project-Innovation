@@ -1,14 +1,22 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Cannonball : MonoBehaviour
 {
 	[NonSerialized] public Boat Shooter;
+	public ParticleSystem pWater;
+	public ParticleSystem pSand;
+	public ParticleSystem pBoat;
 
 	private void Start()
 	{
-		//TODO: Shot smoke effect (should not move along with the cannonball, nor with the ship)
-		Debug.DrawRay(transform.position, transform.forward * 5, Color.white, 10);
+		if (!pBoat.isPaused)
+			pBoat.Pause();
+		if (!pWater.isPaused)
+			pWater.Pause();
+
+		//pSand (as smoke) plays automatically
 	}
 
 	private void OnCollisionEnter(Collision other)
@@ -19,10 +27,9 @@ public class Cannonball : MonoBehaviour
 		{
 			Debug.Log("Hit water");
 
-			//TODO: Water sploosh effect
-			Debug.DrawRay(transform.position, Vector3.up * 10, Color.blue, 10);
+			pWater.Play();
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
@@ -30,10 +37,9 @@ public class Cannonball : MonoBehaviour
 		{
 			Debug.Log("Hit an island");
 
-			//TODO: Sand plomf effect
-			Debug.DrawRay(transform.position, Vector3.up * 10, Color.yellow, 10);
+			pSand.Play();
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
@@ -44,10 +50,9 @@ public class Cannonball : MonoBehaviour
 
 			boat.Damage();
 
-			//TODO: Boat explosion effect
-			Debug.DrawRay(transform.position, Vector3.up * 10, Color.red, 10);
+			pBoat.Play();
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
@@ -60,10 +65,29 @@ public class Cannonball : MonoBehaviour
 			//TODO: Cannonball clink effect
 			Debug.DrawRay(transform.position, Vector3.up * 10, Color.grey, 10);
 
-			Destroy(gameObject);
+			Kill();
 			return;
 		}
 
-		Debug.Log("other type of hit " + other.gameObject.name);
+		if(other.gameObject.name.Contains("Boundary", StringComparison.OrdinalIgnoreCase)) return; //ignore boundary collisions
+
+		Debug.LogWarning("other type of hit " + other.gameObject.name);
+	}
+
+	private void Kill()
+	{
+		Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+		rb.AddForce(Physics.gravity * 50, ForceMode.Acceleration); //push down faster
+		rb.drag = 1;
+		rb.freezeRotation = true;
+		rb.rotation = Quaternion.identity;
+		Destroy(gameObject.GetComponentInChildren<SphereCollider>());
+		StartCoroutine(KillInABit());
+	}
+
+	private IEnumerator KillInABit()
+	{
+		yield return new WaitForSeconds(4);
+		Destroy(gameObject);
 	}
 }
