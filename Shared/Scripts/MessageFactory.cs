@@ -18,7 +18,7 @@ namespace Shared.Scripts
 			RequestDockingStatusUpdate,
 			IsDockedUpdate,
 			SearchTreasureSignal,
-			FoundTreasureSignal,
+			TreasureResultUpdate,
 			ShootingUpdate,
 			ReloadUpdate,
 			DamageBoat,
@@ -282,6 +282,30 @@ public static byte[] CreateShootingUpdate(ShootingDirection shootingDirection)
 			Array.Copy(message, 1 + sizeof(int), stringBytes, 0, stringLength);
 
 			return Encoding.UTF8.GetString(stringBytes);
+		}
+#endregion
+
+#region TreasureResultUpdate
+		public static byte[] CreateTreasureResultUpdate(bool success)
+		{
+			byte[] message = new byte[1 + sizeof(bool)];
+			message[0] = (byte) MessageType.TreasureResultUpdate;
+
+			byte[] successBytes = BitConverter.GetBytes(success);
+			Array.Copy(successBytes, 0, message, 1, sizeof(bool));
+
+			return message;
+		}
+
+		public static bool DecodeTreasureResultUpdate(byte[] message)
+		{
+			if (CheckMessageType(message) != MessageType.TreasureResultUpdate)
+				throw new ArgumentException($"Message is not a {MessageType.TreasureResultUpdate} message");
+
+			byte[] successBytes = new byte[sizeof(bool)];
+			Array.Copy(message, 1, successBytes, 0, sizeof(bool));
+
+			return BitConverter.ToBoolean(successBytes);
 		}
 #endregion
 	}

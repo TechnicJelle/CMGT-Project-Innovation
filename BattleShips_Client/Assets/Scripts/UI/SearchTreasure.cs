@@ -13,6 +13,7 @@ namespace UI
 		private string _defaultText;
 		[SerializeField] private string searchingText = "Searching...";
 		[SerializeField] private string foundText = "Found!";
+		[SerializeField] private string notFoundText = "Nothing.";
 
 		private void Awake()
 		{
@@ -38,9 +39,9 @@ namespace UI
 			SoundManager.Instance.PlaySound(SoundManager.Sound.Treasure);
 		}
 
-		private void FoundTreasure()
+		private void FoundTreasure(bool success)
 		{
-			_buttonText.text = foundText;
+			_buttonText.text = success ? foundText : notFoundText;
 		}
 	}
 }

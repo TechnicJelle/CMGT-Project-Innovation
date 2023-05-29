@@ -32,15 +32,18 @@ public class Boat : MonoBehaviour
 	[SerializeField] private Shipwreck shipwreckPrefab;
 
 	// == Not visible in inspector ==
+	private static Island[] _islands;
+
 	// Properties
 	private string _id;
+	private WebsocketServer.ClientEntry _clientEntry;
 
 	// Movement
 	private Rigidbody _rigidbody;
 	private float _targetRotation;
 	private Vector3 _movementDirection;
 	private bool _isBlowing;
-	[CanBeNull] public GameObject CollidingIsland { get; private set; }
+	[CanBeNull] public Island CollidingIsland { get; private set; }
 
 	// Shooting
 	private MessageFactory.ShootingDirection? _shouldShoot;
@@ -48,6 +51,9 @@ public class Boat : MonoBehaviour
 	private readonly Dictionary<MessageFactory.ShootingDirection, float> _reloadTimers = new();
 	private readonly Dictionary<MessageFactory.ShootingDirection, float> _webSendAccumulator = new();
 	private float _reloadDT;
+
+	// Treasure
+	public Island TreasureIsland { get; private set; }
 
 	private void Awake()
 	{
@@ -64,11 +70,14 @@ public class Boat : MonoBehaviour
 			_reloadTimers.Add(dir, 0f);
 			_webSendAccumulator.Add(dir, 0f);
 		}
+
+		if (_islands == null) _islands = FindObjectsOfType<Island>();
 	}
 
 	public void Setup(string id, WebsocketServer.ClientEntry clientData, Transform cam)
 	{
 		_id = id;
+		_clientEntry = clientData;
 		txtName.text = clientData.Name;
 		GetComponentInChildren<PointToCamera>().SetCamera(cam);
 
@@ -81,6 +90,31 @@ public class Boat : MonoBehaviour
 					material.color = clientData.Colour;
 				}
 			}
+		}
+
+		ChooseNewTreasureIsland();
+	}
+
+	public void ChooseNewTreasureIsland()
+	{
+		//Make sure the treasure island is different from the last one
+		Island potentialTreasureIsland;
+		do
+		{
+			potentialTreasureIsland = _islands[Random.Range(0, _islands.Length)];
+		} while (potentialTreasureIsland == TreasureIsland);
+
+		if (TreasureIsland != null) //for the first time
+			TreasureIsland.RemoveFlag(_clientEntry);
+		TreasureIsland = potentialTreasureIsland;
+		TreasureIsland.SpawnFlag(_clientEntry);
+	}
+
+	private void OnDestroy()
+	{
+		if (TreasureIsland != null)
+		{
+			TreasureIsland.RemoveFlag(_clientEntry);
 		}
 	}
 
@@ -102,7 +136,7 @@ public class Boat : MonoBehaviour
 
 		if (_shouldShoot != null)
 		{
-			if(_reloadTimers[_shouldShoot.Value] >= reloadSpeed) Shoot(_shouldShoot.Value);
+			if (_reloadTimers[_shouldShoot.Value] >= reloadSpeed) Shoot(_shouldShoot.Value);
 			_shouldShoot = null;
 		}
 	}
@@ -161,7 +195,8 @@ public class Boat : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("IslandDocking"))
 		{
-			CollidingIsland = other.gameObject;
+			CollidingIsland = other.gameObject.GetComponentInParent<Island>();
+			if (CollidingIsland == null) Debug.LogError(name + "'s CollidingIsland is null!");
 			WebsocketServer.Instance.Send(_id, MessageFactory.CreateDockingAvailableUpdate(true));
 		}
 
