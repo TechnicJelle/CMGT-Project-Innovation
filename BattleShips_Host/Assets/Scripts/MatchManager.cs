@@ -32,7 +32,7 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private int maxTreasure = 3;
 	[SerializeField] private float timeToGatherTreasure = 5f;
 	[SerializeField] private float timeToRepair = 5f;
-	[SerializeField] private int HealthRepaired = 2;
+	[SerializeField] private int healthRepaired = 2;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
 
@@ -146,8 +146,9 @@ public class MatchManager : MonoBehaviour
 			instance.name = id;
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
-			boat.Setup(id, matchCamera.transform);
-			_players.Add(id, new PlayerData(boat, "Joe"));
+			WebsocketServer.ClientEntry client = WebsocketServer.Instance.Clients[id];
+			boat.Setup(id, client, matchCamera.transform);
+			_players.Add(id, new PlayerData(boat, client.Name));
 			targetGroup.AddMember(boat.transform, 1, 1);
 		}
 
@@ -349,7 +350,7 @@ public class MatchManager : MonoBehaviour
 
 		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.RepairDoneSignal));
 
-		player.Boat.Heal(HealthRepaired);
+		player.Boat.Heal(healthRepaired);
 
 		Debug.Log($"Player {id} repaired their boat!");
 	}
@@ -432,10 +433,10 @@ public class PlayerData
 	public bool IsRepairing;
 	public bool ShouldStartRepairing;
 
-	public PlayerData(Boat pBoat, string pName)
+	public PlayerData(Boat boat, string name)
 	{
-		Boat = pBoat;
-		Name = pName;
+		Boat = boat;
+		Name = name;
 		Points = 0;
 		IsDocked = false;
 		IsSearchingTreasure = false;

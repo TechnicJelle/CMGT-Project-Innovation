@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -21,16 +20,22 @@ namespace UI
 
 		private void OnEnable()
 		{
-			if (WebsocketServer.Instance == null) Debug.LogWarning("Make sure to start the game from the Main Menu, not from the Lobby! ;D");
-			RebuildClientList(WebsocketServer.Instance.IDs);
+#if UNITY_EDITOR
+			if (WebsocketServer.Instance == null)
+			{
+				Debug.LogWarning("Make sure to start the game from the Main Menu, not from the Lobby! ;D");
+				return;
+			}
+#endif
+			RebuildClientList();
 		}
 
-		private void RebuildClientList(List<string> ids)
+		private void RebuildClientList()
 		{
 			StringBuilder stringBuilder = new();
-			foreach (string id in ids)
+			foreach (WebsocketServer.ClientEntry client in WebsocketServer.Instance.Clients.Values)
 			{
-				stringBuilder.AppendLine(id);
+				stringBuilder.AppendLine(client.Name);
 			}
 
 			_text.text = stringBuilder.ToString();

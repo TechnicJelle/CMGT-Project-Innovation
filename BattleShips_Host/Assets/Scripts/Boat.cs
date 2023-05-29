@@ -66,11 +66,22 @@ public class Boat : MonoBehaviour
 		}
 	}
 
-	public void Setup(string id, Transform cam)
+	public void Setup(string id, WebsocketServer.ClientEntry clientData, Transform cam)
 	{
 		_id = id;
-		txtName.text = id;
+		txtName.text = clientData.Name;
 		GetComponentInChildren<PointToCamera>().SetCamera(cam);
+
+		foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
+		{
+			foreach (Material material in meshRenderer.materials)
+			{
+				if (material.name.Contains("sail", StringComparison.OrdinalIgnoreCase))
+				{
+					material.color = clientData.Colour;
+				}
+			}
+		}
 	}
 
 	private void Update()
