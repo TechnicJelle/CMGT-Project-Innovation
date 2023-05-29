@@ -159,8 +159,8 @@ Material:
     - _Anisotropy: 0
     - _BlendMode: 0
     - _BoundaryFalloff: 100
-    - _BoundaryHeight: 0.88
-    - _BoundaryWidth: 0.8
+    - _BoundaryHeight: 0.83
+    - _BoundaryWidth: 0.725
     - _CoatMask: 0
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2

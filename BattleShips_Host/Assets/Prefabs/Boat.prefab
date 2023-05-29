@@ -348,12 +348,12 @@ MonoBehaviour:
   sldHealth: {fileID: 2414823681217397035}
   startRotation: 0
   moveSpeed: 15
-  blowingSpeed: 100
+  blowingSpeed: 50
   rotSpeed: 0.03
   go: 1
   cannonballPrefab: {fileID: 6994834413564048391, guid: 03f0645f7d63c0ada909446f5af4248c,
     type: 3}
-  shootingPower: 1000
+  shootingPower: 2000
   startHealth: 10
   reloadSpeed: 2
   shotsInOneGo: 3
