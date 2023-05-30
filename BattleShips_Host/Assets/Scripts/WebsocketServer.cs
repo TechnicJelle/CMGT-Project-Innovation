@@ -9,7 +9,7 @@ using WebSocketSharp.Server;
 
 public class WebsocketServer : MonoBehaviour
 {
-	public static readonly Color[] PlayerColours = { Color.red, Color.blue, Color.green, Color.yellow, };
+	public static readonly Color[] PlayerColours = { Color.red, Color.blue, Color.green, Color.yellow, Color.magenta, Color.cyan, };
 	public static WebsocketServer Instance { get; private set; }
 	private const int PORT = 55555;
 	private const string PATH = "/game";
@@ -137,7 +137,7 @@ public class Game : WebSocketBehavior
 		Debug.Log($"Connection Opened with {ID}");
 		Server.IDs.Add(ID);
 		int colourIndex = (Server.IDs.Count - 1) % WebsocketServer.PlayerColours.Length; //possibly could be a problem with more players? needs testing
-		Color colour = WebsocketServer.PlayerColours[colourIndex];
+		Color colour = WebsocketServer.PlayerColours[colourIndex]; //BUG: This gets de-synced when a player leaves
 		Server.Clients.Add(ID, new WebsocketServer.ClientEntry(ID, colour));
 		RefreshUI();
 	}
