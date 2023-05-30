@@ -177,7 +177,7 @@ public class Game : WebSocketBehavior
 				if (MatchManager.IsMatchRunning) return; //can't change name while match is running
 				string newName = MessageFactory.DecodeNameUpdate(e.RawData);
 				Debug.Log($"{ID}'s new name: \"{newName}\"");
-				Server.Clients[ID].Name = newName.IsNullOrEmpty() ? ID : newName;
+				Server.Clients[ID].Name = newName.Trim().IsNullOrEmpty() ? ID : newName;
 				RefreshUI();
 				break;
 			case MessageFactory.MessageType.DamageBoat:
