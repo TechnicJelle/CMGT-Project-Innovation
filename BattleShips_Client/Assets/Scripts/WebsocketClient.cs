@@ -4,7 +4,6 @@ using Shared.Scripts;
 using Shared.Scripts.UI;
 using UI;
 using UnityEngine;
-using UnityEngine.UI;
 using WebSocketSharp;
 
 public class WebsocketClient : MonoBehaviour
@@ -17,7 +16,8 @@ public class WebsocketClient : MonoBehaviour
 	public Action OnDockingUnavailable;
 	public Action OnDocked;
 	public Action OnUndocked;
-	public Action OnFoundTreasure;
+	public delegate void FoundTreasure(bool success);
+	public FoundTreasure OnFoundTreasure;
 	public Action OnRepairDone;
 
 	[SerializeField] private View mainMenu;
@@ -35,6 +35,7 @@ public class WebsocketClient : MonoBehaviour
 	private bool _shouldUpdateDocked;
 	private bool _isDocked;
 	private bool _shouldUpdateFoundTreasure;
+	private bool _treasureSuccess;
 	private bool _shouldDamage;
 	private bool _shouldDie;
 	private bool _shouldUpdateRepair;
@@ -101,9 +102,10 @@ public class WebsocketClient : MonoBehaviour
 						_shouldUpdateDocked = true;
 						_isDocked = MessageFactory.DecodeIsDockedUpdate(e.RawData);
 						break;
-					case MessageFactory.MessageType.FoundTreasureSignal:
-						Debug.Log("Found treasure signal received from server!");
+					case MessageFactory.MessageType.TreasureResultUpdate:
 						_shouldUpdateFoundTreasure = true;
+						_treasureSuccess = MessageFactory.DecodeTreasureResultUpdate(e.RawData);
+						Debug.Log("Found treasure signal received from server, success: " + _treasureSuccess);
 						break;
 					case MessageFactory.MessageType.RepairDoneSignal:
 						Debug.Log("Repaired boat signal received from server!");
@@ -218,7 +220,7 @@ public class WebsocketClient : MonoBehaviour
 		if (_shouldUpdateFoundTreasure)
 		{
 			_shouldUpdateFoundTreasure = false;
-			OnFoundTreasure.Invoke();
+			OnFoundTreasure.Invoke(_treasureSuccess);
 		}
 
 		if (_shouldDamage)

@@ -1,17 +1,16 @@
-using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
 	public class ClientsList : MonoBehaviour
 	{
-		private TMP_Text _text;
+		[SerializeField] private GameObject itemPrefab;
 
-		private void Awake()
-		{
-			_text = GetComponent<TMP_Text>();
-		}
+		private readonly List<GameObject> _children = new();
 
 		private void Start()
 		{
@@ -32,13 +31,28 @@ namespace UI
 
 		private void RebuildClientList()
 		{
-			StringBuilder stringBuilder = new();
-			foreach (WebsocketServer.ClientEntry client in WebsocketServer.Instance.Clients.Values)
-			{
-				stringBuilder.AppendLine(client.Name);
-			}
+			//Clear old ones
+			foreach (GameObject item in _children)
+				Destroy(item);
+			_children.Clear();
 
-			_text.text = stringBuilder.ToString();
+			//Add new ones
+			for (int i = 0; i < WebsocketServer.Instance.Clients.Count; i++)
+			{
+				(_, WebsocketServer.ClientEntry client) = WebsocketServer.Instance.Clients.ElementAt(i);
+
+				GameObject item = Instantiate(itemPrefab, transform);
+				_children.Add(item);
+
+				//Text
+				item.GetComponentInChildren<TextMeshProUGUI>().text = client.Name;
+
+				//Colour
+				int colourIndex = i % WebsocketServer.PlayerColours.Length;
+				Color colour = WebsocketServer.PlayerColours[colourIndex];
+				client.Colour = colour;
+				item.GetComponentInChildren<Image>().color = colour;
+			}
 		}
 	}
 }

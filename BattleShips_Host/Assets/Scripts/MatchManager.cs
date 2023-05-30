@@ -15,6 +15,7 @@ public class MatchManager : MonoBehaviour
 {
 	public static MatchManager Instance { get; private set; }
 	public static bool IsMatchRunning => Instance._players != null;
+	public static GameObject FlagPrefab => Instance.flagPrefab;
 
 	[SerializeField] private GameObject playerPrefab;
 	[SerializeField] private CinemachineVirtualCamera menuCamera;
@@ -26,6 +27,7 @@ public class MatchManager : MonoBehaviour
 
 	[SerializeField] private Transform boundaries;
 	[SerializeField] private Transform water;
+	[SerializeField] private GameObject flagPrefab;
 
 	[SerializeField] private float distanceBetweenSpawns = 8f;
 
@@ -328,11 +330,19 @@ public class MatchManager : MonoBehaviour
 			_music.setParameterByName("verse", 0);
 		}
 
-		WebsocketServer.Instance.Send(id, MessageFactory.CreateSignal(MessageFactory.MessageType.FoundTreasureSignal));
+		bool success = player.Boat.CollidingIsland == player.Boat.TreasureIsland;
+		WebsocketServer.Instance.Send(id, MessageFactory.CreateTreasureResultUpdate(success));
+		if (success)
+		{
+			SetPlayerPoints(id, player.Points+1);
+			Debug.Log($"Player {id} found treasure! Points: {player.Points}");
+			player.Boat.ChooseNewTreasureIsland();
+		}
+		else
+		{
+			Debug.Log($"Player {id} didn't find treasure!");
+		}
 
-		SetPlayerPoints(id, player.Points+1);
-
-		Debug.Log($"Player {id} found treasure! Points: {player.Points}");
 	}
 
 	private IEnumerator RepairCoroutine(string id, PlayerData player)

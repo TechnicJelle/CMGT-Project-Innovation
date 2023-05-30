@@ -9,7 +9,7 @@ using WebSocketSharp.Server;
 
 public class WebsocketServer : MonoBehaviour
 {
-	public static readonly Color[] PlayerColours = { Color.red, Color.blue, Color.green, Color.yellow, };
+	public static readonly Color[] PlayerColours = { Color.red, Color.blue, Color.green, Color.yellow, Color.magenta, Color.cyan, };
 	public static WebsocketServer Instance { get; private set; }
 	private const int PORT = 55555;
 	private const string PATH = "/game";
@@ -20,7 +20,6 @@ public class WebsocketServer : MonoBehaviour
 	[NonSerialized] public Dictionary<string, ClientEntry> Clients;
 
 	public delegate void RefreshUI();
-
 	public RefreshUI OnRefreshUI;
 
 	private WebSocketServer _server;
@@ -121,10 +120,10 @@ public class WebsocketServer : MonoBehaviour
 		public string Name;
 		public Color Colour;
 
-		public ClientEntry(string name, Color colour)
+		public ClientEntry(string name)
 		{
 			Name = name;
-			Colour = colour;
+			//Colour is set in ClientsList.cs
 		}
 	}
 }
@@ -137,9 +136,7 @@ public class Game : WebSocketBehavior
 	{
 		Debug.Log($"Connection Opened with {ID}");
 		Server.IDs.Add(ID);
-		int colourIndex = (Server.IDs.Count - 1) % WebsocketServer.PlayerColours.Length; //possibly could be a problem with more players? needs testing
-		Color colour = WebsocketServer.PlayerColours[colourIndex];
-		Server.Clients.Add(ID, new WebsocketServer.ClientEntry(ID, colour));
+		Server.Clients.Add(ID, new WebsocketServer.ClientEntry(ID)); //start with ID as name
 		RefreshUI();
 	}
 
@@ -153,28 +150,34 @@ public class Game : WebSocketBehavior
 				MatchManager.Instance.UpdateBoatDirection(ID, direction);
 				break;
 			case MessageFactory.MessageType.BlowingUpdate:
+				if (!MatchManager.IsMatchRunning) return;
 				bool isBlowing = MessageFactory.DecodeBlowingUpdate(e.RawData);
 				MatchManager.Instance.SetBoatBlowing(ID, isBlowing);
 				break;
 			case MessageFactory.MessageType.RequestDockingStatusUpdate:
+				if (!MatchManager.IsMatchRunning) return;
 				bool requestDockingStatus = MessageFactory.DecodeDockingStatusUpdate(e.RawData);
 				if (requestDockingStatus) MatchManager.Instance.RequestDocking(ID);
 				else MatchManager.Instance.RequestUndocking(ID);
 				break;
 			case MessageFactory.MessageType.SearchTreasureSignal:
+				if (!MatchManager.IsMatchRunning) return;
 				MatchManager.Instance.SearchTreasure(ID);
 				break;
 			case MessageFactory.MessageType.ShootingUpdate:
+				if (!MatchManager.IsMatchRunning) return;
 				MessageFactory.ShootingDirection shootingDirection = MessageFactory.DecodeShootingUpdate(e.RawData);
 				MatchManager.Instance.BoatShoot(ID, shootingDirection);
 				break;
 			case MessageFactory.MessageType.RepairingSignal:
+				if (!MatchManager.IsMatchRunning) return;
 				MatchManager.Instance.RepairBoat(ID);
 				break;
 			case MessageFactory.MessageType.NameUpdate:
+				if (MatchManager.IsMatchRunning) return; //can't change name while match is running
 				string newName = MessageFactory.DecodeNameUpdate(e.RawData);
 				Debug.Log($"{ID}'s new name: \"{newName}\"");
-				Server.Clients[ID].Name = newName.IsNullOrEmpty() ? ID : newName;
+				Server.Clients[ID].Name = newName.Trim().IsNullOrEmpty() ? ID : newName;
 				RefreshUI();
 				break;
 			case MessageFactory.MessageType.DamageBoat:
@@ -183,7 +186,7 @@ public class Game : WebSocketBehavior
 			case MessageFactory.MessageType.GoBackToLobbySignal:
 			case MessageFactory.MessageType.DockingAvailableUpdate:
 			case MessageFactory.MessageType.IsDockedUpdate:
-			case MessageFactory.MessageType.FoundTreasureSignal:
+			case MessageFactory.MessageType.TreasureResultUpdate:
 			case MessageFactory.MessageType.ReloadUpdate:
 			default:
 				Debug.LogWarning($"Received a message from client {ID} that is not allowed! Ignoring...");
