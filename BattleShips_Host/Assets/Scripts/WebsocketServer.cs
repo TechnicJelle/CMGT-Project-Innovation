@@ -120,10 +120,10 @@ public class WebsocketServer : MonoBehaviour
 		public string Name;
 		public Color Colour;
 
-		public ClientEntry(string name, Color colour)
+		public ClientEntry(string name)
 		{
 			Name = name;
-			Colour = colour;
+			//Colour is set in ClientsList.cs
 		}
 	}
 }
@@ -136,9 +136,7 @@ public class Game : WebSocketBehavior
 	{
 		Debug.Log($"Connection Opened with {ID}");
 		Server.IDs.Add(ID);
-		int colourIndex = (Server.IDs.Count - 1) % WebsocketServer.PlayerColours.Length; //possibly could be a problem with more players? needs testing
-		Color colour = WebsocketServer.PlayerColours[colourIndex]; //BUG: This gets de-synced when a player leaves
-		Server.Clients.Add(ID, new WebsocketServer.ClientEntry(ID, colour));
+		Server.Clients.Add(ID, new WebsocketServer.ClientEntry(ID)); //start with ID as name
 		RefreshUI();
 	}
 

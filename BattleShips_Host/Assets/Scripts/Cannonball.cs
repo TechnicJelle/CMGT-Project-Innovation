@@ -25,8 +25,6 @@ public class Cannonball : MonoBehaviour
 
 		if (other.gameObject.name == "Water")
 		{
-			Debug.Log("Hit water");
-
 			pWater.Play();
 
 			Kill();
@@ -35,8 +33,6 @@ public class Cannonball : MonoBehaviour
 
 		if (other.gameObject.CompareTag("Island") || (other.transform.parent != null && other.transform.parent.CompareTag("Island")))
 		{
-			Debug.Log("Hit an island");
-
 			pSand.Play();
 
 			Kill();
