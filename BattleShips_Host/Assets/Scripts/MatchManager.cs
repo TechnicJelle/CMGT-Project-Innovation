@@ -36,6 +36,9 @@ public class MatchManager : MonoBehaviour
 	[SerializeField] private float timeToRepair = 5f;
 	[SerializeField] private int healthRepaired = 2;
 
+	[SerializeField] private GameObject matchPlayerUIPrefab;
+	[SerializeField] private RectTransform matchPlayerUIPanel;
+
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
 
 	private Bounds _spawnBounds;
@@ -149,9 +152,11 @@ public class MatchManager : MonoBehaviour
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
 			WebsocketServer.ClientEntry client = WebsocketServer.Instance.Clients[id];
-			boat.Setup(id, client, matchCamera.transform);
+			GameObject panel = Instantiate(matchPlayerUIPrefab, matchPlayerUIPanel);
+			boat.Setup(id, client, matchCamera.transform, panel);
 			_players.Add(id, new PlayerData(boat, client.Name));
 			targetGroup.AddMember(boat.transform, 1, 1);
+
 		}
 
 		ChangeCamera(Cameras.Match);
@@ -424,6 +429,7 @@ public class MatchManager : MonoBehaviour
 		}
 
 		player.Points = playerPoints;
+		player.Boat.UpdateTreasureText(playerPoints);
 
 		if (playerPoints >= maxTreasure)
 		{
