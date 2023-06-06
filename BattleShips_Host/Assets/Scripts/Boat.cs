@@ -97,7 +97,6 @@ public class Boat : MonoBehaviour
 			}
 		}
 
-
 		foreach (RectTransform child in listPanel.GetComponentsInChildren<RectTransform>())
 		{
 			switch (child.name)
@@ -111,6 +110,9 @@ public class Boat : MonoBehaviour
 					_sldHealthInList.value = _health;
 					break;
 				case "img_Treasures":
+					Color colour = clientData.Colour;
+					colour.a = 0.5f;
+					child.GetComponent<Image>().color = colour;
 					_txtTreasuresInList = child.GetComponentInChildren<TMP_Text>();
 					_txtTreasuresInList.text = "0";
 					break;
