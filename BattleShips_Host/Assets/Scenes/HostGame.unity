@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 5907.5938, g: 7516.2476, b: 5594.508, a: 1}
+  m_IndirectSpecularColor: {r: 6013.889, g: 7706.1597, b: 5724.2026, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4455,7 +4455,7 @@ MonoBehaviour:
   flagPrefab: {fileID: 919132149155446097, guid: 63452795668fca1a1af42ad664c03038,
     type: 3}
   distanceBetweenSpawns: 8
-  maxTreasure: 3
+  sldMaxTreasure: {fileID: 1518149662}
   timeToGatherTreasure: 5
   timeToRepair: 5
   healthRepaired: 2
@@ -5932,6 +5932,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   origin: {x: -8.75, y: 5.72, z: -6.58}
+--- !u!114 &1518149662 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7969136838075672508, guid: 8857c322647b3c1479e11ffa6404e8ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 191526557}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1547945922
 GameObject:
   m_ObjectHideFlags: 0

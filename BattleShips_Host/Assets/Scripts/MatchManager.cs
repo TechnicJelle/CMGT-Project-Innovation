@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using UnityEngine.UI;
 
 
 public class MatchManager : MonoBehaviour
@@ -31,7 +32,7 @@ public class MatchManager : MonoBehaviour
 
 	[SerializeField] private float distanceBetweenSpawns = 8f;
 
-	[SerializeField] private int maxTreasure = 3;
+	[SerializeField] private Slider sldMaxTreasure;
 	[SerializeField] private float timeToGatherTreasure = 5f;
 	[SerializeField] private float timeToRepair = 5f;
 	[SerializeField] private int healthRepaired = 2;
@@ -431,7 +432,7 @@ public class MatchManager : MonoBehaviour
 		player.Points = playerPoints;
 		player.Boat.UpdateTreasureText(playerPoints);
 
-		if (playerPoints >= maxTreasure)
+		if (playerPoints >= sldMaxTreasure.value)
 		{
 			WinMatch(player);
 		}
