@@ -5,6 +5,7 @@ using Shared.Scripts;
 using TMPro;
 using UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -12,7 +13,7 @@ using Random = UnityEngine.Random;
 public class Boat : MonoBehaviour
 {
 	[SerializeField] private TMP_Text txtName;
-	[SerializeField] private Slider sldHealth;
+	[FormerlySerializedAs("sldHealth")] [SerializeField] private Slider sldHealthHover;
 
 	[Header("Movement")]
 	[SerializeField] [Range(0.0f, 360.0f)] private float startRotation;
@@ -55,14 +56,18 @@ public class Boat : MonoBehaviour
 	// Treasure
 	public Island TreasureIsland { get; private set; }
 
+	// UI
+	private Slider _sldHealthInList;
+	private TMP_Text _txtTreasuresInList;
+
 	private void Awake()
 	{
 		_rigidbody = GetComponent<Rigidbody>();
 		_targetRotation = startRotation;
 		_movementDirection = Vector3.forward;
 		_health = startHealth;
-		sldHealth.maxValue = startHealth;
-		sldHealth.value = _health;
+		sldHealthHover.maxValue = startHealth;
+		sldHealthHover.value = _health;
 
 		_reloadDT = 1f / reloadUpdatesPerSecond;
 		foreach (MessageFactory.ShootingDirection dir in Enum.GetValues(typeof(MessageFactory.ShootingDirection)))
@@ -74,7 +79,7 @@ public class Boat : MonoBehaviour
 		if (_islands == null) _islands = FindObjectsOfType<Island>();
 	}
 
-	public void Setup(string id, WebsocketServer.ClientEntry clientData, Transform cam)
+	public void Setup(string id, WebsocketServer.ClientEntry clientData, Transform cam, GameObject listPanel)
 	{
 		_id = id;
 		_clientEntry = clientData;
@@ -89,6 +94,28 @@ public class Boat : MonoBehaviour
 				{
 					material.color = clientData.Colour;
 				}
+			}
+		}
+
+		foreach (RectTransform child in listPanel.GetComponentsInChildren<RectTransform>())
+		{
+			switch (child.name)
+			{
+				case "txt_Name":
+					child.GetComponent<TMP_Text>().text = clientData.Name;
+					break;
+				case "sld_health":
+					_sldHealthInList = child.GetComponent<Slider>();
+					_sldHealthInList.maxValue = startHealth;
+					_sldHealthInList.value = _health;
+					break;
+				case "img_Treasures":
+					Color colour = clientData.Colour;
+					colour.a = 0.5f;
+					child.GetComponent<Image>().color = colour;
+					_txtTreasuresInList = child.GetComponentInChildren<TMP_Text>();
+					_txtTreasuresInList.text = "0";
+					break;
 			}
 		}
 
@@ -221,7 +248,8 @@ public class Boat : MonoBehaviour
 	public void Heal(int amount)
 	{
 		_health = Mathf.Min(_health + amount, startHealth);
-		sldHealth.value = _health;
+		sldHealthHover.value = _health;
+		_sldHealthInList.value = _health;
 	}
 
 	public void Damage()
@@ -229,7 +257,8 @@ public class Boat : MonoBehaviour
 		_health--;
 		WebsocketServer.Instance.Send(_id, MessageFactory.CreateDamageBoat(_health <= 0));
 		if (_health <= 0) Die();
-		sldHealth.value = _health;
+		sldHealthHover.value = _health;
+		_sldHealthInList.value = _health;
 	}
 
 	private void Die()
@@ -254,5 +283,10 @@ public class Boat : MonoBehaviour
 	public void SetShoot(MessageFactory.ShootingDirection shootingDirection)
 	{
 		_shouldShoot = shootingDirection;
+	}
+
+	public void UpdateTreasureText(int points)
+	{
+		_txtTreasuresInList.text = points.ToString();
 	}
 }

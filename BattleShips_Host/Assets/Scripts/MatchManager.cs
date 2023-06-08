@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using UnityEngine.UI;
 
 
 public class MatchManager : MonoBehaviour
@@ -31,10 +32,13 @@ public class MatchManager : MonoBehaviour
 
 	[SerializeField] private float distanceBetweenSpawns = 8f;
 
-	[SerializeField] private int maxTreasure = 3;
+	[SerializeField] private Slider sldMaxTreasure;
 	[SerializeField] private float timeToGatherTreasure = 5f;
 	[SerializeField] private float timeToRepair = 5f;
 	[SerializeField] private int healthRepaired = 2;
+
+	[SerializeField] private GameObject matchPlayerUIPrefab;
+	[SerializeField] private RectTransform matchPlayerUIPanel;
 
 	[CanBeNull] private Dictionary<string, PlayerData> _players;
 
@@ -149,9 +153,11 @@ public class MatchManager : MonoBehaviour
 			instance.transform.position = GetValidSpawnLocation();
 			Boat boat = instance.GetComponent<Boat>();
 			WebsocketServer.ClientEntry client = WebsocketServer.Instance.Clients[id];
-			boat.Setup(id, client, matchCamera.transform);
+			GameObject panel = Instantiate(matchPlayerUIPrefab, matchPlayerUIPanel);
+			boat.Setup(id, client, matchCamera.transform, panel);
 			_players.Add(id, new PlayerData(boat, client.Name));
 			targetGroup.AddMember(boat.transform, 1, 1);
+
 		}
 
 		ChangeCamera(Cameras.Match);
@@ -424,8 +430,9 @@ public class MatchManager : MonoBehaviour
 		}
 
 		player.Points = playerPoints;
+		player.Boat.UpdateTreasureText(playerPoints);
 
-		if (playerPoints >= maxTreasure)
+		if (playerPoints >= sldMaxTreasure.value)
 		{
 			WinMatch(player);
 		}
