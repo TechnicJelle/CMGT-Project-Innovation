@@ -1,22 +1,21 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TutorialSlides : MonoBehaviour
 {
     [SerializeField] private Image[] slides;
+    [SerializeField] private Slider progressBar;
     [SerializeField] private float slideDuration;
 
     private Image currentSlide;
     private float slideTime;
-    private int progress = 0;
+    private int progress;
 
-    private void Start()
+    private void OnEnable()
     {
-        slideTime = Time.time + slideDuration;
+        progress = 0;
         currentSlide = slides[progress];
+        slideTime = Time.time + slideDuration;
         foreach (Image slide in slides)
         {
             if (slide != currentSlide)
@@ -26,15 +25,14 @@ public class TutorialSlides : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (NewSlide())
         {
             ChangeSlide();
         }
-
-        Debug.Log(Time.time);
+        
+        UpdateProgress();
     }
     
     private bool NewSlide()
@@ -53,5 +51,11 @@ public class TutorialSlides : MonoBehaviour
         currentSlide.color = Color.clear;
         currentSlide = slides[progress];
         currentSlide.color = Color.white;
+    }
+
+    private void UpdateProgress()
+    {
+        float t = 1-(slideTime - Time.time) / slideDuration;
+        progressBar.value = t;
     }
 }
