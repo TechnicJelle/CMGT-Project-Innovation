@@ -145,6 +145,7 @@ public class MatchManager : MonoBehaviour
 
 
 		_players = new Dictionary<string, PlayerData>();
+		foreach (RectTransform t in matchPlayerUIPanel) if (t != matchPlayerUIPanel) Destroy(t.gameObject);
 		WebsocketServer.Instance.Broadcast(MessageFactory.CreateSignal(MessageFactory.MessageType.StartGameSignal));
 		foreach (string id in WebsocketServer.Instance.IDs)
 		{
