@@ -1,6 +1,6 @@
 # CMGT-Project-Innovation
 
-[![image](https://user-images.githubusercontent.com/22576047/232597420-24ab8765-afef-43bc-97f2-6c21292bbfab.png)](https://youtu.be/Eb1Xb2S-tgk)
+[![youtube](https://github.com/TechnicJelle/CMGT-Project-Innovation/assets/22576047/d1bde682-9779-4123-b75d-8726e8a891d3)](https://youtu.be/VY_CouT-l0w)
 
 
 ## Asset Attribution
