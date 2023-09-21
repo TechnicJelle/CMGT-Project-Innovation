@@ -2,6 +2,8 @@
 
 [![youtube](https://github.com/TechnicJelle/CMGT-Project-Innovation/assets/22576047/d1bde682-9779-4123-b75d-8726e8a891d3)](https://youtu.be/VY_CouT-l0w)
 
+## Soundtrack
+Stream or buy the soundtrack of this game at [redotter.bandcamp.com/track/sea-spelunking](https://redotter.bandcamp.com/track/sea-spelunking)
 
 ## Asset Attribution
 Unless otherwise mentioned, everything in this project is made by us.
